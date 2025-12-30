@@ -1,7 +1,7 @@
 <?php
 namespace xjryanse\servicesdk\data\data;
 
-use app\msgq\sdk\QLogSdk;
+use xjryanse\servicesdk\msgq\QLogSdk;
 
 /**
  * 缓存类
