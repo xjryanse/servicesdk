@@ -19,8 +19,10 @@ class DataSdk {
         return 'http://'.static::sdkIp().':'.static::sdkPort().'/'.$path;  
     }
 
+    use \xjryanse\servicesdk\data\data\SqlTraits;
     use \xjryanse\servicesdk\data\data\TableTraits;
     use \xjryanse\servicesdk\data\data\TableBatchTraits;
     
+
     
 }
