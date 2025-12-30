@@ -5,7 +5,7 @@ use speedy\facade\Cache;
 use xjryanse\servicesdk\msgq\QLogSdk;
 use xjryanse\servicesdk\entry\EntrySdk;
 /**
- * 1
+ * 
  */
 class UniversalSdk {
 
