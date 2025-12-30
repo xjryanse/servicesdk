@@ -1,7 +1,7 @@
 <?php
 namespace xjryanse\servicesdk\data;
 
-use app\entry\sdk\EntrySdk;
+use xjryanse\servicesdk\entry\EntrySdk;
 /**
  * 17点20分
  */

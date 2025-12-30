@@ -2,7 +2,7 @@
 namespace xjryanse\servicesdk\data\data;
 
 use speedy\logic\Url;
-use app\msgq\sdk\QLogSdk;
+use xjryanse\servicesdk\msgq\QLogSdk;
 use Exception;
 
 /**
