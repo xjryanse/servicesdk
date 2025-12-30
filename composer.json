@@ -1,0 +1,17 @@
+{
+    "name": "xjryanse/servicesdk",
+    "description": "微服务接入sdk",
+    "type": "library",
+    "authors": [
+        {
+            "name": "xjryanse",
+            "email": "xjryanse@sina.com"
+        }
+    ],
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+          "xjryanse\\servicesdk\\": "src/"
+        }
+    }
+}
