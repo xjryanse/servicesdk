@@ -33,7 +33,7 @@ trait TableTraits{
      * @param type $whereFields 参数
      */
     public static function tableDataFind($tableName, $param, $whereFields = []){
-        $url = static::sdkUrl('data/table/get');
+        $url = static::sdkUrl('data/table/find');
         // 默认发本地消息中间件
         // TODO:配置解耦
         $data['table_name'] = $tableName;
