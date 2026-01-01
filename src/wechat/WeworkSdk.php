@@ -31,12 +31,9 @@ class WeworkSdk {
      */
     public static function webhookSendByMsgTplId($info){
         $url = static::sdkUrl('wework/webhook/sendByMsgTplId');
-
-        dump($url);
         // 默认发本地消息中间件
         // TODO:配置解耦
         $data['info']   = $info;
-        dump($data);
         $res            = QLogSdk::postAndLog($url, $data);
         return $res['data'];
     }
