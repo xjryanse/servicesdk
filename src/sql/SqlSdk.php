@@ -59,4 +59,39 @@ class SqlSdk {
         });
     }
     
+    /**
+     * joinSql生成逻辑
+     * @param type $sqlKey
+     * @param type $param
+     * 
+{
+  ["tables"] => array(2) {
+    [0] => array(2) {
+      ["table"] => string(25) "lvBaoCprTdxNoDetectNotice"
+      ["alias"] => string(3) "bbA"
+    }
+    [1] => array(4) {
+      ["table"] => string(13) "w_msg_mid_log"
+      ["alias"] => string(3) "bbB"
+      ["join"] => string(4) "left"
+      ["on"] => string(28) "bbA.id = bbB.data_unique_key"
+    }
+  }
+  ["where"] => array(1) {
+    [0] => string(37) "bbA.startTime<= '2026-02-01 20:21:34'"
+  }
+}
+     */
+    public static function joinSqlGenerate($sqlParam){
+        $keyRaw = md5(json_encode($sqlParam, JSON_UNESCAPED_UNICODE));
+        $key = __CLASS__.__METHOD__.$keyRaw;
+        return Cache::funcGet($key,function () use ($sqlParam) {        
+            $url    = static::sdkUrl('sql/sql/joinSqlGenerate');
+            $data           = [];
+            $data['sqlParam'] = $sqlParam;
+
+            $res            = QLogSdk::postAndLog($url, $data);
+            return $res['data'];
+        });
+    }
 }
