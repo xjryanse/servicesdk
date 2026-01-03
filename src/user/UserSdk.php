@@ -13,7 +13,7 @@ class UserSdk {
     }
     
     protected static function sdkPort(){
-        return '9908';
+        return '9920';
     }
 
     protected static function sdkUrl($path){
@@ -46,6 +46,7 @@ class UserSdk {
         $url        = static::sdkUrl('user/user/batchGet');
         // 默认发本地消息中间件
         $data['id'] = $userIds;
+
         $res        = QLogSdk::postAndLog($url, $data);
         return $res['data'];
     }

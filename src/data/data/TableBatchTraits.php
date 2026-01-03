@@ -20,10 +20,6 @@ trait TableBatchTraits{
         // TODO:配置解耦
         $data['table_name'] = $tableName;
         $data['id']         = $ids;
-dump($url);
-dump($data);
-
-
 
         $res                = QLogSdk::postAndLog($url, $data);
         return $res['data'];
