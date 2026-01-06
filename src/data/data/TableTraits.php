@@ -84,5 +84,37 @@ trait TableTraits{
         $res                    = QLogSdk::postAndLog($url, $data);
         return $res['data'];
     }
+    
+    
+    /**
+     * 20260106插入新增数据
+     * @param type $tableName
+     * @return type
+     */
+    public static function tableDataInsert($tableName, $data = []){
+        $url = static::sdkUrl('data/table/insert');
+        $data['table_name'] = $tableName;
+        $data['table_data'] = $data;
+        $res                    = QLogSdk::postAndLog($url, $data);
+        if(!$res){
+            throw new Exception('没有获取到接口数据:'.$url);
+        }
+        return $res['data'];
+    }
 
+    /**
+     * 20260106插入更新数据
+     * @param type $tableName
+     * @return type
+     */
+    public static function tableDataUpdate($tableName, $data = []){
+        $url                    = static::sdkUrl('data/table/update');
+        $data['table_name']     = $tableName;
+        $data['table_data']     = $data;
+        $res                    = QLogSdk::postAndLog($url, $data);
+        if(!$res){
+            throw new Exception('没有获取到接口数据:'.$url);
+        }
+        return $res['data'];
+    }    
 }
