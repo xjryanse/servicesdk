@@ -93,9 +93,9 @@ trait TableTraits{
      */
     public static function tableDataInsert($tableName, $data = []){
         $url = static::sdkUrl('data/table/insert');
-        $data['table_name'] = $tableName;
-        $data['table_data'] = $data;
-        $res                    = QLogSdk::postAndLog($url, $data);
+        $param['table_name'] = $tableName;
+        $param['table_data'] = $data;
+        $res                    = QLogSdk::postAndLog($url, $param);
         if(!$res){
             throw new Exception('没有获取到接口数据:'.$url);
         }
@@ -109,9 +109,9 @@ trait TableTraits{
      */
     public static function tableDataUpdate($tableName, $data = []){
         $url                    = static::sdkUrl('data/table/update');
-        $data['table_name']     = $tableName;
-        $data['table_data']     = $data;
-        $res                    = QLogSdk::postAndLog($url, $data);
+        $param['table_name']     = $tableName;
+        $param['table_data']     = $data;
+        $res                    = QLogSdk::postAndLog($url, $param);
         if(!$res){
             throw new Exception('没有获取到接口数据:'.$url);
         }
