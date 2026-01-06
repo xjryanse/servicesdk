@@ -71,4 +71,21 @@ class QLogSdk {
         return $resp;
     }
 
+    
+    /**
+     * 执行日志回调上报
+     */
+    public static function callBack($msgId){
+        $url            = 'http://'.static::sdkIp().':9907/msgq/q_log_msg/callback';
+        $data['msgId']  = $msgId;
+        
+        $res            = Query::posturl($url, $data);
+        
+        $resp = [];
+        $resp['url']        = $url;
+        $resp['request']    = $data;
+        $resp['response']   = $res;
+        
+        return $resp;
+    }
 }
