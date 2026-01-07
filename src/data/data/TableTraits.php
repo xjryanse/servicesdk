@@ -91,7 +91,7 @@ trait TableTraits{
      * @param type $tableName
      * @return type
      */
-    public static function tableDataInsert($tableName, $data = []){
+    public static function tableDataInsert($tableName, $data){
         $url = static::sdkUrl('data/table/insert');
         $param['table_name'] = $tableName;
         $param['table_data'] = $data;
@@ -107,7 +107,7 @@ trait TableTraits{
      * @param type $tableName
      * @return type
      */
-    public static function tableDataUpdate($tableName, $data = []){
+    public static function tableDataUpdate($tableName, $data){
         $url                    = static::sdkUrl('data/table/update');
         $param['table_name']     = $tableName;
         $param['table_data']     = $data;
@@ -117,4 +117,21 @@ trait TableTraits{
         }
         return $res['data'];
     }    
+    
+    /**
+     * 20260107:插入删除数据
+     * @param type $tableName
+     * @return type
+     */
+    public static function tableDataDelete($tableName, $id){
+        $url                        = static::sdkUrl('data/table/delete');
+        $param['table_name']        = $tableName;
+        $param['table_data']['id']  = $id;
+        $res                        = QLogSdk::postAndLog($url, $param);
+        if(!$res){
+            throw new Exception('没有获取到接口数据:'.$url);
+        }
+        return $res['data'];
+    }    
+    
 }
