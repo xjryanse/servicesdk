@@ -11,11 +11,24 @@ class ErrNotice {
         $url = 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=2e43f76f-0abb-4f79-9ce0-8cf93df1020b';
         
         $msg['msgtype']                         = 'text';
-        $msg['text']['content']                 = '开发测试';
+        $msg['text']['content']                 = $e->getMessage();
 
         $res = Query::posturl($url, $msg);
 
         return $res;
     }
-    
+    /**
+     * 队列堵塞通知
+     */
+    public static function msgqJamNotice($queueName, $count){
+        $url = 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=2e43f76f-0abb-4f79-9ce0-8cf93df1020b';
+        $text = $_SERVER['SERVER_NAME']."队列堵塞:";
+        $text.= "\n队列名称：".$queueName;
+        $text.= "\n当前数量：".$count;
+        
+        $msg['msgtype']                         = 'text';
+        $msg['text']['content']                 = $text;
+
+        return Query::posturl($url, $msg);
+    }
 }
