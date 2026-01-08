@@ -11,7 +11,7 @@ class ErrNotice {
         $url = 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=2e43f76f-0abb-4f79-9ce0-8cf93df1020b';
         
         $msg['msgtype']                         = 'text';
-        $msg['text']['content']                 = $e->getMessage();
+        $msg['text']['content']                 = $_SERVER['SERVER_NAME'].':'.$e->getMessage();
 
         $res = Query::posturl($url, $msg);
 
