@@ -48,7 +48,7 @@ class GpsSdk {
         // 默认发本地消息中间件
         $data['msgId']          = $msgId;
         $data['type']           = $type;
-        $data['msg']            = $param;
+        $data['msg']            = [$param];
 
         $res                    = Query::posturl($url, $data);
 

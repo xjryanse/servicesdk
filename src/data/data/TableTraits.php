@@ -68,6 +68,30 @@ trait TableTraits{
     }
     
     /**
+     * 
+     * @param type $tableName
+     * @return type
+     */
+    public static function tableDataList($tableName, $orderBy='', $param=[], $allowFields= ''){
+        $url = static::sdkUrl('data/table/list');
+        
+        $postP                   = [];
+        $postP['table_name']     = $tableName;
+        // 逗号分割
+        $postP['allowFields']    = $allowFields;
+        if($orderBy){
+            $postP['orderBy']        = $orderBy;
+        }
+        $postP['table_data']     = $param;
+
+        $res                    = QLogSdk::postAndLog($url, $postP);
+        if(!$res){
+            throw new Exception('没有获取到接口数据:'.$url);
+        }
+        return $res['data'];
+    }    
+    
+    /**
      * 数据表明细统计
      * @param type $msgId   消息id
      * @param type $type    消息类型
