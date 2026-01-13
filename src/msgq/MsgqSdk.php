@@ -1,7 +1,7 @@
 <?php
 namespace xjryanse\servicesdk\msgq;
 
-use speedy\curl\Query;
+use xjryanse\speedy\curl\Query;
 use xjryanse\servicesdk\entry\EntrySdk;
 /**
  * 20251229

@@ -1,7 +1,7 @@
 <?php
 namespace xjryanse\servicesdk;
 
-use speedy\curl\Query;
+use xjryanse\speedy\curl\Query;
 /**
  * 异常消息通知
  */

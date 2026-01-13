@@ -1,7 +1,7 @@
 <?php
 namespace xjryanse\servicesdk\universal;
 
-use speedy\facade\Cache;
+use xjryanse\speedy\facade\Cache;
 use xjryanse\servicesdk\msgq\QLogSdk;
 use xjryanse\servicesdk\entry\EntrySdk;
 /**

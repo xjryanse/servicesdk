@@ -3,7 +3,7 @@ namespace xjryanse\servicesdk\sql;
 
 use xjryanse\servicesdk\entry\EntrySdk;
 use xjryanse\servicesdk\msgq\QLogSdk;
-use speedy\facade\Cache;
+use xjryanse\speedy\facade\Cache;
 use Exception;
 /**
  * 调用sql中台的极简sdk

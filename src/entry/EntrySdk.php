@@ -1,7 +1,7 @@
 <?php
 namespace xjryanse\servicesdk\entry;
 
-use speedy\curl\Query;
+use xjryanse\speedy\curl\Query;
 /**
  * 2025年12月30日；11点20分
  */

@@ -1,7 +1,7 @@
 <?php
 namespace xjryanse\servicesdk\msgq;
 
-use speedy\curl\Query;
+use xjryanse\speedy\curl\Query;
 use xjryanse\servicesdk\entry\EntrySdk;
 /**
  * 车载定位消息中间件sdk;

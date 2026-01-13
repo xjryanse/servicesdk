@@ -1,7 +1,7 @@
 <?php
 namespace xjryanse\servicesdk\data\data;
 
-use speedy\logic\Url;
+use xjryanse\speedy\logic\Url;
 use xjryanse\servicesdk\msgq\QLogSdk;
 use Exception;
 
