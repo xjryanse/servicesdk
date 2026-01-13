@@ -8,6 +8,9 @@
             "email": "xjryanse@sina.com"
         }
     ],
+	"require": {
+        "xjryanse/speedy": "0.0.*"
+    }, 
     "license": "MIT",
     "autoload": {
         "psr-4": {
