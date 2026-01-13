@@ -20,7 +20,13 @@ class QLogSdk {
     public static function postAndLog($url, $request){
         // 脚本请求开始
         $startMTs   = intval(microtime(true) * 1000);
+        
         $res                    = Query::posturl($url, $request);
+        
+dump($url);
+dump(json_encode($request,JSON_UNESCAPED_UNICODE));
+dump($res);
+
         // 脚本请求结束
         $endMTs     = intval(microtime(true) * 1000);
         if(!$res){
