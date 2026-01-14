@@ -23,10 +23,6 @@ class QLogSdk {
         
         $res                    = Query::posturl($url, $request);
         
-dump($url);
-dump(json_encode($request,JSON_UNESCAPED_UNICODE));
-dump($res);
-
         // 脚本请求结束
         $endMTs     = intval(microtime(true) * 1000);
         if(!$res){
