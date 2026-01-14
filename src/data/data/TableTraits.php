@@ -3,6 +3,8 @@ namespace xjryanse\servicesdk\data\data;
 
 use xjryanse\speedy\logic\Url;
 use xjryanse\servicesdk\msgq\QLogSdk;
+use xjryanse\servicesdk\msgq\WQLogSdk;
+use xjryanse\speedy\tcp\Sync;
 use Exception;
 
 /**
@@ -73,7 +75,9 @@ trait TableTraits{
      * @return type
      */
     public static function tableDataList($tableName, $orderBy='', $param=[], $allowFields= ''){
-        $url = static::sdkUrl('data/table/list');
+        $baseUrl = 'data/table/list';
+        
+        $url = static::sdkUrl($baseUrl);
         
         $postP                   = [];
         $postP['table_name']     = $tableName;
@@ -84,7 +88,11 @@ trait TableTraits{
         }
         $postP['table_data']     = $param;
 
-        $res                    = QLogSdk::postAndLog($url, $postP);
+        // $res = Sync::request($host, $port, $send_data);
+        $host = static::workerIp();
+        $port = static::workerPort();
+        $res = WQLogSdk::request($host, $port, $baseUrl, $postP);
+        // $res                    = QLogSdk::postAndLog($url, $postP);
         if(!$res){
             throw new Exception('没有获取到接口数据:'.$url);
         }

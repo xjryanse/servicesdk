@@ -23,6 +23,15 @@ class DataSdk {
     use \xjryanse\servicesdk\data\data\TableTraits;
     use \xjryanse\servicesdk\data\data\TableBatchTraits;
     
+    /**
+     * 
+     */
+    protected static function workerIp(){
+        return '127.0.0.1';
+    }
 
+    protected static function workerPort(){
+        return '19914';
+    }
     
 }
