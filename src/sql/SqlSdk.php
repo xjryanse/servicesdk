@@ -5,6 +5,7 @@ use xjryanse\servicesdk\entry\EntrySdk;
 use xjryanse\servicesdk\msgq\QLogSdk;
 use xjryanse\servicesdk\msgq\WQLogSdk;
 use xjryanse\speedy\facade\Cache;
+use xjryanse\logic\Arrays;
 use Exception;
 /**
  * 调用sql中台的极简sdk
@@ -43,12 +44,14 @@ class SqlSdk {
      * @param type $sqlKey
      * @param type $param
      */
-    public static function keyBaseSql($sqlKey){
-        $key = __CLASS__.__METHOD__.$sqlKey;
-        return Cache::funcGet($key,function () use ($sqlKey) {
+    public static function keyBaseSql(string $sqlKey,array $param = []){
+        $pMd5 = Arrays::md5($param);
+        $key = __CLASS__.__METHOD__.$sqlKey.$pMd5;
+        return Cache::funcGet($key,function () use ($sqlKey, $param) {
             $baseUrl = 'sql/sql/keyBaseSql';
             $data           = [];
             $data['sqlKey'] = $sqlKey;
+            $data['param']  = $param;
             
             $host = static::workerIp();
             $port = static::workerPort();
