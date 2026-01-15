@@ -3,6 +3,7 @@ namespace xjryanse\servicesdk\sql;
 
 use xjryanse\servicesdk\entry\EntrySdk;
 use xjryanse\servicesdk\msgq\QLogSdk;
+use xjryanse\servicesdk\msgq\WQLogSdk;
 use xjryanse\speedy\facade\Cache;
 use Exception;
 /**
@@ -23,7 +24,21 @@ class SqlSdk {
         return 'http://'.static::sdkIp().':'.static::sdkPort().'/'.$path;  
     }
     
+    
+    
     /**
+     * 
+     */
+    protected static function workerIp(){
+        return '127.0.0.1';
+    }
+
+    protected static function workerPort(){
+        return '19911';
+    }
+    
+    /**
+     * 优化成功：20260115
      * 执行校验
      * @param type $sqlKey
      * @param type $param
@@ -31,10 +46,13 @@ class SqlSdk {
     public static function keyBaseSql($sqlKey){
         $key = __CLASS__.__METHOD__.$sqlKey;
         return Cache::funcGet($key,function () use ($sqlKey) {
-            $url    = static::sdkUrl('sql/sql/keyBaseSql');
+            $baseUrl = 'sql/sql/keyBaseSql';
             $data           = [];
             $data['sqlKey'] = $sqlKey;
-            $res            = QLogSdk::postAndLog($url, $data);
+            
+            $host = static::workerIp();
+            $port = static::workerPort();
+            $res = WQLogSdk::request($host, $port, $baseUrl, $data);
             if(!$res['data']){
                 throw new Exception('没有获取到sql配置,请排查'.$sqlKey);
             }
