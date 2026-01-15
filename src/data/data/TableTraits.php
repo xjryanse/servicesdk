@@ -97,7 +97,7 @@ trait TableTraits{
             throw new Exception('没有获取到接口数据:'.$url);
         }
         return $res['data'];
-    }    
+    }
     
     /**
      * 数据表明细统计
@@ -164,6 +164,35 @@ trait TableTraits{
             throw new Exception('没有获取到接口数据:'.$url);
         }
         return $res['data'];
-    }    
+    }
+
     
+    
+    
+    
+    
+    
+    
+    
+
+    /**
+     * 2026年1月15日：数据保存，有数据新增，没数据更新
+     * @param type $tableName
+     * @return type
+     */
+    public static function tableDataSave($tableName, array $data){
+        $baseUrl = 'data/tableW/save';
+        
+        $postP                   = [];
+        $postP['table_name']     = $tableName;
+        $postP['table_data']     = $data;
+
+        $host = static::workerIp();
+        $port = static::workerPort();
+        $res = WQLogSdk::request($host, $port, $baseUrl, $postP);
+        if(!$res){
+            throw new Exception('没有获取到接口数据:'.$baseUrl);
+        }
+        return $res['data'];
+    }
 }
