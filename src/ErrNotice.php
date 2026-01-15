@@ -3,7 +3,7 @@ namespace xjryanse\servicesdk;
 
 use xjryanse\speedy\curl\Query;
 /**
- * 异常消息通知
+ * 异常消息通知1
  */
 class ErrNotice {
 
