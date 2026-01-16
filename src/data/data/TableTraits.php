@@ -143,6 +143,7 @@ trait TableTraits{
      * @return type
      */
     public static function tableDataUpdate($tableName, $data){
+        /*
         $url                    = static::sdkUrl('data/table/update');
         $param['table_name']     = $tableName;
         $param['table_data']     = $data;
@@ -150,6 +151,18 @@ trait TableTraits{
         if(!$res){
             throw new Exception('没有获取到接口数据:'.$url);
         }
+        return $res['data'];
+        */
+        
+        
+        $baseUrl = 'data/tableW/update';
+        // 默认发本地消息中间件
+        // TODO:配置解耦
+        $param['table_name'] = $tableName;
+        $param['table_data']     = $data;
+        $host = static::workerIp();
+        $port = static::workerPort();
+        $res = WQLogSdk::request($host, $port, $baseUrl, $param);        
         return $res['data'];
     }    
     
