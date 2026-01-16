@@ -5,7 +5,7 @@ use xjryanse\servicesdk\entry\EntrySdk;
 use xjryanse\servicesdk\msgq\QLogSdk;
 use xjryanse\servicesdk\msgq\WQLogSdk;
 use xjryanse\speedy\facade\Cache;
-use xjryanse\logic\Arrays;
+use xjryanse\speedy\logic\Arrays;
 use Exception;
 /**
  * 调用sql中台的极简sdk
