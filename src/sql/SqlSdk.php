@@ -47,6 +47,7 @@ class SqlSdk {
     public static function keyBaseSql(string $sqlKey,array $param = []){
         $pMd5 = Arrays::md5($param);
         $key = __CLASS__.__METHOD__.$sqlKey.$pMd5;
+        // dump($key);
         return Cache::funcGet($key,function () use ($sqlKey, $param) {
             $baseUrl = 'sql/sql/keyBaseSql';
             $data           = [];
