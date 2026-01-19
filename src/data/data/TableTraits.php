@@ -4,6 +4,7 @@ namespace xjryanse\servicesdk\data\data;
 use xjryanse\phplite\logic\Url;
 use xjryanse\servicesdk\msgq\QLogSdk;
 use xjryanse\servicesdk\msgq\WQLogSdk;
+use xjryanse\phplite\logic\DataCheck;
 use xjryanse\phplite\tcp\Sync;
 use Exception;
 
@@ -103,6 +104,35 @@ trait TableTraits{
     }
     
     /**
+     * 
+     * @param type $tableName
+     * @return type
+     */
+    public static function tableDataConList($tableName, $con=[], $orderBy='', string $allowFields= ''){
+        $baseUrl = 'data/table/list';
+        
+        $url = static::sdkUrl($baseUrl);
+        
+        $postP                   = [];
+        $postP['table_name']     = $tableName;
+        // 逗号分割
+        $postP['allowFields']    = $allowFields;
+        if($orderBy){
+            $postP['orderBy']       = $orderBy;
+        }
+        $postP['condition']         = $con;
+        // $res = Sync::request($host, $port, $send_data);
+        $host = static::workerIp();
+        $port = static::workerPort();
+        $res = WQLogSdk::request($host, $port, $baseUrl, $postP);
+        // $res                    = QLogSdk::postAndLog($url, $postP);
+        if(!$res){
+            throw new Exception('没有获取到接口数据:'.$url);
+        }
+        return $res['data'];
+    }
+    
+    /**
      * 数据表明细统计
      * @param type $msgId   消息id
      * @param type $type    消息类型
@@ -184,6 +214,9 @@ trait TableTraits{
      * @return type
      */
     public static function tableDataSave($tableName, array $data){
+        // id需要由外部传入
+        $keys = ['id'];
+        DataCheck::must($data, $keys);
         $baseUrl = 'data/tableW/save';
         
         $postP                   = [];
