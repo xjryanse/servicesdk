@@ -56,5 +56,24 @@ trait SqlTraits{
         }
         return $res['data'];
     }
+    /**
+     * 2026年1月19日
+     * @param type $finalSql
+     * @return type
+     * @throws Exception
+     */
+    public static function sqlQuery($finalSql){
+        $param['sql']           = $finalSql;
+        $baseUrl = 'data/sql/query';
+        // 默认发本地消息中间件
+        // TODO:配置解耦
+        $host = static::workerIp();
+        $port = static::workerPort();
+        $res = WQLogSdk::request($host, $port, $baseUrl, $param);        
+        if(!$res){
+            throw new Exception('没有获取到接口数据:'.$baseUrl);
+        }
+        return $res['data'];
+    }
 
 }

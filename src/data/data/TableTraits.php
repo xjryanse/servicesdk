@@ -39,18 +39,39 @@ trait TableTraits{
      * @param type $whereFields 参数
      */
     public static function tableDataFind($tableName, $param, $whereFields = []){
-        $url = static::sdkUrl('data/table/find');
+        // $url = static::sdkUrl('data/table/find');
         // 默认发本地消息中间件
         // TODO:配置解耦
-        $data['table_name'] = $tableName;
-        $data['table_data'] = $param;
+        $data['table_name']     = $tableName;
+        $data['table_data']     = $param;
         // ['equal']=>['username','id']
-        $data['whereFields']= $whereFields;
+        $data['whereFields']    = $whereFields;
 
-        $res                    = QLogSdk::postAndLog($url, $data);
+        $baseUrl = 'data/table/find';
+        $host = static::workerIp();
+        $port = static::workerPort();
+        $res = WQLogSdk::request($host, $port, $baseUrl, $data);        
         return $res['data'];
     }
+    /**
+     * 2026年1月19日
+     * @param type $tableName
+     * @param type $con
+     * @param type $orderBy
+     * @param string $allowFields
+     * @return type
+     */
+    public static function tableDataConFind($tableName, $con=[], $orderBy='', string $allowFields= ''){
+        // TODO:配置解耦
+        $data['table_name'] = $tableName;
+        $data['condition']  = $con;
 
+        $baseUrl = 'data/table/find';
+        $host = static::workerIp();
+        $port = static::workerPort();
+        $res = WQLogSdk::request($host, $port, $baseUrl, $data);        
+        return $res['data'];
+    }    
     /**
      * 
      * @param type $tableName
