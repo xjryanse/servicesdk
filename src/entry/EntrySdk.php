@@ -40,6 +40,22 @@ class EntrySdk {
     }
 
     /**
+     * 取单挑数据
+     * @param type $msgId   消息id
+     * @param type $type    消息类型
+     * @param type $param   参数
+     */
+    public static function companyKeyInfo($key){
+        $url = static::sdkUrl('entry/company/keyInfo');
+        // 默认发本地消息中间件
+        // TODO:配置解耦
+        $data['key']   = $key;
+
+        $res                    = Query::posturl($url, $data);
+        return $res['data'];
+    }
+    
+    /**
      * 20251227:服务类ip
      * @return type
      */
