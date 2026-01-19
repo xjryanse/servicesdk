@@ -2,7 +2,7 @@
 namespace xjryanse\servicesdk\export;
 
 use xjryanse\servicesdk\msgq\WQLogSdk;
-use xjryanse\speedy\curl\Query;
+use xjryanse\phplite\curl\Query;
 /**
  * 车载定位微服务接入sdk
  * 9904

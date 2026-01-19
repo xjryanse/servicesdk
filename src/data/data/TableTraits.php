@@ -1,10 +1,10 @@
 <?php
 namespace xjryanse\servicesdk\data\data;
 
-use xjryanse\speedy\logic\Url;
+use xjryanse\phplite\logic\Url;
 use xjryanse\servicesdk\msgq\QLogSdk;
 use xjryanse\servicesdk\msgq\WQLogSdk;
-use xjryanse\speedy\tcp\Sync;
+use xjryanse\phplite\tcp\Sync;
 use Exception;
 
 /**

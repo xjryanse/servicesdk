@@ -1,9 +1,9 @@
 <?php
 namespace xjryanse\servicesdk\msgq;
 
-use xjryanse\speedy\tcp\Sync as TcpSync;
-use xjryanse\speedy\facade\Request;
-use xjryanse\speedy\curl\Query;
+use xjryanse\phplite\tcp\Sync as TcpSync;
+use xjryanse\phplite\facade\Request;
+use xjryanse\phplite\curl\Query;
 /**
  * 2026年1月14日：使用workerman调用请求
  * 20251227:20点15分

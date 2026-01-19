@@ -1,8 +1,8 @@
 <?php
 namespace xjryanse\servicesdk\msgq;
 
-use xjryanse\speedy\curl\Query;
-use xjryanse\speedy\facade\Request;
+use xjryanse\phplite\curl\Query;
+use xjryanse\phplite\facade\Request;
 use Exception;
 /**
  * 请求日志调用sdk
