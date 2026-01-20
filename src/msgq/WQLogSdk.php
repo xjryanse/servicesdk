@@ -4,6 +4,7 @@ namespace xjryanse\servicesdk\msgq;
 use xjryanse\phplite\tcp\Sync as TcpSync;
 use xjryanse\phplite\facade\Request;
 use xjryanse\phplite\curl\Query;
+use xjryanse\phplite\logic\Redis;
 /**
  * 2026年1月14日：使用workerman调用请求
  * 20251227:20点15分
@@ -30,24 +31,7 @@ class WQLogSdk {
      * 记录日志
      */
     public static function log($url, $request, $response, $startMTs, $endMTs){
-        $msgId = microtime(true) * 1000;
-        return static::generate($msgId, $url, $request, $response, $startMTs, $endMTs);
-    }
-    
-    /**
-     * 
-     * 用法示例
-     * 
-     * @param type $msgId   消息id
-     * @param type $type    消息类型
-     * @param type $param   参数
-     */
-    public static function generate($msgId, $url, $request, $response, $startMTs, $endMTs){
-        $logUrl = 'http://127.0.0.1:9907/msgq/q_log_msg/produce';        
-        // 默认发本地消息中间件
-        $data['msgId']          = $msgId;
-        // $data['type']           = $type;
-        $data['msg']            = [
+        $msg            = [
             'host'              => '',
             'url'               => $url,
             'start_microtime'   => $startMTs,
@@ -56,14 +40,10 @@ class WQLogSdk {
             'request'           => json_encode($request,JSON_UNESCAPED_UNICODE),
             'response'          => mb_substr(json_encode($response,JSON_UNESCAPED_UNICODE), 0, 500).'……',
         ];
-
-        $res                    = Query::posturl($logUrl, $data);
-
-        $resp = [];
-        $resp['url']        = $url;
-        $resp['request']    = $data;
-        $resp['response']   = $res;
-
-        return $resp;
+        
+        $expireKey = 'SERVICE_QUERY_LOG:'. microtime(true);
+        return Redis::inst()->msgUpdate($expireKey, $msg);        
+        // return static::generate($url, $request, $response, $startMTs, $endMTs);
     }
+    
 }
