@@ -39,6 +39,7 @@ class WQLogSdk {
             'micro_diff'        => $endMTs - $startMTs,
             'request'           => json_encode($request,JSON_UNESCAPED_UNICODE),
             'response'          => mb_substr(json_encode($response,JSON_UNESCAPED_UNICODE), 0, 500).'……',
+            'create_time'       => date('Y-m-d H:i:s'),
         ];
         
         $expireKey = 'SERVICE_QUERY_LOG:'. microtime(true);
