@@ -33,8 +33,6 @@ class UserSdk {
         $data['username'] = $username;
         $data['password']         = $password;
         $res                    = QLogSdk::postAndLog($url, $data);
-//        dump($url);
-//        dump(json_encode($data,JSON_UNESCAPED_UNICODE));
         return $res['data'];
     }
     

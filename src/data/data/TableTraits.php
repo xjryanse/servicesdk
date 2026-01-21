@@ -61,11 +61,10 @@ trait TableTraits{
      * @param string $allowFields
      * @return type
      */
-    public static function tableDataConFind($tableName, $con=[], $orderBy='', string $allowFields= '', $dbSource = 'dbBusi'){
+    public static function tableDataConFind($tableName, $con=[], $orderBy='', string $allowFields= ''){
         // TODO:配置解耦
         $data['table_name'] = $tableName;
         $data['condition']  = $con;
-        $data['dbSource']   = $dbSource;
 
         $baseUrl = 'data/table/find';
         $host = static::workerIp();
@@ -130,8 +129,10 @@ trait TableTraits{
      * @param type $tableName
      * @return type
      */
-    public static function tableDataConList($tableName, $con=[], $orderBy='', string $allowFields= '', $dbSource = 'dbBusi'){
+    public static function tableDataConList($tableName, $con=[], $orderBy='', string $allowFields= ''){
         $baseUrl = 'data/table/list';
+        
+        $url = static::sdkUrl($baseUrl);
         
         $postP                   = [];
         $postP['table_name']     = $tableName;
@@ -141,14 +142,13 @@ trait TableTraits{
             $postP['orderBy']       = $orderBy;
         }
         $postP['condition']         = $con;
-        $postP['dbSource']          = $dbSource;        
         // $res = Sync::request($host, $port, $send_data);
         $host = static::workerIp();
         $port = static::workerPort();
         $res = WQLogSdk::request($host, $port, $baseUrl, $postP);
         // $res                    = QLogSdk::postAndLog($url, $postP);
         if(!$res){
-            throw new Exception('没有获取到接口数据:'.$host.$port.$baseUrl);
+            throw new Exception('没有获取到接口数据:'.$url);
         }
         return $res['data'];
     }

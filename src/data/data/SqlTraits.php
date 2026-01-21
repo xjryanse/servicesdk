@@ -59,13 +59,11 @@ trait SqlTraits{
     /**
      * 2026年1月19日
      * @param type $finalSql
-     * @param array $bind       绑定参数： ['id' => 10, 'name' => '张三']
      * @return type
      * @throws Exception
      */
-    public static function sqlQuery($finalSql,array $bind = []){
+    public static function sqlQuery($finalSql){
         $param['sql']           = $finalSql;
-        $param['bind']          = $bind;
         $baseUrl = 'data/sql/query';
         // 默认发本地消息中间件
         // TODO:配置解耦
