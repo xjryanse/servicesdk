@@ -24,6 +24,10 @@ trait TableTraits{
         // TODO:配置解耦
         $data['table_name'] = $tableName;
         $data['id']         = $id;
+        // 2026年1月21日：新增dbId入参
+        $data['dbId']       = static::$globalDbId;
+        
+        
         $host = static::workerIp();
         $port = static::workerPort();
         $res = WQLogSdk::request($host, $port, $baseUrl, $data);        
@@ -46,6 +50,8 @@ trait TableTraits{
         $data['table_data']     = $param;
         // ['equal']=>['username','id']
         $data['whereFields']    = $whereFields;
+        // 2026年1月21日：新增dbId入参
+        $data['dbId']       = static::$globalDbId;
 
         $baseUrl = 'data/table/find';
         $host = static::workerIp();
@@ -65,6 +71,8 @@ trait TableTraits{
         // TODO:配置解耦
         $data['table_name'] = $tableName;
         $data['condition']  = $con;
+        // 2026年1月21日：新增dbId入参
+        $data['dbId']       = static::$globalDbId;
 
         $baseUrl = 'data/table/find';
         $host = static::workerIp();
@@ -86,6 +94,8 @@ trait TableTraits{
             $getP['orderBy']        = $orderBy;
         }
         $urlFinal = Url::addParam($url, $getP);
+        // 2026年1月21日：新增dbId入参
+        $param['dbId']       = static::$globalDbId;
 
         $res                    = QLogSdk::postAndLog($urlFinal, $param);
         if(!$res){
@@ -112,6 +122,8 @@ trait TableTraits{
             $postP['orderBy']        = $orderBy;
         }
         $postP['table_data']     = $param;
+        // 2026年1月21日：新增dbId入参
+        $postP['dbId']       = static::$globalDbId;
 
         // $res = Sync::request($host, $port, $send_data);
         $host = static::workerIp();
@@ -142,6 +154,9 @@ trait TableTraits{
             $postP['orderBy']       = $orderBy;
         }
         $postP['condition']         = $con;
+        // 2026年1月21日：新增dbId入参
+        $postP['dbId']       = static::$globalDbId;
+        
         // $res = Sync::request($host, $port, $send_data);
         $host = static::workerIp();
         $port = static::workerPort();
@@ -166,6 +181,8 @@ trait TableTraits{
         $data['table_name'] = $tableName;
         $data['field']      = 'inventory_id';
         $data['fieldIds']   = $id;
+        // 2026年1月21日：新增dbId入参
+        $data['dbId']       = static::$globalDbId;
 
         $res                    = QLogSdk::postAndLog($url, $data);
         return $res['data'];
@@ -181,6 +198,9 @@ trait TableTraits{
         $url = static::sdkUrl('data/table/insert');
         $param['table_name'] = $tableName;
         $param['table_data'] = $data;
+        // 2026年1月21日：新增dbId入参
+        $param['dbId']       = static::$globalDbId;
+        
         $res                    = QLogSdk::postAndLog($url, $param);
         if(!$res){
             throw new Exception('没有获取到接口数据:'.$url);
@@ -197,6 +217,9 @@ trait TableTraits{
         $url                    = static::sdkUrl('data/table/update');
         $param['table_name']     = $tableName;
         $param['table_data']     = $data;
+        // 2026年1月21日：新增dbId入参
+        $param['dbId']       = static::$globalDbId;
+        
         $res                    = QLogSdk::postAndLog($url, $param);
         if(!$res){
             throw new Exception('没有获取到接口数据:'.$url);
@@ -213,6 +236,9 @@ trait TableTraits{
         $url                        = static::sdkUrl('data/table/delete');
         $param['table_name']        = $tableName;
         $param['table_data']['id']  = $id;
+        // 2026年1月21日：新增dbId入参
+        $param['dbId']       = static::$globalDbId;
+        
         $res                        = QLogSdk::postAndLog($url, $param);
         if(!$res){
             throw new Exception('没有获取到接口数据:'.$url);
@@ -243,6 +269,8 @@ trait TableTraits{
         $postP                   = [];
         $postP['table_name']     = $tableName;
         $postP['table_data']     = $data;
+        // 2026年1月21日：新增dbId入参
+        $data['dbId']       = static::$globalDbId;
 
         $host = static::workerIp();
         $port = static::workerPort();

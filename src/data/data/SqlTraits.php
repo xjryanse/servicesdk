@@ -25,6 +25,8 @@ trait SqlTraits{
         if($orderBy){
             $param['orderBy']    = $orderBy;
         }
+        // 2026年1月21日：新增dbId入参
+        $param['dbId']       = static::$globalDbId;
 
         $baseUrl = 'data/sql/paginate';
         // 默认发本地消息中间件
@@ -49,6 +51,8 @@ trait SqlTraits{
         
         $param                   = [];
         $param['sqlParam']         = $sqlParam;
+        // 2026年1月21日：新增dbId入参
+        $param['dbId']       = static::$globalDbId;
 
         $res                    = QLogSdk::postAndLog($url, $param);
         if(!$res){
@@ -64,6 +68,9 @@ trait SqlTraits{
      */
     public static function sqlQuery($finalSql){
         $param['sql']           = $finalSql;
+        // 2026年1月21日：新增dbId入参
+        $param['dbId']       = static::$globalDbId;
+        
         $baseUrl = 'data/sql/query';
         // 默认发本地消息中间件
         // TODO:配置解耦

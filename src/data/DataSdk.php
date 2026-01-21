@@ -6,7 +6,9 @@ use xjryanse\servicesdk\entry\EntrySdk;
  * 17点20分
  */
 class DataSdk {
-
+    
+    protected static $globalDbId = ''; 
+    
     protected static function sdkIp(){
         return EntrySdk::serveIp();
     }
@@ -33,5 +35,10 @@ class DataSdk {
     protected static function workerPort(){
         return '19914';
     }
-    
+    /**
+     * 2026年1月21日
+     */
+    public static function setGlobalDbId($dbId){
+        static::$globalDbId = $dbId;
+    }
 }
