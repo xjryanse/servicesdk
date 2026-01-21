@@ -3,20 +3,12 @@ namespace xjryanse\servicesdk\user;
 
 use xjryanse\servicesdk\msgq\QLogSdk;
 use xjryanse\servicesdk\entry\EntrySdk;
+use xjryanse\servicesdk\DbSdk;
 use Exception;
 /**
  * 公众号接入sdk
  */
 class UserSdk {
-
-    protected static $globalDbId = '';
-    /**
-     * 2026年1月21日
-     */
-    public static function setGlobalDbId($dbId){
-        static::$globalDbId = $dbId;
-    }
-
 
     protected static function sdkIp(){
         return EntrySdk::serveIp();
@@ -42,7 +34,7 @@ class UserSdk {
         // TODO:配置解耦
         $data['username']       = $username;
         $data['password']       = $password;
-        $data['dbId']           = static::$globalDbId;
+        $data['dbId']           = DbSdk::dbId('dbBusi');
         $res                    = QLogSdk::postAndLog($url, $data);
         if($res['code'] <>0){
             throw new Exception($res['message']);
@@ -60,7 +52,7 @@ class UserSdk {
         $url        = static::sdkUrl('user/user/batchGet');
         // 默认发本地消息中间件
         $data['id']     = $userIds;
-        $data['dbId']   = static::$globalDbId;
+        $data['dbId']   = DbSdk::dbId('dbBusi');
         $res            = QLogSdk::postAndLog($url, $data);
         return $res['data'];
     }

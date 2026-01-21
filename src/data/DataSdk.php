@@ -2,6 +2,7 @@
 namespace xjryanse\servicesdk\data;
 
 use xjryanse\servicesdk\entry\EntrySdk;
+use xjryanse\servicesdk\DbSdk;
 /**
  * 17点20分
  */
@@ -14,6 +15,10 @@ class DataSdk {
      */
     public static function setGlobalDbId($dbId){
         static::$globalDbId = $dbId;
+    }
+    
+    public static function setGlobalDbIdByCate($dbCate){
+        static::$globalDbId = DbSdk::dbId($dbCate);
     }
     
     protected static function sdkIp(){
@@ -42,10 +47,5 @@ class DataSdk {
     protected static function workerPort(){
         return '19914';
     }
-    /**
-     * 2026年1月21日
-     */
-    public static function setGlobalDbId($dbId){
-        static::$globalDbId = $dbId;
-    }
+
 }
