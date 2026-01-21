@@ -9,6 +9,13 @@ class DataSdk {
     
     protected static $globalDbId = ''; 
     
+    /**
+     * 2026年1月21日
+     */
+    public static function setGlobalDbId($dbId){
+        static::$globalDbId = $dbId;
+    }
+    
     protected static function sdkIp(){
         return EntrySdk::serveIp();
     }

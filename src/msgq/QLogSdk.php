@@ -23,11 +23,11 @@ class QLogSdk {
         $startMTs   = intval(microtime(true) * 1000);
         
         $res                    = Query::posturl($url, $request);
-        
+
         // 脚本请求结束
         $endMTs     = intval(microtime(true) * 1000);
         if(!$res){
-            throw new Exception('没有获取到接口数据:'.$url);
+            throw new Exception('没有获取到接口数据:'.$url.'参数:'. json_encode($request,JSON_UNESCAPED_UNICODE));
         }
         // 调用记录日志
         static::log($url, $request, $res, $startMTs, $endMTs);

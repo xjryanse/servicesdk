@@ -9,6 +9,15 @@ use Exception;
  */
 class UserSdk {
 
+    protected static $globalDbId = '';
+    /**
+     * 2026年1月21日
+     */
+    public static function setGlobalDbId($dbId){
+        static::$globalDbId = $dbId;
+    }
+
+
     protected static function sdkIp(){
         return EntrySdk::serveIp();
     }
@@ -31,8 +40,9 @@ class UserSdk {
         $url = static::sdkUrl('user/session/login');
         // 默认发本地消息中间件
         // TODO:配置解耦
-        $data['username'] = $username;
-        $data['password']         = $password;
+        $data['username']       = $username;
+        $data['password']       = $password;
+        $data['dbId']           = static::$globalDbId;
         $res                    = QLogSdk::postAndLog($url, $data);
         if($res['code'] <>0){
             throw new Exception($res['message']);
@@ -49,9 +59,9 @@ class UserSdk {
     public static function batchGet($userIds){
         $url        = static::sdkUrl('user/user/batchGet');
         // 默认发本地消息中间件
-        $data['id'] = $userIds;
-
-        $res        = QLogSdk::postAndLog($url, $data);
+        $data['id']     = $userIds;
+        $data['dbId']   = static::$globalDbId;
+        $res            = QLogSdk::postAndLog($url, $data);
         return $res['data'];
     }
 }
