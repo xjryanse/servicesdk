@@ -34,9 +34,7 @@ class EntrySdk {
         // 默认发本地消息中间件
         // TODO:配置解耦
         $data['host']   = $host;
-
         $res                    = Query::posturl($url, $data);
-
         return $res['data'];
     }
 
