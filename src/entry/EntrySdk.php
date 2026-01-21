@@ -2,6 +2,8 @@
 namespace xjryanse\servicesdk\entry;
 
 use xjryanse\phplite\curl\Query;
+use xjryanse\phplite\logic\Arrays;
+
 /**
  * 2025年12月30日；11点20分
  */
@@ -61,7 +63,16 @@ class EntrySdk {
      */
     public static function serveIp(){
         // $host = Request::host();
-        $host = $_SERVER['SERVER_NAME'];
+        // 20260121:先host:host, 没有则server_name
+        $serverPort = Arrays::value($_SERVER, 'SERVER_PORT') ? : 0;
+        if($serverPort >= 9900){
+            //【1】9900以上端口部署微服务：一个微服务只连接一个库
+            $host = md5(ROOT_PATH);
+        } else {
+            //【2】普通端口，部署站点
+            $host = $_SERVER['HTTP_HOST'];
+        }
+        
         $info = static::hostBindInfo($host);
         return $info && $info['msgq_ip'] ? $info['msgq_ip'] : '127.0.0.1';
     }
