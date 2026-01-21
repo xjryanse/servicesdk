@@ -36,6 +36,7 @@ class EntrySdk {
         $data['host']   = $host;
 
         $res                    = Query::posturl($url, $data);
+
         return $res['data'];
     }
 

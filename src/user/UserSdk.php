@@ -3,6 +3,7 @@ namespace xjryanse\servicesdk\user;
 
 use xjryanse\servicesdk\msgq\QLogSdk;
 use xjryanse\servicesdk\entry\EntrySdk;
+use Exception;
 /**
  * 公众号接入sdk
  */
@@ -33,6 +34,9 @@ class UserSdk {
         $data['username'] = $username;
         $data['password']         = $password;
         $res                    = QLogSdk::postAndLog($url, $data);
+        if($res['code'] <>0){
+            throw new Exception($res['message']);
+        }
         return $res['data'];
     }
     
