@@ -74,7 +74,11 @@ class EntrySdk {
         }
         
         $info = static::hostBindInfo($host);
-        return $info && $info['msgq_ip'] ? $info['msgq_ip'] : '127.0.0.1';
+        if(!$info['msgq_ip']){
+            throw new Exception('msgq_ip未配置：站点：'.$host);
+        }
+        return $info['msgq_ip'];
+        // return $info && $info['msgq_ip'] ? $info['msgq_ip'] : '127.0.0.1';
     }
     
 }
