@@ -56,7 +56,8 @@ trait TableTraits{
         $baseUrl = 'data/table/find';
         $host = static::workerIp();
         $port = static::workerPort();
-        $res = WQLogSdk::request($host, $port, $baseUrl, $data);        
+        $res = WQLogSdk::request($host, $port, $baseUrl, $data);   
+
         return $res['data'];
     }
     /**
