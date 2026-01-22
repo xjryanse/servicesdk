@@ -5,6 +5,7 @@ use xjryanse\phplite\tcp\Sync as TcpSync;
 use xjryanse\phplite\facade\Request;
 use xjryanse\phplite\curl\Query;
 use xjryanse\phplite\logic\Redis;
+use Exception;
 /**
  * 2026年1月14日：使用workerman调用请求
  * 20251227:20点15分
