@@ -22,6 +22,11 @@ class WQLogSdk {
         $resp       = TcpSync::request($host, $port, $qParam);
         $endMTs     = intval(microtime(true) * 1000);
         
+        //2026年1月22日
+        if($resp['code'] <> 0){
+            throw new Exception('接口异常:'.$host.$port.$url.'内容:'.$resp['message']);
+        }
+
         static::log($port.':'.$url, $param, $resp, $startMTs, $endMTs);
         
         return $resp;
