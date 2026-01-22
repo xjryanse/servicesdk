@@ -10,7 +10,7 @@ class ErrNotice {
     public static function notice($e = null){
         $url = 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=2e43f76f-0abb-4f79-9ce0-8cf93df1020b';
         
-        $text.= $e->getMessage();
+        $text = $e->getMessage();
         $text.= "\n[文件]".$e->getFile();
         $text.= "\n[行数]".$e->getLine();
 

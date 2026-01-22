@@ -2,6 +2,8 @@
 namespace xjryanse\servicesdk\entry;
 
 use xjryanse\phplite\curl\Query;
+use xjryanse\servicesdk\msgq\QLogSdk;
+use Exception;
 /**
  * 2025年12月30日；11点20分
  */
@@ -34,7 +36,9 @@ class EntrySdk {
         // 默认发本地消息中间件
         // TODO:配置解耦
         $data['host']   = $host;
+
         $res                    = Query::posturl($url, $data);
+
         return $res['data'];
     }
 
@@ -45,13 +49,13 @@ class EntrySdk {
      * @param type $param   参数
      */
     public static function companyKeyInfo($key){
-        $url = static::sdkUrl('entry/company/keyInfo');
+        $url    = static::sdkUrl('entry/company/keyInfo');
         // 默认发本地消息中间件
         // TODO:配置解耦
         $data['key']   = $key;
 
-        $res                    = Query::posturl($url, $data);
-        return $res['data'];
+        $res    = QLogSdk::postAndLog($url, $data);
+        return isset($res['data']) ? $res['data'] : null;
     }
     
     /**

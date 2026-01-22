@@ -29,6 +29,11 @@ class QLogSdk {
         if(!$res){
             throw new Exception('没有获取到接口数据:'.$url.'参数:'. json_encode($request,JSON_UNESCAPED_UNICODE));
         }
+        //2026年1月22日
+        if($res['code']<>0){
+            throw new Exception('接口异常:'.$url.'内容:'.$res['message']);
+        }
+        
         // 调用记录日志
         static::log($url, $request, $res, $startMTs, $endMTs);
         return $res;
