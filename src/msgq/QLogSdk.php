@@ -31,7 +31,7 @@ class QLogSdk {
         }
         //2026年1月22日
         if($res['code']<>0){
-            throw new Exception('接口异常:'.$url.'内容:'.$res['message']);
+            throw new Exception('接口异常:'.$url.'内容:'.$res['message'].'请求参数:'.json_encode($request,JSON_UNESCAPED_UNICODE));
         }
         
         // 调用记录日志

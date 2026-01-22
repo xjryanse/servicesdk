@@ -1,7 +1,7 @@
 <?php
 namespace xjryanse\servicesdk\entry;
 
-use xjryanse\phplite\curl\Query;
+use xjryanse\phplite\facade\Request;
 use xjryanse\servicesdk\msgq\QLogSdk;
 use Exception;
 /**
@@ -32,6 +32,9 @@ class EntrySdk {
      * @param type $param   参数
      */
     public static function hostBindInfo($host){
+        if($host == '127.0.0.1'){
+            throw new Exception('不支持的域名'.$host);
+        }
         $url = static::sdkUrl('entry/host/bindInfo');
         // 默认发本地消息中间件
         // TODO:配置解耦
@@ -65,8 +68,13 @@ class EntrySdk {
     public static function serveIp(){
         // $host = Request::host();
         $host = $_SERVER['SERVER_NAME'];
+        // 2026年1月22日：固化
+        $host = Request::host() ?: md5(ROOT_PATH);
         $info = static::hostBindInfo($host);
-        return $info && $info['msgq_ip'] ? $info['msgq_ip'] : '127.0.0.1';
+        if(!$info['msgq_ip']){
+            throw new Exception('域名'.$host .'未配置msgq_ip参数');
+        }
+        return $info['msgq_ip'];
     }
     
 }
