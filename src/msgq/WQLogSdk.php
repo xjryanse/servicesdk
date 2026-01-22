@@ -22,7 +22,10 @@ class WQLogSdk {
         $startMTs   = intval(microtime(true) * 1000);
         $resp       = TcpSync::request($host, $port, $qParam);
         $endMTs     = intval(microtime(true) * 1000);
-        
+
+        if(!$resp){
+            throw new Exception('没有获取到接口数据:'.$host.':'. $port .'/'. $url.'参数:'. json_encode($param,JSON_UNESCAPED_UNICODE));
+        }
         //2026年1月22日
         if($resp['code'] <> 0){
             throw new Exception('接口异常:'.$host.$port.$url.'内容:'.$resp['message']);
