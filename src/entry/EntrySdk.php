@@ -37,7 +37,7 @@ class EntrySdk {
         // TODO:配置解耦
         $data['host']   = $host;
 
-        $res                    = Query::posturl($url, $data);
+        $res                    = QLogSdk::postAndLog($url, $data);
 
         return $res['data'];
     }

@@ -157,12 +157,15 @@ trait TableTraits{
         $postP['condition']         = $con;
         // 2026年1月21日：新增dbId入参
         $postP['dbId']       = static::$globalDbId;
+        
         // $res = Sync::request($host, $port, $send_data);
         $host = static::workerIp();
         $port = static::workerPort();
         $res = WQLogSdk::request($host, $port, $baseUrl, $postP);
         // $res                    = QLogSdk::postAndLog($url, $postP);
-
+        if(!$res){
+            throw new Exception('没有获取到接口数据:'.$url);
+        }
         return $res['data'];
     }
     
