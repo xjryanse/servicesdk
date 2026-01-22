@@ -5,7 +5,6 @@ use xjryanse\phplite\logic\Url;
 use xjryanse\servicesdk\msgq\QLogSdk;
 use xjryanse\servicesdk\msgq\WQLogSdk;
 use xjryanse\phplite\logic\DataCheck;
-use xjryanse\phplite\tcp\Sync;
 use Exception;
 
 /**
@@ -18,15 +17,15 @@ trait TableTraits{
      * @param type $type    消息类型
      * @param type $param   参数
      */
-    public static function tableDataGet($tableName,$id){
+    public function tableDataGet($tableName,$id){
         $baseUrl = 'data/table/get';
         // 默认发本地消息中间件
         // TODO:配置解耦
         $data['table_name'] = $tableName;
         $data['id']         = $id;
         // 2026年1月21日：新增dbId入参
-        $data['dbId']       = static::$globalDbId;
-        
+        $data['dbId']       = $this->uuid;
+
         
         $host = static::workerIp();
         $port = static::workerPort();
@@ -42,7 +41,7 @@ trait TableTraits{
      * @param type $param       消息类型
      * @param type $whereFields 参数
      */
-    public static function tableDataFind($tableName, $param, $whereFields = []){
+    public function tableDataFind($tableName, $param, $whereFields = []){
         // $url = static::sdkUrl('data/table/find');
         // 默认发本地消息中间件
         // TODO:配置解耦
@@ -51,7 +50,7 @@ trait TableTraits{
         // ['equal']=>['username','id']
         $data['whereFields']    = $whereFields;
         // 2026年1月21日：新增dbId入参
-        $data['dbId']       = static::$globalDbId;
+        $data['dbId']       = $this->uuid;
 
         $baseUrl = 'data/table/find';
         $host = static::workerIp();
@@ -68,13 +67,13 @@ trait TableTraits{
      * @param string $allowFields
      * @return type
      */
-    public static function tableDataConFind($tableName, $con=[], $orderBy='', string $allowFields= ''){
+    public function tableDataConFind($tableName, $con=[], $orderBy='', string $allowFields= ''){
         // TODO:配置解耦
         $data['table_name'] = $tableName;
         $data['condition']  = $con;
         // 2026年1月21日：新增dbId入参
-        $data['dbId']       = static::$globalDbId;
-
+        $data['dbId']       = $this->uuid;
+        
         $baseUrl = 'data/table/find';
         $host = static::workerIp();
         $port = static::workerPort();
@@ -86,7 +85,7 @@ trait TableTraits{
      * @param type $tableName
      * @return type
      */
-    public static function tableDataPaginate($tableName, $orderBy='', $param=[]){
+    public function tableDataPaginate($tableName, $orderBy='', $param=[]){
         $url = static::sdkUrl('data/table/paginate');
         
         $getP                   = [];
@@ -96,7 +95,7 @@ trait TableTraits{
         }
         $urlFinal = Url::addParam($url, $getP);
         // 2026年1月21日：新增dbId入参
-        $param['dbId']       = static::$globalDbId;
+        $param['dbId']       = $this->uuid;
 
         $res                    = QLogSdk::postAndLog($urlFinal, $param);
         if(!$res){
@@ -110,7 +109,7 @@ trait TableTraits{
      * @param type $tableName
      * @return type
      */
-    public static function tableDataList($tableName, $orderBy='', $param=[], string $allowFields= ''){
+    public function tableDataList($tableName, $orderBy='', $param=[], string $allowFields= ''){
         $baseUrl = 'data/table/list';
         
         $url = static::sdkUrl($baseUrl);
@@ -124,7 +123,7 @@ trait TableTraits{
         }
         $postP['table_data']     = $param;
         // 2026年1月21日：新增dbId入参
-        $postP['dbId']       = static::$globalDbId;
+        $postP['dbId']       = $this->uuid;
 
         // $res = Sync::request($host, $port, $send_data);
         $host = static::workerIp();
@@ -142,7 +141,7 @@ trait TableTraits{
      * @param type $tableName
      * @return type
      */
-    public static function tableDataConList($tableName, $con=[], $orderBy='', string $allowFields= ''){
+    public function tableDataConList($tableName, $con=[], $orderBy='', string $allowFields= ''){
         $baseUrl = 'data/table/list';
         
         $url = static::sdkUrl($baseUrl);
@@ -156,7 +155,8 @@ trait TableTraits{
         }
         $postP['condition']         = $con;
         // 2026年1月21日：新增dbId入参
-        $postP['dbId']       = static::$globalDbId;
+        $postP['dbId']       = $this->uuid;
+        
         
         // $res = Sync::request($host, $port, $send_data);
         $host = static::workerIp();
@@ -175,7 +175,7 @@ trait TableTraits{
      * @param type $type    消息类型
      * @param type $param   参数
      */
-    public static function tableDataDtlCount($tableName,$id){
+    public function tableDataDtlCount($tableName,$id){
         $url = static::sdkUrl('data/table/dtlCount');
         // 默认发本地消息中间件
         // TODO:配置解耦
@@ -183,7 +183,7 @@ trait TableTraits{
         $data['field']      = 'inventory_id';
         $data['fieldIds']   = $id;
         // 2026年1月21日：新增dbId入参
-        $data['dbId']       = static::$globalDbId;
+        $data['dbId']       = $this->uuid;
 
         $res                    = QLogSdk::postAndLog($url, $data);
         return $res['data'];
@@ -195,12 +195,12 @@ trait TableTraits{
      * @param type $tableName
      * @return type
      */
-    public static function tableDataInsert($tableName, $data){
+    public function tableDataInsert($tableName, $data){
         $url = static::sdkUrl('data/table/insert');
         $param['table_name'] = $tableName;
         $param['table_data'] = $data;
         // 2026年1月21日：新增dbId入参
-        $param['dbId']       = static::$globalDbId;
+        $param['dbId']       = $this->uuid;
         
         $res                    = QLogSdk::postAndLog($url, $param);
         if(!$res){
@@ -214,12 +214,12 @@ trait TableTraits{
      * @param type $tableName
      * @return type
      */
-    public static function tableDataUpdate($tableName, $data){
+    public function tableDataUpdate($tableName, $data){
         $url                    = static::sdkUrl('data/table/update');
         $param['table_name']     = $tableName;
         $param['table_data']     = $data;
         // 2026年1月21日：新增dbId入参
-        $param['dbId']       = static::$globalDbId;
+        $param['dbId']       = $this->uuid;
         
         $res                    = QLogSdk::postAndLog($url, $param);
         if(!$res){
@@ -233,12 +233,12 @@ trait TableTraits{
      * @param type $tableName
      * @return type
      */
-    public static function tableDataDelete($tableName, $id){
+    public function tableDataDelete($tableName, $id){
         $url                        = static::sdkUrl('data/table/delete');
         $param['table_name']        = $tableName;
         $param['table_data']['id']  = $id;
         // 2026年1月21日：新增dbId入参
-        $param['dbId']       = static::$globalDbId;
+        $param['dbId']       = $this->uuid;
         
         $res                        = QLogSdk::postAndLog($url, $param);
         if(!$res){
@@ -261,7 +261,7 @@ trait TableTraits{
      * @param type $tableName
      * @return type
      */
-    public static function tableDataSave($tableName, array $data){
+    public function tableDataSave($tableName, array $data){
         // id需要由外部传入
         $keys = ['id'];
         DataCheck::must($data, $keys);
@@ -271,7 +271,7 @@ trait TableTraits{
         $postP['table_name']     = $tableName;
         $postP['table_data']     = $data;
         // 2026年1月21日：新增dbId入参
-        $data['dbId']       = static::$globalDbId;
+        $postP['dbId']       = $this->uuid;
 
         $host = static::workerIp();
         $port = static::workerPort();

@@ -2,24 +2,13 @@
 namespace xjryanse\servicesdk\data;
 
 use xjryanse\servicesdk\entry\EntrySdk;
-use xjryanse\servicesdk\DbSdk;
 /**
  * 17点20分
  */
 class DataSdk {
-    
-    protected static $globalDbId = ''; 
-    
-    /**
-     * 2026年1月21日
-     */
-    public static function setGlobalDbId($dbId){
-        static::$globalDbId = $dbId;
-    }
-    
-    public static function setGlobalDbIdByCate($dbCate){
-        static::$globalDbId = DbSdk::dbId($dbCate);
-    }
+
+    // 2026年1月22日用数据库id，作为实例id
+    use \xjryanse\phplite\traits\InstMultiTrait;
     
     protected static function sdkIp(){
         return EntrySdk::serveIp();
@@ -36,6 +25,7 @@ class DataSdk {
     use \xjryanse\servicesdk\data\data\SqlTraits;
     use \xjryanse\servicesdk\data\data\TableTraits;
     use \xjryanse\servicesdk\data\data\TableBatchTraits;
+    
     
     /**
      * 

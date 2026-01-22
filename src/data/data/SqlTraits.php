@@ -18,7 +18,7 @@ trait SqlTraits{
      * @return type
      * @throws Exception
      */
-    public static function sqlDataPaginate($sqlKey, $orderBy='', $param=[]){
+    public function sqlDataPaginate($sqlKey, $orderBy='', $param=[]){
         $url = static::sdkUrl('data/sql/paginate');
         
         $param['sqlKey']        = $sqlKey;
@@ -26,7 +26,8 @@ trait SqlTraits{
             $param['orderBy']    = $orderBy;
         }
         // 2026年1月21日：新增dbId入参
-        $param['dbId']       = static::$globalDbId;
+        // 2026年1月21日：新增dbId入参
+        $param['dbId']       = $this->uuid;
 
         $baseUrl = 'data/sql/paginate';
         // 默认发本地消息中间件
@@ -46,14 +47,14 @@ trait SqlTraits{
      * @return type
      * @throws Exception
      */
-    public static function rawSqlQuery($sqlParam){
+    public function rawSqlQuery($sqlParam){
         $url = static::sdkUrl('data/sql/rawSqlQuery');
         
         $param                   = [];
         $param['sqlParam']         = $sqlParam;
         // 2026年1月21日：新增dbId入参
-        $param['dbId']       = static::$globalDbId;
-
+        
+        $param['dbId']          = $this->uuid;
         $res                    = QLogSdk::postAndLog($url, $param);
         if(!$res){
             throw new Exception('没有获取到接口数据:'.$url);
@@ -66,10 +67,10 @@ trait SqlTraits{
      * @return type
      * @throws Exception
      */
-    public static function sqlQuery($finalSql){
+    public function sqlQuery($finalSql){
         $param['sql']           = $finalSql;
         // 2026年1月21日：新增dbId入参
-        $param['dbId']       = static::$globalDbId;
+        $param['dbId']       = $this->uuid;
         
         $baseUrl = 'data/sql/query';
         // 默认发本地消息中间件
