@@ -2,9 +2,9 @@
 namespace xjryanse\servicesdk\msgq;
 
 use xjryanse\phplite\tcp\Sync as TcpSync;
-use xjryanse\phplite\facade\Request;
-use xjryanse\phplite\curl\Query;
 use xjryanse\phplite\logic\Redis;
+use xjryanse\phplite\logic\Arrays;
+
 use Exception;
 /**
  * 2026年1月14日：使用workerman调用请求
@@ -24,8 +24,9 @@ class WQLogSdk {
         $endMTs     = intval(microtime(true) * 1000);
         
         //2026年1月22日
-        if($resp['code'] <> 0){
-            throw new Exception('接口异常:'.$host.$port.$url.'内容:'.$resp['message']);
+        if(!$resp || $resp['code'] <> 0){
+            $msgStr = Arrays::value($resp, 'message');
+            throw new Exception('接口异常:'.$host.'/'.$port.'/'.$url.'内容:'.$msgStr.'请求参数'. json_encode($param, JSON_UNESCAPED_UNICODE));
         }
 
         static::log($port.':'.$url, $param, $resp, $startMTs, $endMTs);
