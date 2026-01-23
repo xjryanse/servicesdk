@@ -66,10 +66,17 @@ class EntrySdk {
      * @return type
      */
     public static function serveIp(){
-        // $host = Request::host();
-        $host = $_SERVER['SERVER_NAME'];
-        // 2026年1月22日：固化
-        $host = Request::host() ?: md5(ROOT_PATH);
+        $serverPort = $_SERVER['SERVER_PORT'];
+        if($serverPort >= 9900){
+            // 微服务暂时统一走本地
+            return '127.0.0.1';
+            // 微服务
+            // throw new Exception('微服务暂不适用本方法');
+        } else {
+            // 客户站点
+            $host = $_SERVER['SERVER_NAME'];
+        }
+
         $info = static::hostBindInfo($host);
         if(!$info['msgq_ip']){
             throw new Exception('域名'.$host .'未配置msgq_ip参数');
