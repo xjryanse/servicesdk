@@ -3,6 +3,7 @@ namespace xjryanse\servicesdk\entry;
 
 use xjryanse\phplite\facade\Request;
 use xjryanse\servicesdk\msgq\QLogSdk;
+use xjryanse\phplite\logic\Arrays;
 use Exception;
 /**
  * 2025年12月30日；11点20分
@@ -74,14 +75,17 @@ class EntrySdk {
             // throw new Exception('微服务暂不适用本方法');
         } else {
             // 客户站点
-            $host = $_SERVER['SERVER_NAME'];
-        }
+            $httpHost   = Arrays::value($_SERVER, 'HTTP_HOST');
+            $serverName = Arrays::value($_SERVER, 'SERVER_NAME');
+            
+            $host = $httpHost ? :$serverName;
 
-        $info = static::hostBindInfo($host);
-        if(!$info['msgq_ip']){
-            throw new Exception('域名'.$host .'未配置msgq_ip参数');
+            $info = static::hostBindInfo($host);
+            if(!$info['msgq_ip']){
+                throw new Exception('域名'.$host .'未配置msgq_ip参数');
+            }
+            return $info['msgq_ip'];
         }
-        return $info['msgq_ip'];
     }
     
 }
