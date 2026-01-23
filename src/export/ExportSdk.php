@@ -8,6 +8,8 @@ use xjryanse\phplite\curl\Query;
  * 9904
  */
 class ExportSdk {
+    use \xjryanse\phplite\traits\InstMultiTrait;
+    
     /**
      * 
      */

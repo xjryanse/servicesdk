@@ -11,6 +11,8 @@ use Exception;
  * 20251227:20点15分
  */
 class WQLogSdk {
+    use \xjryanse\phplite\traits\InstMultiTrait;
+    
     /**
      * 
      */

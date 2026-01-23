@@ -8,6 +8,7 @@ use xjryanse\servicesdk\entry\EntrySdk;
  * 
  */
 class UniversalSdk {
+    use \xjryanse\phplite\traits\InstMultiTrait;
 
     protected static function sdkIp(){
         return EntrySdk::serveIp();
@@ -37,6 +38,21 @@ class UniversalSdk {
             return $res['data'];
         });
     }
-
+    /**
+     * 2026年1月23日
+     * @param type $pageKey
+     * @return type
+     */
+    public static function pageConfig($pageKey){
+        $key = __CLASS__.__METHOD__.$pageKey;
+        return Cache::funcGet($key,function () use ($pageKey) {
+            $url = static::sdkUrl('universal/page/config');
+            // 默认发本地消息中间件
+            // TODO:配置解耦
+            $data['pageKey']    = $pageKey;
+            $res                = QLogSdk::postAndLog($url, $data);
+            return $res['data'];
+        });
+    }
     
 }

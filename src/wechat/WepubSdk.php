@@ -8,6 +8,7 @@ use xjryanse\servicesdk\entry\EntrySdk;
  * 公众号接入sdk
  */
 class WepubSdk {
+    use \xjryanse\phplite\traits\InstMultiTrait;
 
     protected static function sdkIp(){
         return EntrySdk::serveIp();

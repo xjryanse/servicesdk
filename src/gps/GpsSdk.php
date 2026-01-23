@@ -7,6 +7,8 @@ use xjryanse\servicesdk\msgq\WQLogSdk;
  * 9904
  */
 class GpsSdk {
+    use \xjryanse\phplite\traits\InstMultiTrait;
+    
     /**
      * 
      */

@@ -9,6 +9,7 @@ use Exception;
  * 企业微信接入sdk
  */
 class WeworkSdk {
+    use \xjryanse\phplite\traits\InstMultiTrait;
 
     protected static function sdkIp(){
         return EntrySdk::serveIp();

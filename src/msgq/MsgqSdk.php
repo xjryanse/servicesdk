@@ -7,6 +7,7 @@ use xjryanse\servicesdk\entry\EntrySdk;
  * 20251229
  */
 class MsgqSdk {
+    use \xjryanse\phplite\traits\InstMultiTrait;
 
     /**
      * 

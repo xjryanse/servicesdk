@@ -9,8 +9,26 @@ use Exception;
  * 公众号接入sdk
  */
 class UserSdk {
+    use \xjryanse\phplite\traits\InstMultiTrait;
 
-    protected static function sdkIp(){
+    protected static $serverKey = 'service_user';
+    /**
+     * 
+     */
+    protected function serverList(){
+        $bindId     = $this->uuid;
+        $serverKey  = static::$serverKey;
+        $list = EntrySdk::serverList($bindId, $serverKey);
+        dump($list);
+    }
+
+    /**
+     * 
+     * @return type
+     */
+    protected function sdkIp(){
+        $serverList = $this->serverList();
+        dump($serverList);
         return EntrySdk::serveIp();
     }
     
@@ -18,8 +36,8 @@ class UserSdk {
         return '9920';
     }
 
-    protected static function sdkUrl($path){
-        return 'http://'.static::sdkIp().':'.static::sdkPort().'/'.$path;  
+    protected function sdkUrl($path){
+        return 'http://'.$this->sdkIp().':'.static::sdkPort().'/'.$path;  
     }
 
     /**
@@ -28,13 +46,13 @@ class UserSdk {
      * @param type $type    消息类型
      * @param type $param   参数
      */
-    public static function login($username, $password){
+    public function login($username, $password){
         $url = static::sdkUrl('user/session/login');
         // 默认发本地消息中间件
         // TODO:配置解耦
         $data['username']       = $username;
         $data['password']       = $password;
-        $data['dbId']           = DbSdk::dbId('dbBusi');
+        $data['svBindId']       = $this->uuid;
         $res                    = QLogSdk::postAndLog($url, $data);
         if($res['code'] <>0){
             throw new Exception($res['message']);
@@ -48,12 +66,12 @@ class UserSdk {
      * @param type $type    消息类型
      * @param type $param   参数
      */
-    public static function batchGet($userIds){
+    public function batchGet($userIds){
         $url        = static::sdkUrl('user/user/batchGet');
         // 默认发本地消息中间件
-        $data['id']     = $userIds;
-        $data['dbId']   = DbSdk::dbId('dbBusi');
-        $res            = QLogSdk::postAndLog($url, $data);
+        $data['id']         = $userIds;
+        $data['svBindId']   = $this->uuid;
+        $res                = QLogSdk::postAndLog($url, $data);
         return $res['data'];
     }
 }

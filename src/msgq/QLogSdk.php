@@ -10,6 +10,7 @@ use Exception;
  * 20251227:20点15分
  */
 class QLogSdk {
+    use \xjryanse\phplite\traits\InstMultiTrait;
 
     protected static function sdkIp(){
         return '127.0.0.1';

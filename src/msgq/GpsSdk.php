@@ -8,6 +8,7 @@ use xjryanse\servicesdk\entry\EntrySdk;
  * 
  */
 class GpsSdk {
+    use \xjryanse\phplite\traits\InstMultiTrait;
 
     /**
      * 

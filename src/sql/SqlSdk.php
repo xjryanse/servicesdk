@@ -12,6 +12,7 @@ use Exception;
  * 2025年12月28日21点15分
  */
 class SqlSdk {
+    use \xjryanse\phplite\traits\InstMultiTrait;
 
     protected static function sdkIp(){
         return EntrySdk::serveIp();

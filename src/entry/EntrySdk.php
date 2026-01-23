@@ -1,12 +1,13 @@
 <?php
 namespace xjryanse\servicesdk\entry;
 
-use xjryanse\phplite\facade\Request;
 use xjryanse\servicesdk\msgq\QLogSdk;
 use xjryanse\phplite\logic\Arrays;
+use xjryanse\phplite\session\RedisSession;
 use Exception;
 /**
  * 2025年12月30日；11点20分
+ * 【静态调用】
  */
 class EntrySdk {
 
@@ -27,7 +28,7 @@ class EntrySdk {
     }
     
     /**
-     * 取单挑数据
+     * 取单条数据（一般是phpfpm调用）
      * @param type $msgId   消息id
      * @param type $type    消息类型
      * @param type $param   参数
@@ -42,7 +43,21 @@ class EntrySdk {
         $data['host']   = $host;
 
         $res                    = QLogSdk::postAndLog($url, $data);
+        RedisSession::current()->set(HOST_BIND_ID, $res['id']);
 
+        return $res['data'];
+    }
+    /**
+     * 必传，一般是入口服务透传
+     * @return type
+     * @throws Exception
+     */
+    public static function bindIdInfo($bindId){
+        $url = static::sdkUrl('entry/host/bindIdInfo');
+        // 默认发本地消息中间件
+        // TODO:配置解耦
+        $data['bindId']   = $bindId;
+        $res              = QLogSdk::postAndLog($url, $data);
         return $res['data'];
     }
 
@@ -61,31 +76,14 @@ class EntrySdk {
         $res    = QLogSdk::postAndLog($url, $data);
         return isset($res['data']) ? $res['data'] : null;
     }
-    
     /**
-     * 20251227:服务类ip
-     * @return type
+     * 中台key,提取server列表
+     * @param type $serverKey:比如db_data
      */
-    public static function serveIp(){
-        $serverPort = $_SERVER['SERVER_PORT'];
-        if($serverPort >= 9900){
-            // 微服务暂时统一走本地
-            return '127.0.0.1';
-            // 微服务
-            // throw new Exception('微服务暂不适用本方法');
-        } else {
-            // 客户站点
-            $httpHost   = Arrays::value($_SERVER, 'HTTP_HOST');
-            $serverName = Arrays::value($_SERVER, 'SERVER_NAME');
-            
-            $host = $httpHost ? :$serverName;
-
-            $info = static::hostBindInfo($host);
-            if(!$info['msgq_ip']){
-                throw new Exception('域名'.$host .'未配置msgq_ip参数');
-            }
-            return $info['msgq_ip'];
-        }
+    public static function serverList($bindId, $serverKey):array{
+        $info = static::bindIdInfo($bindId);
+        $servers = Arrays::value($info, 'servers')?:[];
+        return Arrays::value($servers, $serverKey) ?:[];
     }
     
 }

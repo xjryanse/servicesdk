@@ -4,6 +4,9 @@ namespace xjryanse\servicesdk\data;
 use xjryanse\servicesdk\entry\EntrySdk;
 /**
  * 17点20分
+ * 以DbId作为uuid:
+ * DbId为 w_db_cnn表的id值；
+ * 
  */
 class DataSdk {
 
