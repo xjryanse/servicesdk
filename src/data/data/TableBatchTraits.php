@@ -21,7 +21,7 @@ trait TableBatchTraits{
         $data['table_name'] = $tableName;
         $data['id']         = $ids;
         // 2026年1月21日：新增dbId入参
-        $data['dbId']       = $this->uuid;
+        $data['dbId']       = $this->dbId;
 
         $res                = QLogSdk::postAndLog($url, $data);
         return $res['data'];
@@ -40,7 +40,7 @@ trait TableBatchTraits{
         $data['table_name'] = $tableName;
         $data['table_data'] = $tableData;
         // 2026年1月21日：新增dbId入参
-        $data['dbId']       = $this->uuid;
+        $data['dbId']       = $this->dbId;
 
         $res                    = QLogSdk::postAndLog($url, $data);
         return $res['data'];

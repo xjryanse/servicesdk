@@ -27,7 +27,7 @@ trait SqlTraits{
         }
         // 2026年1月21日：新增dbId入参
         // 2026年1月21日：新增dbId入参
-        $param['dbId']       = $this->uuid;
+        $param['dbId']       = $this->dbId;
 
         $baseUrl = 'data/sql/paginate';
         // 默认发本地消息中间件
@@ -54,7 +54,7 @@ trait SqlTraits{
         $param['sqlParam']         = $sqlParam;
         // 2026年1月21日：新增dbId入参
         
-        $param['dbId']          = $this->uuid;
+        $param['dbId']          = $this->dbId;
         $res                    = QLogSdk::postAndLog($url, $param);
         if(!$res){
             throw new Exception('没有获取到接口数据:'.$url);
@@ -70,7 +70,7 @@ trait SqlTraits{
     public function sqlQuery($finalSql){
         $param['sql']           = $finalSql;
         // 2026年1月21日：新增dbId入参
-        $param['dbId']       = $this->uuid;
+        $param['dbId']       = $this->dbId;
         
         $baseUrl = 'data/sql/query';
         // 默认发本地消息中间件
