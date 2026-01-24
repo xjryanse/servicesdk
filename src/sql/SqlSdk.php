@@ -12,32 +12,11 @@ use Exception;
  * 2025年12月28日21点15分
  */
 class SqlSdk {
+    // 需定义：配套BindSdkTrait使用
+    protected static $serverKey = 'service_sql';
+
     use \xjryanse\phplite\traits\InstMultiTrait;
-
-    protected static function sdkIp(){
-        return EntrySdk::serveIp();
-    }
-    
-    protected static function sdkPort(){
-        return '9911';
-    }
-
-    protected static function sdkUrl($path){
-        return 'http://'.static::sdkIp().':'.static::sdkPort().'/'.$path;  
-    }
-    
-    
-    
-    /**
-     * 
-     */
-    protected static function workerIp(){
-        return '127.0.0.1';
-    }
-
-    protected static function workerPort(){
-        return '19911';
-    }
+    use \xjryanse\servicesdk\comm\traits\BindSdkTrait;
     
     /**
      * 优化成功：20260115

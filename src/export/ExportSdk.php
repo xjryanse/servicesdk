@@ -8,19 +8,11 @@ use xjryanse\phplite\curl\Query;
  * 9904
  */
 class ExportSdk {
+    // 需定义：配套BindSdkTrait使用
+    protected static $serverKey = 'service_export';
+
     use \xjryanse\phplite\traits\InstMultiTrait;
-    
-    /**
-     * 
-     */
-    protected static function workerIp(){
-        return '127.0.0.1';
-    }
-
-    protected static function workerPort(){
-        return '19904';
-    }
-
+    use \xjryanse\servicesdk\comm\traits\BindSdkTrait;
     /**
      * 同步导出 excel
      * @param type $msgId   消息id

@@ -6,39 +6,26 @@ use xjryanse\servicesdk\entry\EntrySdk;
  * 17点20分
  * 以DbId作为uuid:
  * DbId为 w_db_cnn表的id值；
+ * 还是改bindId为实例id,dbId另外属性设置
  * 
  */
 class DataSdk {
 
     // 2026年1月22日用数据库id，作为实例id
+    // 需定义：配套BindSdkTrait使用
+    protected static $serverKey = 'service_data';
+
     use \xjryanse\phplite\traits\InstMultiTrait;
+    use \xjryanse\servicesdk\comm\traits\BindSdkTrait;
     
-    protected static function sdkIp(){
-        return EntrySdk::serveIp();
-    }
-    
-    protected static function sdkPort(){
-        return '9914';
-    }
-
-    protected static function sdkUrl($path){
-        return 'http://'.static::sdkIp().':'.static::sdkPort().'/'.$path;  
-    }
-
     use \xjryanse\servicesdk\data\data\SqlTraits;
     use \xjryanse\servicesdk\data\data\TableTraits;
     use \xjryanse\servicesdk\data\data\TableBatchTraits;
     
-    
-    /**
-     * 
-     */
-    protected static function workerIp(){
-        return '127.0.0.1';
-    }
-
-    protected static function workerPort(){
-        return '19914';
+    protected $dbId;
+    protected function dbId($dbId){
+        $this->dbId = $dbId;
+        return $this;
     }
 
 }

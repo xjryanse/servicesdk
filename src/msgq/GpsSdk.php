@@ -8,23 +8,11 @@ use xjryanse\servicesdk\entry\EntrySdk;
  * 
  */
 class GpsSdk {
+    // 需定义：配套BindSdkTrait使用
+    protected static $serverKey = 'service_msgq';
+
     use \xjryanse\phplite\traits\InstMultiTrait;
-
-    /**
-     * 
-     * @return type
-     */
-    protected static function sdkIp(){
-        return EntrySdk::serveIp();
-    }
-
-    protected static function sdkPort(){
-        return '9907';
-    }    
-    
-    protected static function sdkUrl($path){
-        return 'http://'.static::sdkIp().':'.static::sdkPort().'/'.$path;  
-    }    
+    use \xjryanse\servicesdk\comm\traits\BindSdkTrait;
     /**
      * 
      * 用法示例

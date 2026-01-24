@@ -3,42 +3,16 @@ namespace xjryanse\servicesdk\user;
 
 use xjryanse\servicesdk\msgq\QLogSdk;
 use xjryanse\servicesdk\entry\EntrySdk;
-use xjryanse\servicesdk\DbSdk;
 use Exception;
 /**
  * 公众号接入sdk
  */
 class UserSdk {
-    use \xjryanse\phplite\traits\InstMultiTrait;
-
+    // 需定义：配套BindSdkTrait使用
     protected static $serverKey = 'service_user';
-    /**
-     * 
-     */
-    protected function serverList(){
-        $bindId     = $this->uuid;
-        $serverKey  = static::$serverKey;
-        $list = EntrySdk::serverList($bindId, $serverKey);
-        dump($list);
-    }
 
-    /**
-     * 
-     * @return type
-     */
-    protected function sdkIp(){
-        $serverList = $this->serverList();
-        dump($serverList);
-        return EntrySdk::serveIp();
-    }
-    
-    protected static function sdkPort(){
-        return '9920';
-    }
-
-    protected function sdkUrl($path){
-        return 'http://'.$this->sdkIp().':'.static::sdkPort().'/'.$path;  
-    }
+    use \xjryanse\phplite\traits\InstMultiTrait;
+    use \xjryanse\servicesdk\comm\traits\BindSdkTrait;
 
     /**
      * 取单挑数据

@@ -1,7 +1,6 @@
 <?php
 namespace xjryanse\servicesdk\wechat;
 
-use xjryanse\servicesdk\entry\EntrySdk;
 use xjryanse\servicesdk\msgq\WQLogSdk;
 use Exception;
 
@@ -9,27 +8,11 @@ use Exception;
  * 企业微信接入sdk
  */
 class WeworkSdk {
+    // 需定义：配套BindSdkTrait使用
+    protected static $serverKey = 'service_wechat';
+
     use \xjryanse\phplite\traits\InstMultiTrait;
-
-    protected static function sdkIp(){
-        return EntrySdk::serveIp();
-    }
-    
-    protected static function sdkPort(){
-        return '9908';
-    }
-
-    protected static function sdkUrl($path){
-        return 'http://'.static::sdkIp().':'.static::sdkPort().'/'.$path;  
-    }
-
-    protected static function workerIp(){
-        return '127.0.0.1';
-    }
-
-    protected static function workerPort(){
-        return '19908';
-    }
+    use \xjryanse\servicesdk\comm\traits\BindSdkTrait;
     
     
     /**

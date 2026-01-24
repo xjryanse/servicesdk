@@ -8,19 +8,10 @@ use xjryanse\servicesdk\entry\EntrySdk;
  * 公众号接入sdk
  */
 class WepubSdk {
+    // 需定义：配套BindSdkTrait使用
+    protected static $serverKey = 'service_wechat';
+
     use \xjryanse\phplite\traits\InstMultiTrait;
-
-    protected static function sdkIp(){
-        return EntrySdk::serveIp();
-    }
-    
-    protected static function sdkPort(){
-        return '9908';
-    }
-
-    protected static function sdkUrl($path){
-        return 'http://'.static::sdkIp().':'.static::sdkPort().'/'.$path;  
-    }
-
+    use \xjryanse\servicesdk\comm\traits\BindSdkTrait;
     
 }

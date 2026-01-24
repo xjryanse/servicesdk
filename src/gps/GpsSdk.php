@@ -7,18 +7,11 @@ use xjryanse\servicesdk\msgq\WQLogSdk;
  * 9904
  */
 class GpsSdk {
-    use \xjryanse\phplite\traits\InstMultiTrait;
-    
-    /**
-     * 
-     */
-    protected static function workerIp(){
-        return '127.0.0.1';
-    }
+    // 需定义：配套BindSdkTrait使用
+    protected static $serverKey = 'service_gps';
 
-    protected static function workerPort(){
-        return '19904';
-    }
+    use \xjryanse\phplite\traits\InstMultiTrait;
+    use \xjryanse\servicesdk\comm\traits\BindSdkTrait;
     /**
      * 供应商设备列表
      * @param type $msgId   消息id

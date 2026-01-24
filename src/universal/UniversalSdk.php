@@ -3,24 +3,15 @@ namespace xjryanse\servicesdk\universal;
 
 use xjryanse\phplite\facade\Cache;
 use xjryanse\servicesdk\msgq\QLogSdk;
-use xjryanse\servicesdk\entry\EntrySdk;
 /**
  * 
  */
 class UniversalSdk {
+    // 需定义：配套BindSdkTrait使用
+    protected static $serverKey = 'service_universal';
+
     use \xjryanse\phplite\traits\InstMultiTrait;
-
-    protected static function sdkIp(){
-        return EntrySdk::serveIp();
-    }
-    
-    protected static function sdkPort(){
-        return '9918';
-    }
-
-    protected static function sdkUrl($path){
-        return 'http://'.static::sdkIp().':'.static::sdkPort().'/'.$path;  
-    }
+    use \xjryanse\servicesdk\comm\traits\BindSdkTrait;
     /**
      * 取单挑数据
      * @param type $msgId   消息id

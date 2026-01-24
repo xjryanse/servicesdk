@@ -7,16 +7,11 @@ use xjryanse\servicesdk\entry\EntrySdk;
  * 20251229
  */
 class MsgqSdk {
+    // 需定义：配套BindSdkTrait使用
+    protected static $serverKey = 'service_msgq';
+
     use \xjryanse\phplite\traits\InstMultiTrait;
-
-    /**
-     * 
-     * @return type
-     */
-    protected static function sdkIp(){
-        return EntrySdk::serveIp();
-    }
-
+    use \xjryanse\servicesdk\comm\traits\BindSdkTrait;
     /**
      * 
      * 用法示例

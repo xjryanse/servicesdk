@@ -3,13 +3,16 @@ namespace xjryanse\servicesdk\entry;
 
 use xjryanse\servicesdk\msgq\QLogSdk;
 use xjryanse\phplite\logic\Arrays;
-use xjryanse\phplite\session\RedisSession;
+use xjryanse\phplite\cache\SCache;
 use Exception;
 /**
  * 2025年12月30日；11点20分
  * 【静态调用】
  */
 class EntrySdk {
+
+    use \xjryanse\servicesdk\entry\phpfpm\HostTraits;
+
 
     /**
      * todo:198专用
@@ -37,28 +40,34 @@ class EntrySdk {
         if($host == '127.0.0.1'){
             throw new Exception('不支持的域名'.$host);
         }
-        $url = static::sdkUrl('entry/host/bindInfo');
-        // 默认发本地消息中间件
-        // TODO:配置解耦
-        $data['host']   = $host;
+        
+        $cacheKey = __METHOD__.$host;
+        return SCache::funcGet($cacheKey, function () use ($host){        
+            $url = static::sdkUrl('entry/host/bindInfo');
+            // 默认发本地消息中间件
+            // TODO:配置解耦
+            $data['host']   = $host;
 
-        $res                    = QLogSdk::postAndLog($url, $data);
-        RedisSession::current()->set(HOST_BIND_ID, $res['id']);
-
-        return $res['data'];
+            $res                    = QLogSdk::postAndLog($url, $data);
+            return $res['data'];
+        });
     }
+
     /**
      * 必传，一般是入口服务透传
      * @return type
      * @throws Exception
      */
     public static function bindIdInfo($bindId){
-        $url = static::sdkUrl('entry/host/bindIdInfo');
-        // 默认发本地消息中间件
-        // TODO:配置解耦
-        $data['bindId']   = $bindId;
-        $res              = QLogSdk::postAndLog($url, $data);
-        return $res['data'];
+        $cacheKey = __METHOD__.$bindId;
+        return SCache::funcGet($cacheKey, function () use ($bindId){
+            $url = static::sdkUrl('entry/host/bindIdInfo');
+            // 默认发本地消息中间件
+            // TODO:配置解耦
+            $data['bindId']   = $bindId;
+            $res              = QLogSdk::postAndLog($url, $data);
+            return $res['data'];
+        });
     }
 
     /**
@@ -68,13 +77,15 @@ class EntrySdk {
      * @param type $param   参数
      */
     public static function companyKeyInfo($key){
-        $url    = static::sdkUrl('entry/company/keyInfo');
-        // 默认发本地消息中间件
-        // TODO:配置解耦
-        $data['key']   = $key;
-
-        $res    = QLogSdk::postAndLog($url, $data);
-        return isset($res['data']) ? $res['data'] : null;
+        $cacheKey = __METHOD__.$key;
+        return SCache::funcGet($cacheKey, function () use ($key){
+            $url    = static::sdkUrl('entry/company/keyInfo');
+            // 默认发本地消息中间件
+            // TODO:配置解耦
+            $data['key']   = $key;
+            $res    = QLogSdk::postAndLog($url, $data);
+            return isset($res['data']) ? $res['data'] : null;
+        });
     }
     /**
      * 中台key,提取server列表

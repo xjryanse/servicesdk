@@ -11,8 +11,11 @@ use Exception;
  * 20251227:20点15分
  */
 class WQLogSdk {
+    // 需定义：配套BindSdkTrait使用
+    protected static $serverKey = 'service_msgq';
+
     use \xjryanse\phplite\traits\InstMultiTrait;
-    
+    use \xjryanse\servicesdk\comm\traits\BindSdkTrait;
     /**
      * 
      */
