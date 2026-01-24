@@ -1,17 +1,16 @@
 <?php
 namespace xjryanse\servicesdk\universal;
 
+use xjryanse\servicesdk\comm\SdkBase;
 use xjryanse\phplite\facade\Cache;
 use xjryanse\servicesdk\msgq\QLogSdk;
 /**
  * 
  */
-class UniversalSdk {
+class UniversalSdk extends SdkBase{
     // 需定义：配套BindSdkTrait使用
     protected static $serverKey = 'service_universal';
 
-    use \xjryanse\phplite\traits\InstMultiTrait;
-    use \xjryanse\servicesdk\comm\traits\BindSdkTrait;
     /**
      * 取单挑数据
      * @param type $msgId   消息id

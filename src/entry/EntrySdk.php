@@ -1,7 +1,8 @@
 <?php
 namespace xjryanse\servicesdk\entry;
 
-use xjryanse\servicesdk\msgq\QLogSdk;
+use xjryanse\phplite\curl\Query;
+// use xjryanse\servicesdk\msgq\QLogSdk;
 use xjryanse\phplite\logic\Arrays;
 use xjryanse\phplite\cache\SCache;
 use Exception;
@@ -12,7 +13,6 @@ use Exception;
 class EntrySdk {
 
     use \xjryanse\servicesdk\entry\phpfpm\HostTraits;
-
 
     /**
      * todo:198专用
@@ -48,7 +48,8 @@ class EntrySdk {
             // TODO:配置解耦
             $data['host']   = $host;
 
-            $res                    = QLogSdk::postAndLog($url, $data);
+            // $res                    = QLogSdk::postAndLog($url, $data);
+            $res                    = Query::posturl($url, $data);
             return $res['data'];
         });
     }
@@ -65,7 +66,7 @@ class EntrySdk {
             // 默认发本地消息中间件
             // TODO:配置解耦
             $data['bindId']   = $bindId;
-            $res              = QLogSdk::postAndLog($url, $data);
+            $res              = Query::posturl($url, $data);
             return $res['data'];
         });
     }
@@ -83,7 +84,7 @@ class EntrySdk {
             // 默认发本地消息中间件
             // TODO:配置解耦
             $data['key']   = $key;
-            $res    = QLogSdk::postAndLog($url, $data);
+            $res    = Query::posturl($url, $data);
             return isset($res['data']) ? $res['data'] : null;
         });
     }

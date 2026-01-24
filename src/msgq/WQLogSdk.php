@@ -1,21 +1,19 @@
 <?php
 namespace xjryanse\servicesdk\msgq;
 
+use xjryanse\servicesdk\comm\SdkBase;
 use xjryanse\phplite\tcp\Sync as TcpSync;
 use xjryanse\phplite\logic\Redis;
 use xjryanse\phplite\logic\Arrays;
-
 use Exception;
 /**
  * 2026年1月14日：使用workerman调用请求
  * 20251227:20点15分
  */
-class WQLogSdk {
+class WQLogSdk extends SdkBase{
     // 需定义：配套BindSdkTrait使用
     protected static $serverKey = 'service_msgq';
 
-    use \xjryanse\phplite\traits\InstMultiTrait;
-    use \xjryanse\servicesdk\comm\traits\BindSdkTrait;
     /**
      * 
      */

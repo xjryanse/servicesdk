@@ -6,12 +6,10 @@ use xjryanse\servicesdk\msgq\WQLogSdk;
  * 车载定位微服务接入sdk
  * 9904
  */
-class GpsSdk {
+class GpsSdk extends SdkBase{
     // 需定义：配套BindSdkTrait使用
     protected static $serverKey = 'service_gps';
 
-    use \xjryanse\phplite\traits\InstMultiTrait;
-    use \xjryanse\servicesdk\comm\traits\BindSdkTrait;
     /**
      * 供应商设备列表
      * @param type $msgId   消息id
@@ -23,8 +21,8 @@ class GpsSdk {
         
         $postP      = [];
 
-        $host       = static::workerIp();
-        $port       = static::workerPort();
+        $host       = $this->workerIp();
+        $port       = $this->workerPort();
         $res        = WQLogSdk::request($host, $port, $baseUrl, $postP);
         if(!$res){
             throw new Exception('没有获取到接口数据:'.$url);

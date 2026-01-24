@@ -1,7 +1,7 @@
 <?php
 namespace xjryanse\servicesdk\sql;
 
-use xjryanse\servicesdk\entry\EntrySdk;
+use xjryanse\servicesdk\comm\SdkBase;
 use xjryanse\servicesdk\msgq\QLogSdk;
 use xjryanse\servicesdk\msgq\WQLogSdk;
 use xjryanse\phplite\facade\Cache;
@@ -11,12 +11,9 @@ use Exception;
  * 调用sql中台的极简sdk
  * 2025年12月28日21点15分
  */
-class SqlSdk {
+class SqlSdk extends SdkBase{
     // 需定义：配套BindSdkTrait使用
     protected static $serverKey = 'service_sql';
-
-    use \xjryanse\phplite\traits\InstMultiTrait;
-    use \xjryanse\servicesdk\comm\traits\BindSdkTrait;
     
     /**
      * 优化成功：20260115
@@ -34,8 +31,8 @@ class SqlSdk {
             $data['sqlKey'] = $sqlKey;
             $data['param']  = $param;
             
-            $host = static::workerIp();
-            $port = static::workerPort();
+            $host = $this->workerIp();
+            $port = $this->workerPort();
             $res = WQLogSdk::request($host, $port, $baseUrl, $data);
             if(!$res['data']){
                 throw new Exception('没有获取到sql配置,请排查'.$sqlKey);

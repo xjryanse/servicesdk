@@ -32,8 +32,8 @@ trait SqlTraits{
         $baseUrl = 'data/sql/paginate';
         // 默认发本地消息中间件
         // TODO:配置解耦
-        $host = static::workerIp();
-        $port = static::workerPort();
+        $host = $this->workerIp();
+        $port = $this->workerPort();
         $res = WQLogSdk::request($host, $port, $baseUrl, $param);        
         if(!$res){
             throw new Exception('没有获取到接口数据:'.$url);
@@ -75,8 +75,8 @@ trait SqlTraits{
         $baseUrl = 'data/sql/query';
         // 默认发本地消息中间件
         // TODO:配置解耦
-        $host = static::workerIp();
-        $port = static::workerPort();
+        $host = $this->workerIp();
+        $port = $this->workerPort();
         $res = WQLogSdk::request($host, $port, $baseUrl, $param);        
         if(!$res){
             throw new Exception('没有获取到接口数据:'.$baseUrl);

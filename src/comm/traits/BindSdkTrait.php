@@ -56,7 +56,7 @@ trait BindSdkTrait{
         return $serverInfo['workerman_ip'];
     }
 
-    protected static function workerPort(){
+    protected function workerPort(){
         $serverInfo = $this->serverInfoRand();
         return $serverInfo['workerman_port'];
     }

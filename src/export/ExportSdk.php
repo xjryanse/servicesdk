@@ -1,18 +1,16 @@
 <?php
 namespace xjryanse\servicesdk\export;
 
-use xjryanse\servicesdk\msgq\WQLogSdk;
+use xjryanse\servicesdk\comm\SdkBase;
 use xjryanse\phplite\curl\Query;
 /**
  * 车载定位微服务接入sdk
  * 9904
  */
-class ExportSdk {
+class ExportSdk extends SdkBase{
     // 需定义：配套BindSdkTrait使用
     protected static $serverKey = 'service_export';
 
-    use \xjryanse\phplite\traits\InstMultiTrait;
-    use \xjryanse\servicesdk\comm\traits\BindSdkTrait;
     /**
      * 同步导出 excel
      * @param type $msgId   消息id

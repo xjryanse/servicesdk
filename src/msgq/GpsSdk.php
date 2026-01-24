@@ -1,18 +1,17 @@
 <?php
 namespace xjryanse\servicesdk\msgq;
 
+use xjryanse\servicesdk\comm\SdkBase;
 use xjryanse\phplite\curl\Query;
 use xjryanse\servicesdk\entry\EntrySdk;
 /**
  * 车载定位消息中间件sdk;
  * 
  */
-class GpsSdk {
+class GpsSdk extends SdkBase{
     // 需定义：配套BindSdkTrait使用
     protected static $serverKey = 'service_msgq';
 
-    use \xjryanse\phplite\traits\InstMultiTrait;
-    use \xjryanse\servicesdk\comm\traits\BindSdkTrait;
     /**
      * 
      * 用法示例

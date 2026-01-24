@@ -1,17 +1,17 @@
 <?php
 namespace xjryanse\servicesdk\msgq;
 
+
+use xjryanse\servicesdk\comm\SdkBase;
 use xjryanse\phplite\curl\Query;
 use xjryanse\servicesdk\entry\EntrySdk;
 /**
  * 20251229
  */
-class MsgqSdk {
+class MsgqSdk extends SdkBase{
     // 需定义：配套BindSdkTrait使用
     protected static $serverKey = 'service_msgq';
 
-    use \xjryanse\phplite\traits\InstMultiTrait;
-    use \xjryanse\servicesdk\comm\traits\BindSdkTrait;
     /**
      * 
      * 用法示例

@@ -26,9 +26,8 @@ trait TableTraits{
         // 2026年1月21日：新增dbId入参
         $data['dbId']       = $this->uuid;
 
-        
-        $host = static::workerIp();
-        $port = static::workerPort();
+        $host = $this->workerIp();
+        $port = $this->workerPort();
         $res = WQLogSdk::request($host, $port, $baseUrl, $data);        
         return $res['data'];
     }
@@ -53,8 +52,8 @@ trait TableTraits{
         $data['dbId']       = $this->uuid;
 
         $baseUrl = 'data/table/find';
-        $host = static::workerIp();
-        $port = static::workerPort();
+        $host = $this->workerIp();
+        $port = $this->workerPort();
         $res = WQLogSdk::request($host, $port, $baseUrl, $data);   
 
         return $res['data'];
@@ -75,8 +74,8 @@ trait TableTraits{
         $data['dbId']       = $this->uuid;
         
         $baseUrl = 'data/table/find';
-        $host = static::workerIp();
-        $port = static::workerPort();
+        $host = $this->workerIp();
+        $port = $this->workerPort();
         $res = WQLogSdk::request($host, $port, $baseUrl, $data);        
         return $res['data'];
     }    
@@ -126,8 +125,8 @@ trait TableTraits{
         $postP['dbId']       = $this->uuid;
 
         // $res = Sync::request($host, $port, $send_data);
-        $host = static::workerIp();
-        $port = static::workerPort();
+        $host = $this->workerIp();
+        $port = $this->workerPort();
         $res = WQLogSdk::request($host, $port, $baseUrl, $postP);
         // $res                    = QLogSdk::postAndLog($url, $postP);
         if(!$res){
@@ -159,8 +158,8 @@ trait TableTraits{
         
         
         // $res = Sync::request($host, $port, $send_data);
-        $host = static::workerIp();
-        $port = static::workerPort();
+        $host = $this->workerIp();
+        $port = $this->workerPort();
         $res = WQLogSdk::request($host, $port, $baseUrl, $postP);
         // $res                    = QLogSdk::postAndLog($url, $postP);
         if(!$res){
@@ -273,8 +272,8 @@ trait TableTraits{
         // 2026年1月21日：新增dbId入参
         $postP['dbId']       = $this->uuid;
 
-        $host = static::workerIp();
-        $port = static::workerPort();
+        $host = $this->workerIp();
+        $port = $this->workerPort();
         $res = WQLogSdk::request($host, $port, $baseUrl, $postP);
         if(!$res){
             throw new Exception('没有获取到接口数据:'.$baseUrl);

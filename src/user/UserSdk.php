@@ -1,18 +1,16 @@
 <?php
 namespace xjryanse\servicesdk\user;
 
+use xjryanse\servicesdk\comm\SdkBase;
 use xjryanse\servicesdk\msgq\QLogSdk;
 use xjryanse\servicesdk\entry\EntrySdk;
 use Exception;
 /**
  * 公众号接入sdk
  */
-class UserSdk {
+class UserSdk extends SdkBase{
     // 需定义：配套BindSdkTrait使用
     protected static $serverKey = 'service_user';
-
-    use \xjryanse\phplite\traits\InstMultiTrait;
-    use \xjryanse\servicesdk\comm\traits\BindSdkTrait;
 
     /**
      * 取单挑数据
