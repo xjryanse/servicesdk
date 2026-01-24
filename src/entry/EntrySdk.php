@@ -63,6 +63,10 @@ class EntrySdk {
         if(!$bindId){
             throw new Exception('$bindId必须');
         }
+        if(!is_numeric($bindId)){
+            throw new Exception('不支持的绑定id格式');
+        }
+
         $cacheKey = __METHOD__.$bindId;
         SCache::rm($cacheKey);
         return SCache::funcGet($cacheKey, function () use ($bindId){
@@ -71,7 +75,7 @@ class EntrySdk {
             // TODO:配置解耦
             $data['bindId']   = $bindId;
             $res              = Query::posturl($url, $data);
-            return $res['data'];
+            return $res ? $res['data'] : [];
         });
     }
 

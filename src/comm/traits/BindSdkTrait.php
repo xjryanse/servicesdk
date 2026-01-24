@@ -23,6 +23,9 @@ trait BindSdkTrait{
     protected function serverInfoRand(){
         if(!$this->serverInfo){
             $bindId     = $this->uuid;
+            if(!is_numeric($bindId)){
+                throw new Exception('不支持的绑定号'.$bindId.'请使用serverInfoSet方法透传参数');
+            }
             $serverKey  = static::$serverKey;
             $list       = EntrySdk::serverList($bindId, $serverKey);
             if(!$list){
