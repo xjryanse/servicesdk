@@ -22,6 +22,9 @@ class DbSdk {
             // 透传id直接取
             $confArr    = EntrySdk::bindIdInfo($hostBindId);
         } else {
+            if($_SERVER['SERVER_PORT'] > 9900){
+                throw new Exception('微服务'.$_SERVER['SERVER_PORT'].'不支持，请透传$hostBindId');
+            }
             // 没有的用域名取
             $httpHost   = $_SERVER['HTTP_HOST'];
             $confArr    = EntrySdk::hostBindInfo($httpHost);
