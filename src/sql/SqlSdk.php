@@ -4,7 +4,7 @@ namespace xjryanse\servicesdk\sql;
 use xjryanse\servicesdk\comm\SdkBase;
 use xjryanse\servicesdk\msgq\QLogSdk;
 use xjryanse\servicesdk\msgq\WQLogSdk;
-use xjryanse\phplite\facade\Cache;
+use xjryanse\phplite\cache\SqlCache;
 use xjryanse\phplite\logic\Arrays;
 use Exception;
 /**
@@ -21,11 +21,11 @@ class SqlSdk extends SdkBase{
      * @param type $sqlKey
      * @param type $param
      */
-    public static function keyBaseSql(string $sqlKey,array $param = []){
+    public function keyBaseSql(string $sqlKey,array $param = []){
         $pMd5 = Arrays::md5($param);
         $key = __CLASS__.__METHOD__.$sqlKey.$pMd5;
         // dump($key);
-        return Cache::funcGet($key,function () use ($sqlKey, $param) {
+        return SqlCache::funcGet($key,function () use ($sqlKey, $param) {
             $baseUrl = 'sql/sql/keyBaseSql';
             $data           = [];
             $data['sqlKey'] = $sqlKey;
@@ -46,9 +46,9 @@ class SqlSdk extends SdkBase{
      * @param type $sqlKey
      * @param type $param
      */
-    public static function searchFields($sqlKey){
+    public function searchFields($sqlKey){
         $key = __CLASS__.__METHOD__.$sqlKey;
-        return Cache::funcGet($key,function () use ($sqlKey) {        
+        return SqlCache::funcGet($key,function () use ($sqlKey) {        
             $url    = static::sdkUrl('sql/sql/searchFields');
             $data           = [];
             $data['sqlKey'] = $sqlKey;
@@ -81,10 +81,10 @@ class SqlSdk extends SdkBase{
   }
 }
      */
-    public static function joinSqlGenerate($sqlParam){
+    public function joinSqlGenerate($sqlParam){
         $keyRaw = md5(json_encode($sqlParam, JSON_UNESCAPED_UNICODE));
         $key = __CLASS__.__METHOD__.$keyRaw;
-        return Cache::funcGet($key,function () use ($sqlParam) {        
+        return SqlCache::funcGet($key,function () use ($sqlParam) {        
             $url    = static::sdkUrl('sql/sql/joinSqlGenerate');
             $data           = [];
             $data['sqlParam'] = $sqlParam;
