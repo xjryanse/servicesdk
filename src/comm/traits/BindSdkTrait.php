@@ -11,6 +11,13 @@ trait BindSdkTrait{
     
     protected $serverInfo;
     /**
+     * 外部传入，目前在service_entry入口中使用
+     */
+    public function serverInfoSet($serverInfo){
+        $this->serverInfo = $serverInfo;
+    }
+    
+    /**
      * 
      */
     protected function serverInfoRand(){

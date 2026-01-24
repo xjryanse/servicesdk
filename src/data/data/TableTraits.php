@@ -31,9 +31,6 @@ trait TableTraits{
         $res = WQLogSdk::request($host, $port, $baseUrl, $data);        
         return $res['data'];
     }
-
-    
-    
     /**
      * 取单挑数据
      * @param type $tableName   消息id
