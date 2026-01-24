@@ -60,7 +60,11 @@ class EntrySdk {
      * @throws Exception
      */
     public static function bindIdInfo($bindId){
+        if(!$bindId){
+            throw new Exception('$bindId必须');
+        }
         $cacheKey = __METHOD__.$bindId;
+        SCache::rm($cacheKey);
         return SCache::funcGet($cacheKey, function () use ($bindId){
             $url = static::sdkUrl('entry/host/bindIdInfo');
             // 默认发本地消息中间件
