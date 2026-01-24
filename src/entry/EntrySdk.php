@@ -40,16 +40,17 @@ class EntrySdk {
         if($host == '127.0.0.1'){
             throw new Exception('不支持的域名'.$host);
         }
-        
         $cacheKey = __METHOD__.$host;
+        SCache::rm($cacheKey);
         return SCache::funcGet($cacheKey, function () use ($host){        
             $url = static::sdkUrl('entry/host/bindInfo');
             // 默认发本地消息中间件
             // TODO:配置解耦
             $data['host']   = $host;
-
-            // $res                    = QLogSdk::postAndLog($url, $data);
             $res                    = Query::posturl($url, $data);
+            if(!$res){
+                throw new Exception('没有获取到接口数据:'.$url.'参数:'. json_encode($data,JSON_UNESCAPED_UNICODE));
+            }                    
             return $res['data'];
         });
     }
@@ -75,6 +76,9 @@ class EntrySdk {
             // TODO:配置解耦
             $data['bindId']   = $bindId;
             $res              = Query::posturl($url, $data);
+            if(!$res){
+                throw new Exception('没有获取到接口数据:'.$url.'参数:'. json_encode($data,JSON_UNESCAPED_UNICODE));
+            }            
             return $res ? $res['data'] : [];
         });
     }
@@ -93,6 +97,9 @@ class EntrySdk {
             // TODO:配置解耦
             $data['key']   = $key;
             $res    = Query::posturl($url, $data);
+            if(!$res){
+                throw new Exception('没有获取到接口数据:'.$url.'参数:'. json_encode($data,JSON_UNESCAPED_UNICODE));
+            }            
             return isset($res['data']) ? $res['data'] : null;
         });
     }
