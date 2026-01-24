@@ -35,11 +35,14 @@ class UniversalSdk extends SdkBase{
      */
     public function pageConfig($pageKey){
         $key = __CLASS__.__METHOD__.$pageKey;
+        PCache::rm($key);        
         return PCache::funcGet($key,function () use ($pageKey) {
             $url = static::sdkUrl('universal/page/config');
             // 默认发本地消息中间件
             // TODO:配置解耦
             $data['pageKey']    = $pageKey;
+            $data['svBindId']   = $this->uuid;
+            
             $res                = QLogSdk::postAndLog($url, $data);
             return $res['data'];
         });
@@ -57,6 +60,7 @@ class UniversalSdk extends SdkBase{
             // 默认发本地消息中间件
             // TODO:配置解耦
             $data['pageKey']    = $pageKey;
+            $data['svBindId']   = $this->uuid;
             $res                = QLogSdk::postAndLog($url, $data);
             return $res['data'];
         });
