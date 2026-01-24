@@ -65,4 +65,23 @@ class UniversalSdk extends SdkBase{
             return $res['data'];
         });
     }
+    
+    /**
+     * 2026年1月23日
+     * @param type $pageKey
+     * @return type
+     */
+    public function pageItemVue($pageKey){
+        $key = __CLASS__.__METHOD__.$pageKey;
+        PCache::rm($key);
+        return PCache::funcGet($key,function () use ($pageKey) {
+            $url = static::sdkUrl('universal/page/itemVue');
+            // 默认发本地消息中间件
+            // TODO:配置解耦
+            $data['pageKey']    = $pageKey;
+            $data['svBindId']   = $this->uuid;
+            $res                = QLogSdk::postAndLog($url, $data);
+            return $res['data'];
+        });
+    }
 }

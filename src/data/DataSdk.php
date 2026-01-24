@@ -4,8 +4,6 @@ namespace xjryanse\servicesdk\data;
 use xjryanse\servicesdk\comm\SdkBase;
 /**
  * 17点20分
- * 以DbId作为uuid:
- * DbId为 w_db_cnn表的id值；
  * 还是改bindId为实例id,dbId另外属性设置
  * 
  */

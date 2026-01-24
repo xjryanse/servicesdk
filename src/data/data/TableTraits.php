@@ -25,7 +25,8 @@ trait TableTraits{
         $data['id']         = $id;
         // 2026年1月21日：新增dbId入参
         $data['dbId']       = $this->dbId;
-
+        $data['svBindId']   = $this->uuid;
+        
         $host = $this->workerIp();
         $port = $this->workerPort();
         $res = WQLogSdk::request($host, $port, $baseUrl, $data);        
@@ -47,6 +48,7 @@ trait TableTraits{
         $data['whereFields']    = $whereFields;
         // 2026年1月21日：新增dbId入参
         $data['dbId']       = $this->dbId;
+        $data['svBindId']   = $this->uuid;
 
         $baseUrl = 'data/table/find';
         $host = $this->workerIp();
@@ -69,6 +71,7 @@ trait TableTraits{
         $data['condition']  = $con;
         // 2026年1月21日：新增dbId入参
         $data['dbId']       = $this->dbId;
+        $data['svBindId']   = $this->uuid;
         
         $baseUrl = 'data/table/find';
         $host = $this->workerIp();
@@ -91,7 +94,8 @@ trait TableTraits{
         }
         $urlFinal = Url::addParam($url, $getP);
         // 2026年1月21日：新增dbId入参
-        $param['dbId']       = $this->dbId;
+        $param['dbId']          = $this->dbId;
+        $param['svBindId']   = $this->uuid;
 
         $res                    = QLogSdk::postAndLog($urlFinal, $param);
         if(!$res){
@@ -120,6 +124,7 @@ trait TableTraits{
         $postP['table_data']     = $param;
         // 2026年1月21日：新增dbId入参
         $postP['dbId']       = $this->dbId;
+        $postP['svBindId']   = $this->uuid;
 
         // $res = Sync::request($host, $port, $send_data);
         $host = $this->workerIp();
@@ -152,7 +157,7 @@ trait TableTraits{
         $postP['condition']         = $con;
         // 2026年1月21日：新增dbId入参
         $postP['dbId']       = $this->dbId;
-        
+        $postP['svBindId']   = $this->uuid;
         
         // $res = Sync::request($host, $port, $send_data);
         $host = $this->workerIp();
@@ -180,7 +185,8 @@ trait TableTraits{
         $data['fieldIds']   = $id;
         // 2026年1月21日：新增dbId入参
         $data['dbId']       = $this->dbId;
-
+        $data['svBindId']   = $this->uuid;
+        
         $res                    = QLogSdk::postAndLog($url, $data);
         return $res['data'];
     }
@@ -197,6 +203,7 @@ trait TableTraits{
         $param['table_data'] = $data;
         // 2026年1月21日：新增dbId入参
         $param['dbId']       = $this->dbId;
+        $param['svBindId']   = $this->uuid;
         
         $res                    = QLogSdk::postAndLog($url, $param);
         if(!$res){
@@ -216,6 +223,7 @@ trait TableTraits{
         $param['table_data']     = $data;
         // 2026年1月21日：新增dbId入参
         $param['dbId']       = $this->dbId;
+        $param['svBindId']   = $this->uuid;        
         
         $res                    = QLogSdk::postAndLog($url, $param);
         if(!$res){
@@ -235,6 +243,7 @@ trait TableTraits{
         $param['table_data']['id']  = $id;
         // 2026年1月21日：新增dbId入参
         $param['dbId']       = $this->dbId;
+        $param['svBindId']   = $this->uuid;        
         
         $res                        = QLogSdk::postAndLog($url, $param);
         if(!$res){
@@ -242,15 +251,6 @@ trait TableTraits{
         }
         return $res['data'];
     }
-
-    
-    
-    
-    
-    
-    
-    
-    
 
     /**
      * 2026年1月15日：数据保存，有数据新增，没数据更新
@@ -268,6 +268,7 @@ trait TableTraits{
         $postP['table_data']     = $data;
         // 2026年1月21日：新增dbId入参
         $postP['dbId']       = $this->dbId;
+        $postP['svBindId']   = $this->uuid;        
 
         $host = $this->workerIp();
         $port = $this->workerPort();
