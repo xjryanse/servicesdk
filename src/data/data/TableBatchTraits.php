@@ -48,5 +48,24 @@ trait TableBatchTraits{
         return $res['data'];
     }
 
+    /**
+     * 2026年1月25日
+     * @param type $tableName
+     * @param type $tableData   二维数组；带id
+     * @return type
+     */
+    public function tableBatchDataInsert($tableName,$tableData){
+        $url = static::sdkUrl('data/tableBatch/insert');
+        // 默认发本地消息中间件
+        // TODO:配置解耦
+        $data['table_name'] = $tableName;
+        $data['table_data'] = $tableData;
+        // 2026年1月21日：新增dbId入参
+        $data['dbId']       = $this->dbId;
+        $data['svBindId']   = $this->uuid;
+        
+        $res                    = QLogSdk::postAndLog($url, $data);
+        return $res['data'];
+    }
 
 }
