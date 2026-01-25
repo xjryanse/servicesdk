@@ -46,12 +46,12 @@ class WQLogSdk extends SdkBase{
         // 记录服务间的链路调用关系
         global $serviceTraceArr;        
         $msg            = [
+            'url'               => $url,
+            'micro_diff'        => $endMTs - $startMTs,
             'queryType'         => 'workerman',
             'host'              => '',
             // 请求源主机标识
             'sourceHostName'    => gethostname(),
-            'url'               => $url,
-            'micro_diff'        => $endMTs - $startMTs,
             'request'           => json_encode($request,JSON_UNESCAPED_UNICODE),
             'response'          => mb_substr(json_encode($response,JSON_UNESCAPED_UNICODE), 0, 500).'……',
             'create_time'       => date('Y-m-d H:i:s'),

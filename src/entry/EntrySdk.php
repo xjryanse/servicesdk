@@ -18,7 +18,7 @@ class EntrySdk {
      * todo:198专用
      * @return type
      */
-    protected static function sdkIp(){
+    public static function sdkIp(){
         // return '127.0.0.1';
         // 入口库在哪里就用哪里的服务，这样避免io开销
         return config('database.dbEntry.hostname');
