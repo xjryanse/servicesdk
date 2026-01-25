@@ -19,7 +19,9 @@ class EntrySdk {
      * @return type
      */
     protected static function sdkIp(){
-        return '127.0.0.1';
+        // return '127.0.0.1';
+        // 入口库在哪里就用哪里的服务，这样避免io开销
+        return config('database.dbEntry.hostname');
     }
     
     protected static function sdkPort(){
