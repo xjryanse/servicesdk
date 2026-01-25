@@ -67,18 +67,18 @@ class UniversalSdk extends SdkBase{
     }
     
     /**
-     * 2026年1月23日
-     * @param type $pageKey
+     * 2026年1月23日:注意这里是id不是key(历史问题)
+     * @param type $pageId
      * @return type
      */
-    public function pageItemVue($pageKey){
-        $key = __CLASS__.__METHOD__.$pageKey;
+    public function pageItemVue($pageId){
+        $key = __CLASS__.__METHOD__.$pageId;
         PCache::rm($key);
-        return PCache::funcGet($key,function () use ($pageKey) {
+        return PCache::funcGet($key,function () use ($pageId) {
             $url = static::sdkUrl('universal/page/itemVue');
             // 默认发本地消息中间件
             // TODO:配置解耦
-            $data['pageKey']    = $pageKey;
+            $data['id']         = $pageId;
             $data['svBindId']   = $this->uuid;
             $res                = QLogSdk::postAndLog($url, $data);
             return $res['data'];
