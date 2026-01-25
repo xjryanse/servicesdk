@@ -26,11 +26,11 @@ class QLogSdk extends SdkBase{
         // 脚本请求结束
         $endMTs     = intval(microtime(true) * 1000);
         if(!$res){
-            throw new Exception('没有获取到接口数据:'.$url.'参数:'. json_encode($request,JSON_UNESCAPED_UNICODE));
+            throw new Exception(gethostname().'无数据:'.$url.'参数:'. json_encode($request,JSON_UNESCAPED_UNICODE));
         }
         //2026年1月22日
         if($res['code']<>0){
-            throw new Exception('接口异常:'.$url.'内容:'.$res['message'].'请求参数:'.json_encode($request,JSON_UNESCAPED_UNICODE));
+            throw new Exception('异常:'.$url.'内容:'.$res['message'].'请求参数:'.json_encode($request,JSON_UNESCAPED_UNICODE));
         }
         
         // 调用记录日志
@@ -42,17 +42,23 @@ class QLogSdk extends SdkBase{
      * 记录日志
      */
     public static function log($url, $request, $response, $startMTs, $endMTs){
-
+        // 记录服务间的链路调用关系
+        global $serviceTraceArr;
         $msg            = [
+            'queryType'         => 'http',
             'host'              => Request::host(),
+            // 请求源主机标识
+            'sourceHostName'    => gethostname(),
             'url'               => $url,
-            'start_microtime'   => $startMTs,
-            'end_microtime'     => $endMTs,
             'micro_diff'        => $endMTs - $startMTs,
             'request'           => json_encode($request,JSON_UNESCAPED_UNICODE),
             'response'          => mb_substr(json_encode($response,JSON_UNESCAPED_UNICODE), 0, 500).'……',
             'create_time'       => date('Y-m-d H:i:s'),
         ];
+        // 存储链路间调用关系
+        $tMsg = $msg;
+        $tMsg['serviceTrace']   = $serviceTraceArr;
+        $serviceTraceArr[]      = $tMsg;
         
         $expireKey = 'SERVICE_QUERY_LOG:'. microtime(true);
         return Redis::inst()->msgUpdate($expireKey, $msg);        
