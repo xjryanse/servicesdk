@@ -106,6 +106,29 @@ class EntrySdk {
             return isset($res['data']) ? $res['data'] : null;
         });
     }
+    
+    
+    /**
+     * 取单挑数据
+     * @param type $msgId   消息id
+     * @param type $type    消息类型
+     * @param type $param   参数
+     */
+    public static function companyIdInfo($id){
+        $cacheKey = __METHOD__.$id;
+        // SCache::rm($cacheKey);
+        return SCache::funcGet($cacheKey, function () use ($id){
+            $url    = static::sdkUrl('entry/company/info');
+            // 默认发本地消息中间件
+            // TODO:配置解耦
+            $data['id']   = $id;
+            $res    = Query::posturl($url, $data);
+            if(!$res){
+                throw new Exception('没有获取到接口数据:'.$url.'参数:'. json_encode($data,JSON_UNESCAPED_UNICODE));
+            }            
+            return isset($res['data']) ? $res['data'] : null;
+        });
+    }
     /**
      * 中台key,提取server列表
      * @param type $serverKey:比如db_data
