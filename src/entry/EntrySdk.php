@@ -93,6 +93,7 @@ class EntrySdk {
      */
     public static function companyKeyInfo($key){
         $cacheKey = __METHOD__.$key;
+        SCache::rm($cacheKey);
         return SCache::funcGet($cacheKey, function () use ($key){
             $url    = static::sdkUrl('entry/company/keyInfo');
             // 默认发本地消息中间件
