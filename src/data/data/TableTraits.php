@@ -85,22 +85,18 @@ trait TableTraits{
      * @return type
      */
     public function tableDataPaginate($tableName, $orderBy='', $param=[]){
-        $url = static::sdkUrl('data/table/paginate');
-        
-        $getP                   = [];
-        $getP['table_name']     = $tableName;
+        $param['table_name']     = $tableName;
         if($orderBy){
-            $getP['orderBy']        = $orderBy;
+            $param['orderBy']    = $orderBy;
         }
-        $urlFinal = Url::addParam($url, $getP);
         // 2026年1月21日：新增dbId入参
         $param['dbId']          = $this->dbId;
         $param['svBindId']   = $this->uuid;
 
-        $res                    = QLogSdk::postAndLog($urlFinal, $param);
-        if(!$res){
-            throw new Exception('没有获取到接口数据:'.$url);
-        }
+        $baseUrl    = 'data/table/paginate';
+        $host       = $this->workerIp();
+        $port       = $this->workerPort();
+        $res        = WQLogSdk::request($host, $port, $baseUrl, $param);           
         return $res['data'];
     }
     
