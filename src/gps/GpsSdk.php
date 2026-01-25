@@ -2,6 +2,7 @@
 namespace xjryanse\servicesdk\gps;
 
 use xjryanse\servicesdk\msgq\WQLogSdk;
+use Exception;
 /**
  * 车载定位微服务接入sdk
  * 9904

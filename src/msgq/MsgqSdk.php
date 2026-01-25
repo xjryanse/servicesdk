@@ -30,7 +30,7 @@ class MsgqSdk extends SdkBase{
      * @param type $type    消息类型
      * @param type $param   参数
      */
-    public static function commGenerate($msgId, $type, $param){
+    public function commGenerate($msgId, $type, $param){
         $url = 'http://'.static::sdkIp().':9907/msgq/busi_msg/produce';        
         // 默认发本地消息中间件
         // TODO:配置解耦
@@ -52,8 +52,8 @@ class MsgqSdk extends SdkBase{
     /**
      * 消息回调上报
      */
-    public static function msgqCallBack($msgId){
-        $url            = 'http://'.static::sdkIp().':9907/msgq/busi_msg/callback';
+    public function msgqCallBack($msgId){
+        $url            = 'http://'.$this->sdkIp().':9907/msgq/busi_msg/callback';
         $data['msgId']  = $msgId;
         $res            = Query::posturl($url, $data);
         return $res;
@@ -62,8 +62,8 @@ class MsgqSdk extends SdkBase{
     /**
      * 执行日志回调上报
      */
-    public static function msgqLogCallBack($msgId){
-        $url            = 'http://'.static::sdkIp().':9907/msgq/log_msg/callback';
+    public function msgqLogCallBack($msgId){
+        $url            = 'http://'.$this->sdkIp().':9907/msgq/log_msg/callback';
         $data['msgId']  = $msgId;
         
         $res            = Query::posturl($url, $data);
