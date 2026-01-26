@@ -57,7 +57,7 @@ class QLogSdk extends SdkBase{
         ];
         // 存储链路间调用关系
         $tMsg = $msg;
-        $tMsg['serviceTrace']   = $serviceTraceArr;
+        // $tMsg['serviceTrace']   = $serviceTraceArr;
         $serviceTraceArr[]      = $tMsg;
         
         $expireKey = 'SERVICE_QUERY_LOG:'. microtime(true);

@@ -58,7 +58,7 @@ class WQLogSdk extends SdkBase{
         ];
         
         $tMsg = $msg;
-        $tMsg['serviceTrace']   = $serviceTraceArr;
+        // $tMsg['serviceTrace']   = $serviceTraceArr;
         $serviceTraceArr[]      = $tMsg;
 
         // 存储链路间调用关系
