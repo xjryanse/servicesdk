@@ -2,6 +2,7 @@
 namespace xjryanse\servicesdk\gps;
 
 use xjryanse\servicesdk\msgq\WQLogSdk;
+use xjryanse\servicesdk\comm\SdkBase;
 use Exception;
 /**
  * 车载定位微服务接入sdk
@@ -17,16 +18,17 @@ class GpsSdk extends SdkBase{
      * @param type $type    消息类型
      * @param type $param   参数
      */
-    public static function supplierEquipmentMapList(){
+    public function supplierEquipmentMapList(){
         $baseUrl    = 'gps/supplier/equipmentMapList';
         
         $postP      = [];
-
+        $postP['svBindId']       = $this->uuid;
+        
         $host       = $this->workerIp();
         $port       = $this->workerPort();
         $res        = WQLogSdk::request($host, $port, $baseUrl, $postP);
         if(!$res){
-            throw new Exception('没有获取到接口数据:'.$url);
+            throw new Exception('没有获取到接口数据:'.$baseUrl);
         }
         return $res['data'];
     }

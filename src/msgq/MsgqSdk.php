@@ -40,7 +40,7 @@ class MsgqSdk extends SdkBase{
         $data['msg']            = $param;
         //2026年1月26日
         $data['svBindId']       = $this->uuid;
-        
+
         $res                    = Query::posturl($url, $data);
 
         $resp = [];
