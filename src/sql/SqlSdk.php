@@ -27,7 +27,7 @@ class SqlSdk extends SdkBase{
         // dump($key);
         return SqlCache::funcGet($key,function () use ($sqlKey, $param) {
             $baseUrl = 'sql/sql/keyBaseSql';
-            $data           = [];
+            $data           = $this->postBaseData();
             $data['sqlKey'] = $sqlKey;
             $data['param']  = $param;
             
@@ -50,7 +50,7 @@ class SqlSdk extends SdkBase{
         $key = __CLASS__.__METHOD__.$sqlKey;
         return SqlCache::funcGet($key,function () use ($sqlKey) {        
             $url    = static::sdkUrl('sql/sql/searchFields');
-            $data           = [];
+            $data           = $this->postBaseData();
             $data['sqlKey'] = $sqlKey;
 
             $res            = QLogSdk::postAndLog($url, $data);
@@ -86,7 +86,7 @@ class SqlSdk extends SdkBase{
         $key = __CLASS__.__METHOD__.$keyRaw;
         return SqlCache::funcGet($key,function () use ($sqlParam) {        
             $url    = static::sdkUrl('sql/sql/joinSqlGenerate');
-            $data           = [];
+            $data           = $this->postBaseData();
             $data['sqlParam'] = $sqlParam;
 
             $res            = QLogSdk::postAndLog($url, $data);
