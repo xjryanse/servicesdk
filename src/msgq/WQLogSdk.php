@@ -27,9 +27,11 @@ class WQLogSdk extends SdkBase{
         $endMTs     = intval(microtime(true) * 1000);
 
         $urlStr = $host.':'.$port.'/'.$url;
-        
+        if(!$resp){
+            throw new Exception(gethostname().'接口无值:'.$urlStr.'请求参数'. json_encode($param, JSON_UNESCAPED_UNICODE));
+        }
         //2026年1月22日
-        if(!$resp || $resp['code'] <> 0){
+        if($resp['code'] <> 0){
             $msgStr = Arrays::value($resp, 'message');
             throw new Exception(gethostname().'接口异常:'.$urlStr.'内容:'.$msgStr.'请求参数'. json_encode($param, JSON_UNESCAPED_UNICODE));
         }
