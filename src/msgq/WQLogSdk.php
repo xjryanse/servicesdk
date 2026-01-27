@@ -21,7 +21,6 @@ class WQLogSdk extends SdkBase{
         $qParam = [];
         $qParam['url']   = $url;
         $qParam['param'] = $param;
-        
         $startMTs   = intval(microtime(true) * 1000);
         $resp       = TcpSync::request($host, $port, $qParam);
         $endMTs     = intval(microtime(true) * 1000);
