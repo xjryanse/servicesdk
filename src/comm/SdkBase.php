@@ -19,4 +19,12 @@ abstract class SdkBase {
         }
         $this->uuid = $uuid;
     }
+    /**
+     * 2026年1月27日：post请求的基础数据
+     */
+    protected function postBaseData(){
+        $data['svBindId']   = $this->uuid;
+        return $data;
+    }
+    
 }
