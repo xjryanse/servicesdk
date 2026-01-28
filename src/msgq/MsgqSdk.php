@@ -57,6 +57,7 @@ class MsgqSdk extends SdkBase{
     public function msgqCallBack($msgId){
         $url            = 'http://'.$this->sdkIp().':9907/msgq/busi_msg/callback';
         $data['msgId']  = $msgId;
+        $data['svBindId']       = $this->uuid;
         $res            = Query::posturl($url, $data);
         return $res;
     }
@@ -67,6 +68,7 @@ class MsgqSdk extends SdkBase{
     public function msgqLogCallBack($msgId){
         $url            = 'http://'.$this->sdkIp().':9907/msgq/log_msg/callback';
         $data['msgId']  = $msgId;
+        $data['svBindId']       = $this->uuid;
         
         $res            = Query::posturl($url, $data);
         

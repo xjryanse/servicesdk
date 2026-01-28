@@ -43,7 +43,7 @@ class EntrySdk {
             throw new Exception('不支持的域名'.$host);
         }
         $cacheKey = __METHOD__.$host;
-        SCache::rm($cacheKey);
+        // SCache::rm($cacheKey);
         return SCache::funcGet($cacheKey, function () use ($host){        
             $url = static::sdkUrl('entry/host/bindInfo');
             // 默认发本地消息中间件
