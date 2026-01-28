@@ -32,7 +32,7 @@ class DbSdk {
         // 业务库配置
         $dbInfo     = Arrays::value($confArr, $dbCate);
         if(!$dbInfo){
-            throw new Exception('没有配置数据库'.$dbCate.'信息');
+            throw new Exception($hostBindId.'没有配置数据库'.$dbCate.'信息');
         }
         return $dbInfo['id'];
     }
