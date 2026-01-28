@@ -41,6 +41,30 @@ trait SqlTraits{
         }
         return $res['data'];
     }
+    
+    public function sqlDataFind($sqlKey, $orderBy='', $param=[]){
+        $url = static::sdkUrl('data/sql/paginate');
+        
+        $param['sqlKey']        = $sqlKey;
+        if($orderBy){
+            $param['orderBy']    = $orderBy;
+        }
+        // 2026年1月21日：新增dbId入参
+        // 2026年1月21日：新增dbId入参
+        $param['dbId']       = $this->dbId;
+        $param['svBindId']   = $this->uuid;
+
+        $baseUrl = 'data/sql/paginate';
+        // 默认发本地消息中间件
+        // TODO:配置解耦
+        $host = $this->workerIp();
+        $port = $this->workerPort();
+        $res = WQLogSdk::request($host, $port, $baseUrl, $param);        
+        if(!$res){
+            throw new Exception('没有获取到接口数据:'.$url);
+        }
+        return $res['data'];
+    }
 
     /**
      * 20260102
