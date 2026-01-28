@@ -108,8 +108,6 @@ trait TableTraits{
     public function tableDataList($tableName, $orderBy='', $param=[], string $allowFields= ''){
         $baseUrl = 'data/table/list';
         
-        $url = static::sdkUrl($baseUrl);
-        
         $postP                   = [];
         $postP['table_name']     = $tableName;
         // 逗号分割
@@ -128,7 +126,7 @@ trait TableTraits{
         $res = WQLogSdk::request($host, $port, $baseUrl, $postP);
         // $res                    = QLogSdk::postAndLog($url, $postP);
         if(!$res){
-            throw new Exception('没有获取到接口数据:'.$url);
+            throw new Exception('没有获取到接口数据:'.$baseUrl);
         }
         return $res['data'];
     }
