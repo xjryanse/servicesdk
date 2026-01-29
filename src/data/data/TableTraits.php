@@ -170,17 +170,16 @@ trait TableTraits{
      * @param type $type    消息类型
      * @param type $param   参数
      */
-    public function tableDataDtlCount($tableName,$id){
+    public function tableDataDtlCount($tableName,$id, $field='inventory_id'){
         $url = static::sdkUrl('data/table/dtlCount');
         // 默认发本地消息中间件
         // TODO:配置解耦
         $data['table_name'] = $tableName;
-        $data['field']      = 'inventory_id';
+        $data['field']      = $field;
         $data['fieldIds']   = $id;
         // 2026年1月21日：新增dbId入参
         $data['dbId']       = $this->dbId;
         $data['svBindId']   = $this->uuid;
-        
         $res                    = QLogSdk::postAndLog($url, $data);
         return $res['data'];
     }
@@ -212,31 +211,17 @@ trait TableTraits{
      * @return type
      */
     public function tableDataUpdate($tableName, $data){
-//        $url                    = static::sdkUrl('data/table/update');
-//        $param['table_name']     = $tableName;
-//        $param['table_data']     = $data;
-//        // 2026年1月21日：新增dbId入参
-//        $param['dbId']       = $this->dbId;
-//        $param['svBindId']   = $this->uuid;        
-//        
-//        $res                    = QLogSdk::postAndLog($url, $param);
-//        if(!$res){
-//            throw new Exception('没有获取到接口数据:'.$url);
-//        }
-//        return $res['data'];
-//        
-//        
-
-        $baseUrl = 'data/table/update';
+        $url                    = static::sdkUrl('data/table/update');
         $param['table_name']     = $tableName;
         $param['table_data']     = $data;
         // 2026年1月21日：新增dbId入参
         $param['dbId']       = $this->dbId;
-        $param['svBindId']   = $this->uuid;   
+        $param['svBindId']   = $this->uuid;        
         
-        $host = $this->workerIp();
-        $port = $this->workerPort();
-        $res = WQLogSdk::request($host, $port, $baseUrl, $param);    
+        $res                    = QLogSdk::postAndLog($url, $param);
+        if(!$res){
+            throw new Exception('没有获取到接口数据:'.$url);
+        }
         return $res['data'];
     }    
     
@@ -293,18 +278,14 @@ trait TableTraits{
      * @return type
      */
     public function tableFieldArr($tableName){
-        $baseUrl = 'data/table/fieldArr';
-        // 默认发本地消息中间件
-        // TODO:配置解耦
-        $data['table_name'] = $tableName;
+        $url                    = static::sdkUrl('data/table/fieldArr');
+        $param['table_name']     = $tableName;
         // 2026年1月21日：新增dbId入参
-        $data['dbId']       = $this->dbId;
-        $data['svBindId']   = $this->uuid;
+        $param['dbId']       = $this->dbId;
+        $param['svBindId']   = $this->uuid;        
         
-        $host = $this->workerIp();
-        $port = $this->workerPort();
-        $res = WQLogSdk::request($host, $port, $baseUrl, $data);        
-        return $res['data'];        
+        $res                    = QLogSdk::postAndLog($url, $param);
+        return $res['data'];
     }    
     
 }
