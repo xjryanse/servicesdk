@@ -272,4 +272,21 @@ trait TableTraits{
         }
         return $res['data'];
     }
+    
+    /**
+     * 2026年1月29日获取数据表有的字段
+     * @param type $tableName
+     * @return type
+     */
+    public function tableFieldArr($tableName){
+        $url                    = static::sdkUrl('data/table/fieldArr');
+        $param['table_name']     = $tableName;
+        // 2026年1月21日：新增dbId入参
+        $param['dbId']       = $this->dbId;
+        $param['svBindId']   = $this->uuid;        
+        
+        $res                    = QLogSdk::postAndLog($url, $param);
+        return $res['data'];
+    }    
+    
 }
