@@ -95,9 +95,7 @@ trait TableTraits{
         $param['condition']  = $con;
 
         $baseUrl    = 'data/table/paginate';
-        $host       = $this->workerIp();
-        $port       = $this->workerPort();
-        $res        = WQLogSdk::request($host, $port, $baseUrl, $param);           
+        $res        = $this->queryLog($baseUrl, $param, 'worker');
         return $res['data'];
     }
     
