@@ -29,7 +29,7 @@ trait TableBatchTraits{
     }
     
     /**
-     * 
+     * 【ok】
      * @param type $tableName
      * @param type $tableData   二维数组；带id
      * @return type
@@ -47,7 +47,25 @@ trait TableBatchTraits{
         $res                    = QLogSdk::postAndLog($url, $data);
         return $res['data'];
     }
-
+    /**
+     * 【ok】
+     * @param type $tableName
+     * @param type $ids   一维id
+     * @return type
+     */
+    public function tableBatchDataDelete($tableName,$ids){
+        $url = static::sdkUrl('data/tableBatch/delete');
+        // 默认发本地消息中间件
+        // TODO:配置解耦
+        $data['table_name']         = $tableName;
+        $data['table_data']['id']   = $ids;
+        // 2026年1月21日：新增dbId入参
+        $data['dbId']       = $this->dbId;
+        $data['svBindId']   = $this->uuid;
+        
+        $res                    = QLogSdk::postAndLog($url, $data);
+        return $res['data'];
+    }
     /**
      * 2026年1月25日
      * @param type $tableName
@@ -75,6 +93,9 @@ trait TableBatchTraits{
      * @return type
      */
     public function tableBatchDataSave($tableName,$tableData, $uniqueField = 'id'){
+/*
+ *      不开发了。由本地先处理，再决定是新增；更新还是删除；减少io开销
+ * 
         $url = static::sdkUrl('data/tableBatch/save');
         // 默认发本地消息中间件
         // TODO:配置解耦
@@ -88,6 +109,8 @@ trait TableBatchTraits{
 
         $res                    = QLogSdk::postAndLog($url, $data);
         return $res['data'];
+ * 
+ */
     }
 
 }
