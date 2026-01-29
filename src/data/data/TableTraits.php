@@ -84,14 +84,15 @@ trait TableTraits{
      * @param type $tableName
      * @return type
      */
-    public function tableDataPaginate($tableName, $orderBy='', $param=[]){
+    public function tableDataPaginate($tableName, $orderBy='', $con=[]){
         $param['table_name']     = $tableName;
         if($orderBy){
             $param['orderBy']    = $orderBy;
         }
         // 2026年1月21日：新增dbId入参
-        $param['dbId']          = $this->dbId;
+        $param['dbId']       = $this->dbId;
         $param['svBindId']   = $this->uuid;
+        $param['condition']  = $con;
 
         $baseUrl    = 'data/table/paginate';
         $host       = $this->workerIp();
