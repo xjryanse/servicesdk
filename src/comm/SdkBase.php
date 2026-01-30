@@ -1,6 +1,8 @@
 <?php
 namespace xjryanse\servicesdk\comm;
 
+use xjryanse\servicesdk\msgq\QLogSdk;
+use xjryanse\servicesdk\msgq\WQLogSdk;
 use Exception;
 /**
  * 17点20分
@@ -27,4 +29,24 @@ abstract class SdkBase {
         return $data;
     }
     
+    /**
+     * 
+     * @param type $baseUrl
+     * @param type $data
+     * @param type $channel
+     */
+    public function queryLog($baseUrl, $data, $channel){
+        if(!in_array($channel,['curl','worker'])){
+            throw new Exception('不支持的请求方式');
+        }
+        if($channel == 'curl'){
+            $url = static::sdkUrl($baseUrl);
+            return QLogSdk::postAndLog($url, $data);
+        }
+        if($channel == 'worker'){
+            $host       = $this->workerIp();
+            $port       = $this->workerPort();
+            return WQLogSdk::request($host, $port, $baseUrl, $data); 
+        }
+    }
 }
