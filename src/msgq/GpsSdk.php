@@ -30,10 +30,11 @@ class GpsSdk extends SdkBase{
      * @param type $type    消息类型
      * @param type $param   参数
      */
-    public static function gpsGenerate($msgId, $type, $param){
+    public function gpsGenerate($msgId, $type, $param){
         // $url = 'http://'.static::sdkIp().':9907/msgq/busi_msg/produce';     
         $url = static::sdkUrl('msgq/gps_msg/produce');
         // 默认发本地消息中间件
+        $data = $this->postBaseData();
         $data['msgId']          = $msgId;
         $data['type']           = $type;
         $data['msg']            = [$param];
@@ -51,10 +52,11 @@ class GpsSdk extends SdkBase{
     /**
      * 消息回调上报
      */
-    public static function gpsCallBack($msgId){
+    public function gpsCallBack($msgId){
         // $url            = 'http://'.static::sdkIp().':9907/msgq/busi_msg/callback';
         $url = static::sdkUrl('msgq/gps_msg/callback');
 
+        $data = $this->postBaseData();
         $data['msgId']  = $msgId;
         $res            = Query::posturl($url, $data);
         return $res;
@@ -67,6 +69,8 @@ class GpsSdk extends SdkBase{
         // $url            = 'http://'.static::sdkIp().':9907/msgq/log_msg/callback';
         $url = static::sdkUrl('msgq/log_msg/callback');
         
+        
+        $data = $this->postBaseData();
         $data['msgId']  = $msgId;
         
         $res            = Query::posturl($url, $data);
