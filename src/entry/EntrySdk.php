@@ -70,7 +70,7 @@ class EntrySdk {
             throw new Exception('不支持的绑定id格式');
         }
 
-        $cacheKey = __METHOD__.$bindId;
+        $cacheKey = __METHOD__.md5(static::sdkIp()).$bindId;
         // SCache::rm($cacheKey);
         return SCache::funcGet($cacheKey, function () use ($bindId){
             $url = static::sdkUrl('entry/host/bindIdInfo');
@@ -92,7 +92,7 @@ class EntrySdk {
      * @param type $param   参数
      */
     public static function companyKeyInfo($key){
-        $cacheKey = __METHOD__.$key;
+        $cacheKey = __METHOD__.md5(static::sdkIp()).$key;
         // SCache::rm($cacheKey);
         return SCache::funcGet($cacheKey, function () use ($key){
             $url    = static::sdkUrl('entry/company/keyInfo');
@@ -115,7 +115,7 @@ class EntrySdk {
      * @param type $param   参数
      */
     public static function companyIdInfo($id){
-        $cacheKey = __METHOD__.$id;
+        $cacheKey = __METHOD__.md5(static::sdkIp()).$id;
         // SCache::rm($cacheKey);
         return SCache::funcGet($cacheKey, function () use ($id){
             $url    = static::sdkUrl('entry/company/info');
@@ -134,8 +134,8 @@ class EntrySdk {
      * @param type $serverKey:比如db_data
      */
     public static function serverList($bindId, $serverKey):array{
-        $info = static::bindIdInfo($bindId);
-        $servers = Arrays::value($info, 'servers')?:[];
+        $info       = static::bindIdInfo($bindId);
+        $servers    = Arrays::value($info, 'servers')?:[];
         return Arrays::value($servers, $serverKey) ?:[];
     }
     
