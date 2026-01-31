@@ -15,13 +15,14 @@ class FileSdk extends SdkBase{
     /**
      * 优化成功：20260115
      * 执行校验
-     * @param type $sqlKey
-     * @param type $param
+     * @param type $url
+     * @param type $folder
      */
-    public function uploadFromUrl(string $url){
+    public function uploadFromUrl(string $url, $folder='images'){
         $baseUrl        = 'file/upload/fromUrl';
         $data           = $this->postBaseData();
         $data['url']    = $url;
+        $data['folder'] = $folder;
         
         $res        = $this->queryLog($baseUrl, $data, 'curl');
         return $res['data'];     
