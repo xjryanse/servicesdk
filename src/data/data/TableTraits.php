@@ -84,7 +84,7 @@ trait TableTraits{
      * @param type $tableName
      * @return type
      */
-    public function tableDataPaginate($tableName, $orderBy='', $con=[]){
+    public function tableDataPaginate($tableName, $orderBy='', $con=[], $param=[]){
         $param['table_name']     = $tableName;
         if($orderBy){
             $param['orderBy']    = $orderBy;
@@ -95,7 +95,7 @@ trait TableTraits{
         $param['condition']  = $con;
 
         $baseUrl    = 'data/table/paginate';
-        $res        = $this->queryLog($baseUrl, $param, 'worker');
+        $res        = $this->queryLog($baseUrl, $param, 'curl');
         return $res['data'];
     }
     
