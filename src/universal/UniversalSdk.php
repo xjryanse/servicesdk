@@ -23,6 +23,8 @@ class UniversalSdk extends SdkBase{
         $key = __CLASS__.__METHOD__.$pageItemId;
         return PCache::funcGet($key,function () use ($pageItemId) {
             $url = static::sdkUrl('universal/table/dynArrs');
+            // 2026年2月1日
+            $data = $this->postBaseData();
             // 默认发本地消息中间件
             // TODO:配置解耦
             $data['page_item_id'] = $pageItemId;
