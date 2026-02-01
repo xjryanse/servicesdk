@@ -30,7 +30,7 @@ trait BindSdkTrait{
             $list       = EntrySdk::serverList($bindId, $serverKey);
             if(!$list){
                 $info = EntrySdk::bindIdInfo($bindId);
-                throw new Exception('绑定号'.$bindId.'对应的域名'.$info['host'].'没有配置'.$serverKey.'服务的参数，请联系运维配置');
+                throw new Exception('绑定号'.$bindId.'对应的域名'.$info['host'].'没有配置'.$serverKey.'服务的参数,cacheKey:bindIdInfo');
             }
             // 随机从多个数组中取一条记录
             $this->serverInfo = $list[array_rand($list)];
