@@ -22,6 +22,14 @@ abstract class SdkBase {
         $this->uuid = $uuid;
     }
     /**
+     * 用svBindId作为实例
+     */
+    public static function svInst(){
+        global $svBindId;
+        return static::inst($svBindId);
+    }
+    
+    /**
      * 2026年1月27日：post请求的基础数据
      */
     protected function postBaseData(){

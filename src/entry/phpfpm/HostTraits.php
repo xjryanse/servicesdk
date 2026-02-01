@@ -20,5 +20,16 @@ trait HostTraits {
         return $bindInfo ? $bindInfo['id'] : '';
     }
 
+    /**
+     * 2026年2月1日：phpfpm环境下
+     */
+    public static function currentHostBindInfo(){
+        $host       = Request::host();
+        $bindInfo   = static::hostBindInfo($host);
+        if(!$bindInfo){
+            throw new Exception('没有配置域名绑定信息'.$host);
+        }
+        return $bindInfo;
+    }    
 }
 

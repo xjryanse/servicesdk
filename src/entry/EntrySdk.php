@@ -71,7 +71,7 @@ class EntrySdk {
         }
 
         $cacheKey = __METHOD__.md5(static::sdkIp()).$bindId;
-        // SCache::rm($cacheKey);
+        //SCache::rm($cacheKey);
         return SCache::funcGet($cacheKey, function () use ($bindId){
             $url = static::sdkUrl('entry/host/bindIdInfo');
             // 默认发本地消息中间件
