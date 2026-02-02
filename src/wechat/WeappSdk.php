@@ -16,7 +16,8 @@ class WeappSdk extends SdkBase{
      * @param type $param   参数
      */
     public function getComKeyByAppId($appid){
-        $baseUrl        = 'wechat/company/getComKey';
+        $baseUrl        = 'weapp/company/getComKey';
+        $data           = $this->postBaseData();
         $data['appid']  = $appid;
         $res            = $this->queryLog($baseUrl, $data, 'curl');
         return $res['data'];        
