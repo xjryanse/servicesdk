@@ -16,7 +16,7 @@ class WeappSdk extends SdkBase{
      * @param type $param   参数
      */
     public function getComKeyByAppId($appid){
-        $baseUrl        = 'weapp/company/getComKey';
+        $baseUrl        = 'weapp/weapp/getComKey';
         $data           = $this->postBaseData();
         $data['appid']  = $appid;
         $res            = $this->queryLog($baseUrl, $data, 'curl');
@@ -35,4 +35,17 @@ class WeappSdk extends SdkBase{
         return $res['data'];        
     }
     
+    /**
+     * 2026年2月2日
+     * @param type $appid
+     * @return type
+     */
+    public function codeToSession($appid, $code){
+        $baseUrl        = 'weapp/session/codeToSession';
+        $data           = $this->postBaseData();
+        $data['appid']  = $appid;
+        $data['code']   = $code;
+        $res            = $this->queryLog($baseUrl, $data, 'curl');
+        return $res['data'];        
+    }
 }
