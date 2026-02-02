@@ -19,10 +19,30 @@ trait PageTraits{
             $url = static::sdkUrl('universal/page/config');
             // 默认发本地消息中间件
             // TODO:配置解耦
+            $data = $this->postBaseData();            
             $data['pageKey']    = $pageKey;
-            $data['svBindId']   = $this->uuid;
             
             $res                = QLogSdk::postAndLog($url, $data);
+            return $res['data'];
+        });
+    }
+    
+    /**
+     * 2026年1月23日
+     * @param type $pageKey
+     * @return type
+     */
+    public function defaultPageKey($companyId, $cate){
+        $key = __CLASS__.__METHOD__.$companyId.$cate;
+        // PCache::rm($key);        
+        return PCache::funcGet($key,function () use ($companyId, $cate) {
+            $baseUrl = 'universal/page/defaultPageKey';
+            // 默认发本地消息中间件
+            $data               = $this->postBaseData();            
+            $data['company_id'] = $companyId;
+            $data['cate']       = $cate;
+
+            $res                = $this->queryLog($baseUrl, $data, 'curl');
             return $res['data'];
         });
     }
