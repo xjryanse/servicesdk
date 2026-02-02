@@ -22,5 +22,17 @@ class WeappSdk extends SdkBase{
         $res            = $this->queryLog($baseUrl, $data, 'curl');
         return $res['data'];        
     }
+    /**
+     * 2026年2月2日
+     * @param type $appid
+     * @return type
+     */
+    public function getByAppid($appid){
+        $baseUrl        = 'weapp/weapp/getByAppid';
+        $data           = $this->postBaseData();
+        $data['appid']  = $appid;
+        $res            = $this->queryLog($baseUrl, $data, 'curl');
+        return $res['data'];        
+    }
     
 }
