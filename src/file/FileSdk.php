@@ -29,4 +29,17 @@ class FileSdk extends SdkBase{
         $res        = $this->queryLog($baseUrl, $data, 'curl');
         return $res['data'];     
     }
+    
+
+    /**
+     * 获取文件信息
+     */
+    public function infoIdMap($ids){
+        $baseUrl                = 'file/info/idMap';
+        $data                   = $this->postBaseData();
+        $data['id']             = $ids;
+
+        $res        = $this->queryLog($baseUrl, $data, 'curl');
+        return $res['data'];     
+    }
 }
