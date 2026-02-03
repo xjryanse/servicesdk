@@ -3,6 +3,7 @@ namespace xjryanse\servicesdk\entry;
 
 use xjryanse\phplite\curl\Query;
 // use xjryanse\servicesdk\msgq\QLogSdk;
+use xjryanse\phplite\tcp\Sync as TcpSync;
 use xjryanse\phplite\logic\Arrays;
 use xjryanse\phplite\cache\SCache;
 use Exception;
@@ -31,6 +32,18 @@ class EntrySdk {
     protected static function sdkUrl($path){
         return 'http://'.static::sdkIp().':'.static::sdkPort().'/'.$path;  
     }
+    /**
+     * 
+     */
+    protected static function wQuery($baseUrl , $param ){
+        $host       = '127.0.0.1';
+        $port       = '19919';
+        
+        $qParam['url']   = $baseUrl;
+        $qParam['param'] = $param;
+        
+        return TcpSync::request($host, $port, $qParam);
+    }
     
     /**
      * 取单条数据（一般是phpfpm调用）
@@ -45,14 +58,10 @@ class EntrySdk {
         $cacheKey = __METHOD__.$host;
         // SCache::rm($cacheKey);
         return SCache::funcGet($cacheKey, function () use ($host){        
-            $url = static::sdkUrl('entry/host/bindInfo');
-            // 默认发本地消息中间件
-            // TODO:配置解耦
+            // $url = static::sdkUrl('entry/host/bindInfo');
+            $baseUrl        = 'entry/host/bindInfo';
             $data['host']   = $host;
-            $res                    = Query::posturl($url, $data);
-            if(!$res){
-                throw new Exception('没有获取到接口数据:'.$url.'参数:'. json_encode($data,JSON_UNESCAPED_UNICODE));
-            }                    
+            $res = static::wQuery($baseUrl, $data);
             return $res['data'];
         });
     }
@@ -73,14 +82,11 @@ class EntrySdk {
         $cacheKey = __METHOD__.md5(static::sdkIp()).$bindId;
         //SCache::rm($cacheKey);
         return SCache::funcGet($cacheKey, function () use ($bindId){
-            $url = static::sdkUrl('entry/host/bindIdInfo');
+            $baseUrl    = 'entry/host/bindIdInfo';
             // 默认发本地消息中间件
             // TODO:配置解耦
             $data['bindId']   = $bindId;
-            $res              = Query::posturl($url, $data);
-            if(!$res){
-                throw new Exception('没有获取到接口数据:'.$url.'参数:'. json_encode($data,JSON_UNESCAPED_UNICODE));
-            }            
+            $res        = static::wQuery($baseUrl, $data);
             return $res ? $res['data'] : [];
         });
     }
@@ -95,14 +101,13 @@ class EntrySdk {
         $cacheKey = __METHOD__.md5(static::sdkIp()).$key;
         // SCache::rm($cacheKey);
         return SCache::funcGet($cacheKey, function () use ($key){
-            $url    = static::sdkUrl('entry/company/keyInfo');
             // 默认发本地消息中间件
             // TODO:配置解耦
             $data['key']   = $key;
-            $res    = Query::posturl($url, $data);
-            if(!$res){
-                throw new Exception('没有获取到接口数据:'.$url.'参数:'. json_encode($data,JSON_UNESCAPED_UNICODE));
-            }            
+            
+            $baseUrl    = 'entry/company/keyInfo';
+            $res        = static::wQuery($baseUrl, $data);
+
             return isset($res['data']) ? $res['data'] : null;
         });
     }
@@ -118,14 +123,10 @@ class EntrySdk {
         $cacheKey = __METHOD__.md5(static::sdkIp()).$id;
         // SCache::rm($cacheKey);
         return SCache::funcGet($cacheKey, function () use ($id){
-            $url    = static::sdkUrl('entry/company/info');
-            // 默认发本地消息中间件
             // TODO:配置解耦
-            $data['id']   = $id;
-            $res    = Query::posturl($url, $data);
-            if(!$res){
-                throw new Exception('没有获取到接口数据:'.$url.'参数:'. json_encode($data,JSON_UNESCAPED_UNICODE));
-            }            
+            $data['id']     = $id;
+            $baseUrl        = 'entry/company/info';
+            $res            = static::wQuery($baseUrl, $data);
             return isset($res['data']) ? $res['data'] : null;
         });
     }

@@ -71,15 +71,17 @@ trait PageTraits{
      * @param type $pageKey
      * @return type
      */
-    public function pageItemVue($pageKey){
+    public function pageItemVue($pageKey, $pageDbSource){
         $key = __CLASS__.__METHOD__.$pageKey;
         PCache::rm($key);
-        return PCache::funcGet($key,function () use ($pageKey) {
+        return PCache::funcGet($key,function () use ($pageKey, $pageDbSource) {
             $url = static::sdkUrl('universal/page/itemVue');
             // 默认发本地消息中间件
             // TODO:配置解耦
-            $data['pageKey']    = $pageKey;
-            $data['svBindId']   = $this->uuid;
+            $data = $this->postBaseData();
+            $data['pageKey']        = $pageKey;
+            $data['pageDbSource']   = $pageDbSource;
+            
             $res                = QLogSdk::postAndLog($url, $data);
             return $res['data'];
         });
