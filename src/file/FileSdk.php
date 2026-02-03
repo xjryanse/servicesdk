@@ -30,7 +30,6 @@ class FileSdk extends SdkBase{
         return $res['data'];     
     }
     
-
     /**
      * 获取文件信息
      */
@@ -42,4 +41,17 @@ class FileSdk extends SdkBase{
         $res        = $this->queryLog($baseUrl, $data, 'curl');
         return $res['data'];     
     }
+    
+    /**
+     * 获取文件信息
+     */
+    public function get($id){
+        $baseUrl                = 'file/info/get';
+        $data                   = $this->postBaseData();
+        $data['id']             = $id;
+
+        $res        = $this->queryLog($baseUrl, $data, 'curl');
+        return $res['data'];     
+    }    
+    
 }
