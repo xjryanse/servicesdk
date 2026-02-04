@@ -16,14 +16,16 @@ trait PageTraits{
         $key = __CLASS__.__METHOD__.$pageKey;
         PCache::rm($key);        
         return PCache::funcGet($key,function () use ($pageKey, $pageDbSource) {
-            $url = static::sdkUrl('universal/page/config');
+            // $url = static::sdkUrl('universal/page/config');
             // 默认发本地消息中间件
             // TODO:配置解耦
             $data = $this->postBaseData();            
             $data['pageKey']        = $pageKey;
             $data['pageDbSource']   = $pageDbSource;
             
-            $res                = QLogSdk::postAndLog($url, $data);
+            $baseUrl    = 'universal/page/config';
+            $res        = $this->queryLog($baseUrl, $data, 'curl');
+            // $res                = QLogSdk::postAndLog($url, $data);
             return $res['data'];
         });
     }
