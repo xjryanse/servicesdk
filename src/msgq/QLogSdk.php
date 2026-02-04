@@ -3,7 +3,6 @@ namespace xjryanse\servicesdk\msgq;
 
 use xjryanse\servicesdk\comm\SdkBase;
 use xjryanse\phplite\curl\Query;
-use xjryanse\phplite\facade\Request;
 use xjryanse\phplite\logic\Redis;
 use Exception;
 /**
@@ -48,7 +47,7 @@ class QLogSdk extends SdkBase{
             'micro_diff'        => $endMTs - $startMTs,
             'url'               => $url,
             'queryType'         => 'http',
-            'host'              => Request::host(),
+            'host'              => 'todo',
             // 请求源主机标识
             'sourceHostName'    => gethostname(),
             'request'           => json_encode($request,JSON_UNESCAPED_UNICODE),
