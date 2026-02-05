@@ -2,6 +2,7 @@
 namespace xjryanse\servicesdk\comm\traits;
 
 use xjryanse\servicesdk\entry\EntrySdk;
+use xjryanse\phplite\logic\Arrays;
 use Exception;
 /**
  * 缓存类

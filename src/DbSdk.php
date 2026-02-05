@@ -3,6 +3,7 @@ namespace xjryanse\servicesdk;
 
 use xjryanse\servicesdk\entry\EntrySdk;
 use xjryanse\phplite\logic\Arrays;
+use xjryanse\phplite\logic\Network;
 use Exception;
 /**
  * 异常消息通知1
@@ -33,6 +34,7 @@ class DbSdk {
         $dbInfo     = Arrays::value($confArr, $dbCate);
         if(!$dbInfo){
             $sdkIp = EntrySdk::sdkIp();
+            $ips = Network::serverIps();
             throw new Exception($hostBindId.'没有配置数据库'.$dbCate.'信息，ip:'.$sdkIp);
         }
         return $dbInfo['id'];
