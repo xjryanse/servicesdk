@@ -87,6 +87,9 @@ class EntrySdk {
             // TODO:配置解耦
             $data['bindId']   = $bindId;
             $res        = static::wQuery($baseUrl, $data);
+            if($res['code']<>0){
+                throw new Exception('entry:'.$res['message']);
+            }
             return $res ? $res['data'] : [];
         });
     }
