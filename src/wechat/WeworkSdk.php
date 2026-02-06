@@ -1,6 +1,7 @@
 <?php
 namespace xjryanse\servicesdk\wechat;
 
+use xjryanse\servicesdk\comm\SdkBase;
 use xjryanse\servicesdk\msgq\WQLogSdk;
 use Exception;
 
