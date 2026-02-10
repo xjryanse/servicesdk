@@ -35,7 +35,7 @@ class DbSdk {
         if(!$dbInfo){
             $sdkIp = EntrySdk::sdkIp();
             $ips = Network::serverIps();
-            throw new Exception($hostBindId.'没有配置数据库'.$dbCate.'信息，ip:'.$sdkIp);
+            throw new Exception($ips[0].':'.$hostBindId.'没有配置数据库'.$dbCate.'信息，ip:'.$sdkIp);
         }
         return $dbInfo['id'];
     }
