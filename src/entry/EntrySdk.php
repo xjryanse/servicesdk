@@ -1,8 +1,6 @@
 <?php
 namespace xjryanse\servicesdk\entry;
 
-use xjryanse\phplite\curl\Query;
-// use xjryanse\servicesdk\msgq\QLogSdk;
 use xjryanse\phplite\tcp\Sync as TcpSync;
 use xjryanse\phplite\logic\Arrays;
 use xjryanse\phplite\cache\SCache;
@@ -14,6 +12,7 @@ use Exception;
 class EntrySdk {
 
     use \xjryanse\servicesdk\entry\phpfpm\HostTraits;
+    use \xjryanse\servicesdk\entry\svBind\SvBindTraits;
 
     /**
      * todo:198专用

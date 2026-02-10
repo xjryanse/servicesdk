@@ -30,6 +30,6 @@ trait HostTraits {
             throw new Exception('没有配置域名绑定信息'.$host);
         }
         return $bindInfo;
-    }    
+    }
 }
 
