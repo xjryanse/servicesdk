@@ -20,24 +20,11 @@ class WeworkSdk extends SdkBase{
      */
     public function webhookSendByMsgTplId($info){
         $baseUrl    = 'wework/webhook/sendByMsgTplId';
-        $host       = $this->workerIp();
-        $port       = $this->workerPort();
 
+        $data = $this->postBaseData();
         $data['info']   = $info;
-        $res        = WQLogSdk::request($host, $port, $baseUrl, $data);
-        if(!$res){
-            throw new Exception('消息发送不成功');
-        }
-
+        $res = $this->queryLog($baseUrl, $data, 'curl');
         return $res['data'];        
-/*
-        $url = static::sdkUrl('wework/webhook/sendByMsgTplId');
-        // 默认发本地消息中间件
-        // TODO:配置解耦
-        $data['info']   = $info;
-        $res            = QLogSdk::postAndLog($url, $data);
-        return $res['data'];
-*/
     }
     
 }
