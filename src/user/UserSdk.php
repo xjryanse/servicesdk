@@ -39,11 +39,12 @@ class UserSdk extends SdkBase{
      * @param type $param   参数
      */
     public function batchGet($userIds){
-        $url        = static::sdkUrl('user/user/batchGet');
+        $baseUrl    = 'user/user/batchGet';
         // 默认发本地消息中间件
+        $data = $this->postBaseData();
         $data['id']         = $userIds;
-        $data['svBindId']   = $this->uuid;
-        $res                = QLogSdk::postAndLog($url, $data);
+        
+        $res = $this->queryLog($baseUrl, $data, 'worker');
         return $res['data'];
     }
 }
