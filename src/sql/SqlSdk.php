@@ -24,19 +24,14 @@ class SqlSdk extends SdkBase{
     public function keyBaseSql(string $sqlKey,array $param = []){
         $pMd5 = Arrays::md5($param);
         $key = __CLASS__.__METHOD__.$sqlKey.$pMd5;
-        // dump($key);
+        // SqlCache::rm($key);
         return SqlCache::funcGet($key,function () use ($sqlKey, $param) {
             $baseUrl = 'sql/sql/keyBaseSql';
             $data           = $this->postBaseData();
             $data['sqlKey'] = $sqlKey;
             $data['param']  = $param;
             
-            $host = $this->workerIp();
-            $port = $this->workerPort();
-            $res = WQLogSdk::request($host, $port, $baseUrl, $data);
-            if(!$res['data']){
-                throw new Exception('没有获取到sql配置,请排查'.$sqlKey);
-            }
+            $res = $this->queryLog($baseUrl, $data, 'curl');
             return $res['data'];            
         });
     }
