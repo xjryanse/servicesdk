@@ -30,8 +30,7 @@ class SqlSdk extends SdkBase{
             $data           = $this->postBaseData();
             $data['sqlKey'] = $sqlKey;
             $data['param']  = $param;
-            
-            $res = $this->queryLog($baseUrl, $data, 'curl');
+            $res = $this->queryLog($baseUrl, $data, 'worker');
             return $res['data'];            
         });
     }
