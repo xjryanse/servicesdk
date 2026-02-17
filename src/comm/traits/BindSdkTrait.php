@@ -32,6 +32,7 @@ trait BindSdkTrait{
             if(!$list){
                 $info = EntrySdk::bindIdInfo($bindId);
                 $host = Arrays::value($info,'host');
+                EntrySdk::clearCache('bindIdInfo', $bindId);
                 throw new Exception('绑定号'.$bindId.'对应的域名'.$host.'没有配置'.$serverKey.'服务的参数，请联系运维配置');
             }
             // 随机从多个数组中取一条记录

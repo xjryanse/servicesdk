@@ -15,6 +15,7 @@ trait HostTraits {
         $host       = Request::host();
         $bindInfo   = static::hostBindInfo($host);
         if(!$bindInfo){
+            static::clearCache('hostBindInfo', $host);
             throw new Exception('没有配置域名绑定信息'.$host);
         }
         return $bindInfo ? $bindInfo['id'] : '';
@@ -27,6 +28,7 @@ trait HostTraits {
         $host       = Request::host();
         $bindInfo   = static::hostBindInfo($host);
         if(!$bindInfo){
+            static::clearCache('hostBindInfo', $host);
             throw new Exception('没有配置域名绑定信息'.$host);
         }
         return $bindInfo;

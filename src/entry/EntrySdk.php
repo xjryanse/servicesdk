@@ -54,7 +54,7 @@ class EntrySdk {
         if($host == '127.0.0.1'){
             throw new Exception('不支持的域名'.$host);
         }
-        $cacheKey = __METHOD__.$host;
+        $cacheKey = static::generateCacheKey(__FUNCTION__, $host);
         // SCache::rm($cacheKey);
         return SCache::funcGet($cacheKey, function () use ($host){        
             // $url = static::sdkUrl('entry/host/bindInfo');
@@ -78,8 +78,8 @@ class EntrySdk {
             throw new Exception('不支持的绑定id格式');
         }
 
-        $cacheKey = __METHOD__.md5(static::sdkIp()).$bindId;
-        SCache::rm($cacheKey);
+        $cacheKey = static::generateCacheKey(__FUNCTION__, $bindId);
+        // SCache::rm($cacheKey);
         return SCache::funcGet($cacheKey, function () use ($bindId){
             $baseUrl    = 'entry/host/bindIdInfo';
             // 默认发本地消息中间件
@@ -100,7 +100,7 @@ class EntrySdk {
      * @param type $param   参数
      */
     public static function companyKeyInfo($key){
-        $cacheKey = __METHOD__.md5(static::sdkIp()).$key;
+        $cacheKey = static::generateCacheKey(__FUNCTION__, $key);
         // SCache::rm($cacheKey);
         return SCache::funcGet($cacheKey, function () use ($key){
             // 默认发本地消息中间件
@@ -122,7 +122,7 @@ class EntrySdk {
      * @param type $param   参数
      */
     public static function companyIdInfo($id){
-        $cacheKey = __METHOD__.md5(static::sdkIp()).$id;
+        $cacheKey = static::generateCacheKey(__FUNCTION__, $id);
         // SCache::rm($cacheKey);
         return SCache::funcGet($cacheKey, function () use ($id){
             // TODO:配置解耦
@@ -142,4 +142,26 @@ class EntrySdk {
         return Arrays::value($servers, $serverKey) ?:[];
     }
     
+    /**
+     * 集中管理缓存规则
+     * @param string $method
+     * @param type $subFix
+     * @return string
+     */
+    protected static function generateCacheKey(string $method, $subFix = null): string {
+        $key = __METHOD__.$method . md5(static::sdkIp());
+        if ($subFix !== null) {
+            $key .= $subFix;
+        }
+        return $key;
+    }
+    
+    /**
+     * 
+     * @param type $key
+     */
+    public static function clearCache($method, $key){
+        $cacheKey = static::generateCacheKey($method, $key);
+        SCache::rm($cacheKey);
+    }
 }
