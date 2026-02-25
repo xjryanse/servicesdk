@@ -15,12 +15,16 @@ trait DbTraits {
      */
     public static function dbInfo($dbId){
         $cacheKey = static::generateCacheKey(__FUNCTION__, $dbId);
-        return SCache::funcGet($cacheKey, function () use ($dbId){        
+        $resp = SCache::funcGet($cacheKey, function () use ($dbId){        
             $baseUrl      = 'entry/dbCnn/get';
             $data['id']   = $dbId;
             $res = static::wQuery($baseUrl, $data);
             return $res['data'];
         });
+        if(!$resp){
+            SCache::rm($cacheKey);
+        }
+        return $resp;
     }
 }
 

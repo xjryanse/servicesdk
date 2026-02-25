@@ -41,7 +41,6 @@ class EntrySdk {
         
         $qParam['url']   = $baseUrl;
         $qParam['param'] = $param;
-        
         return TcpSync::request($host, $port, $qParam);
     }
     
