@@ -35,6 +35,8 @@ class DbSdk {
         if(!$dbInfo){
             $sdkIp = EntrySdk::sdkIp();
             $ips = Network::serverIps();
+            //2026年2月25日
+            EntrySdk::clearCache('bindIdInfo', $hostBindId);
             throw new Exception($ips[0].':'.$hostBindId.'没有配置数据库'.$dbCate.'信息，ip:'.$sdkIp);
         }
         return $dbInfo['id'];
