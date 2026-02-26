@@ -190,17 +190,15 @@ trait TableTraits{
      * @return type
      */
     public function tableDataInsert($tableName, $data){
-        $url = static::sdkUrl('data/table/insert');
+        // $url = static::sdkUrl('data/table/insert');
+        $baseUrl = 'data/table/insert';
         $param['table_name'] = $tableName;
         $param['table_data'] = $data;
         // 2026年1月21日：新增dbId入参
         $param['dbId']       = $this->dbId;
         $param['svBindId']   = $this->uuid;
         
-        $res                    = QLogSdk::postAndLog($url, $param);
-        if(!$res){
-            throw new Exception('没有获取到接口数据:'.$url);
-        }
+        $res = $this->queryLog($baseUrl, $param, 'worker');
         return $res['data'];
     }
 
@@ -277,13 +275,14 @@ trait TableTraits{
      * @return type
      */
     public function tableFieldArr($tableName){
-        $url                    = static::sdkUrl('data/table/fieldArr');
+        $baseUrl = 'data/table/fieldArr';
         $param['table_name']     = $tableName;
         // 2026年1月21日：新增dbId入参
         $param['dbId']       = $this->dbId;
         $param['svBindId']   = $this->uuid;        
-        
-        $res                    = QLogSdk::postAndLog($url, $param);
+
+        $res = $this->queryLog($baseUrl, $param, 'worker');
+        // $res                    = QLogSdk::postAndLog($url, $param);
         return $res['data'];
     }    
     
