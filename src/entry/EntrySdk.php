@@ -4,6 +4,7 @@ namespace xjryanse\servicesdk\entry;
 use xjryanse\phplite\tcp\Sync as TcpSync;
 use xjryanse\phplite\logic\Arrays;
 use xjryanse\phplite\cache\SCache;
+use xjryanse\phplite\logic\Env;
 use Exception;
 /**
  * 2025年12月30日；11点20分
@@ -36,7 +37,7 @@ class EntrySdk {
      * 
      */
     protected static function wQuery($baseUrl , $param ){
-        $host       = '127.0.0.1';
+        $host       = Env::value('ServiceEntryHost') ? : '127.0.0.1';
         $port       = '19919';
         
         $qParam['url']   = $baseUrl;
