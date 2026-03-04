@@ -65,7 +65,7 @@ abstract class SdkBase {
      * @return string
      */
     protected function generateCacheKey(string $method, $subFix = null): string {
-        $key = __METHOD__.$method . md5($this->sdkIp());
+        $key = static::class.$method . md5($this->sdkIp());
         if ($subFix !== null) {
             $key .= $subFix;
         }
