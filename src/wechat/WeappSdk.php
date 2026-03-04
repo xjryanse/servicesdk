@@ -17,7 +17,6 @@ class WeappSdk extends SdkBase{
      */
     public function getComKeyByAppId($appid){
         $cacheKey = $this->generateCacheKey(__FUNCTION__, $appid);
-        // SCache::rm($cacheKey);
         $res = SCache::funcGet($cacheKey, function () use ($appid){
             $baseUrl        = 'weapp/weapp/getComKey';
             $data           = $this->postBaseData();
@@ -37,11 +36,19 @@ class WeappSdk extends SdkBase{
      * @return type
      */
     public function getByAppid($appid){
-        $baseUrl        = 'weapp/weapp/getByAppid';
-        $data           = $this->postBaseData();
-        $data['appid']  = $appid;
-        $res            = $this->queryLog($baseUrl, $data, 'curl');
-        return $res['data'];        
+        $cacheKey = $this->generateCacheKey(__FUNCTION__, $appid);
+        $res = SCache::funcGet($cacheKey, function () use ($appid){
+            $baseUrl        = 'weapp/weapp/getByAppid';
+            $data           = $this->postBaseData();
+            $data['appid']  = $appid;
+            $res            = $this->queryLog($baseUrl, $data, 'worker');
+            return $res['data'];
+        });
+        if(!$res){
+            SCache::rm($cacheKey);
+        }
+
+        return $res;        
     }
     
     /**
