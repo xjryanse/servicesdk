@@ -57,4 +57,18 @@ abstract class SdkBase {
             return WQLogSdk::request($host, $port, $baseUrl, $data); 
         }
     }
+    
+    /**
+     * 集中管理缓存规则
+     * @param string $method
+     * @param type $subFix
+     * @return string
+     */
+    protected function generateCacheKey(string $method, $subFix = null): string {
+        $key = __METHOD__.$method . md5($this->sdkIp());
+        if ($subFix !== null) {
+            $key .= $subFix;
+        }
+        return $key;
+    }
 }

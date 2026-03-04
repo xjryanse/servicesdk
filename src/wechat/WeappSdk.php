@@ -2,7 +2,7 @@
 namespace xjryanse\servicesdk\wechat;
 
 use xjryanse\servicesdk\comm\SdkBase;
-
+use xjryanse\phplite\cache\SCache;
 /**
  * 微信小程序接入sdk
  */
@@ -16,11 +16,20 @@ class WeappSdk extends SdkBase{
      * @param type $param   参数
      */
     public function getComKeyByAppId($appid){
-        $baseUrl        = 'weapp/weapp/getComKey';
-        $data           = $this->postBaseData();
-        $data['appid']  = $appid;
-        $res            = $this->queryLog($baseUrl, $data, 'curl');
-        return $res['data'];        
+        $cacheKey = $this->generateCacheKey(__FUNCTION__, $appid);
+        // SCache::rm($cacheKey);
+        $res = SCache::funcGet($cacheKey, function () use ($appid){
+            $baseUrl        = 'weapp/weapp/getComKey';
+            $data           = $this->postBaseData();
+            $data['appid']  = $appid;
+            $res            = $this->queryLog($baseUrl, $data, 'worker');
+            return $res['data'];               
+        });
+        if(!$res){
+            SCache::rm($cacheKey);
+        }
+        
+        return $res;
     }
     /**
      * 2026年2月2日
