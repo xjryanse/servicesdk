@@ -19,8 +19,7 @@ trait UniversalTraits{
     public function universalFormDynSearch(){
         $baseUrl    = 'data/universal/formDynSearch';
         $param      = $this->postBaseData();        
-        $param['dbId']       = $this->dbId;        
-
+        $param['dbId']       = $this->uuid;    
         $res        = $this->queryLog($baseUrl, $param, 'curl');
         return $res['data'];
 
