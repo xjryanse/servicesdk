@@ -17,7 +17,7 @@ trait TableTraits{
      * @param type $type    消息类型
      * @param type $param   参数
      */
-    public function tableDataGet($tableName,$id){
+    public function tableDataGet($tableName,$id, $emptyErr = true){
         $baseUrl = 'data/table/get';
         // 默认发本地消息中间件
         // TODO:配置解耦
@@ -26,6 +26,8 @@ trait TableTraits{
         // 2026年1月21日：新增dbId入参
         $data['dbId']       = $this->dbId;
         $data['svBindId']   = $this->uuid;
+        // 当没有取到数据时，是否抛异常？默认抛异常
+        $data['emptyErr']   = $emptyErr ? 1 : 0;
         
         $host = $this->workerIp();
         $port = $this->workerPort();
