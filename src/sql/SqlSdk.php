@@ -25,7 +25,7 @@ class SqlSdk extends SdkBase{
         $pMd5 = Arrays::md5($param);
         $key = __CLASS__.__METHOD__.$sqlKey.$pMd5;
         // SqlCache::rm($key);
-        return SqlCache::funcGet($key,function () use ($sqlKey, $param) {
+        $sql = SqlCache::funcGet($key,function () use ($sqlKey, $param) {
             $baseUrl = 'sql/sql/keyBaseSql';
             $data           = $this->postBaseData();
             $data['sqlKey'] = $sqlKey;
@@ -33,6 +33,11 @@ class SqlSdk extends SdkBase{
             $res = $this->queryLog($baseUrl, $data, 'worker');
             return $res['data'];            
         });
+        if(!$sql){
+            SqlCache::rm($key);
+        }
+
+        return $sql;
     }
 
     /**
