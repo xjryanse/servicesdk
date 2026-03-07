@@ -26,4 +26,10 @@ class DataSdk extends SdkBase{
         return $this;
     }
 
+    /**
+     * 调试使用
+     */
+    public function getDbId(){
+        return $this->dbId;
+    }
 }
