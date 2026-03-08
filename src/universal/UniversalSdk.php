@@ -12,6 +12,7 @@ class UniversalSdk extends SdkBase{
     protected static $serverKey = 'service_universal';
 
     use \xjryanse\servicesdk\universal\universal\PageTraits;
+    use \xjryanse\servicesdk\universal\universal\PageVueTraits;
     
     /**
      * 取单挑数据
