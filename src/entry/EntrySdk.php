@@ -102,8 +102,7 @@ class EntrySdk {
      */
     public static function companyKeyInfo($key){
         $cacheKey = static::generateCacheKey(__FUNCTION__, $key);
-        // SCache::rm($cacheKey);
-        return SCache::funcGet($cacheKey, function () use ($key){
+        $res = SCache::funcGet($cacheKey, function () use ($key){
             // 默认发本地消息中间件
             // TODO:配置解耦
             $data['key']   = $key;
@@ -113,6 +112,11 @@ class EntrySdk {
 
             return isset($res['data']) ? $res['data'] : null;
         });
+        if(!$res){
+            SCache::rm($cacheKey);
+        }
+        
+        return $res;
     }
     
     
