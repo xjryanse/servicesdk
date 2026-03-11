@@ -55,6 +55,10 @@ trait BindSdkTrait{
     protected function sdkIp(){
         $serverInfo = $this->serverInfoRand();
         $ip = $serverInfo['http_ip'];
+        if(Network::isLocalhostIp($ip)){
+            // 本地ip不用转换
+            return $ip;
+        }        
         // 转换ip:
         $map = EntrySdk::hostCovMap();
         if(Arrays::value($map, $ip) && Network::isPingable($map[$ip])){
@@ -76,6 +80,10 @@ trait BindSdkTrait{
     protected function workerIp(){
         $serverInfo = $this->serverInfoRand();
         $ip = $serverInfo['workerman_ip'];
+        if(Network::isLocalhostIp($ip)){
+            // 本地ip不用转换
+            return $ip;
+        }
         // 转换ip:
         $map = EntrySdk::hostCovMap();
         if(Arrays::value($map, $ip) && Network::isPingable($map[$ip])){

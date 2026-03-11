@@ -42,7 +42,6 @@ class EntrySdk {
         
         $qParam['url']   = $baseUrl;
         $qParam['param'] = $param;
-        
         return TcpSync::request($host, $port, $qParam);
     }
     
@@ -150,9 +149,13 @@ class EntrySdk {
         // SCache::rm($cacheKey);
         $res = SCache::funcGet($cacheKey, function (){
             $baseUrl        = 'entry/hostCov/map';
+            // 2026年3月11日：发现此处问题
             $res = static::wQuery($baseUrl);
             return $res['data'];
         });
+        if(!$res){
+            SCache::rm($cacheKey);
+        }
         return $res;
     }
     /**

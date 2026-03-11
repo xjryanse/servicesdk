@@ -28,7 +28,7 @@ trait TableTraits{
         $data['svBindId']   = $this->uuid;
         // 当没有取到数据时，是否抛异常？默认抛异常
         $data['emptyErr']   = $emptyErr ? 1 : 0;
-        
+
         $host = $this->workerIp();
         $port = $this->workerPort();
         $res = WQLogSdk::request($host, $port, $baseUrl, $data);        
