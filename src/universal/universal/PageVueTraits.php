@@ -14,7 +14,7 @@ trait PageVueTraits{
      */
     public function pageVue($pageKey){
         $key = __CLASS__.__METHOD__.$pageKey;
-        PCache::rm($key);
+        // PCache::rm($key);
         return PCache::funcGet($key,function () use ($pageKey) {
             $url = static::sdkUrl('universal/page/vue');
             // 默认发本地消息中间件

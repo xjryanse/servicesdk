@@ -36,12 +36,13 @@ class EntrySdk {
     /**
      * 
      */
-    protected static function wQuery($baseUrl , $param ){
+    protected static function wQuery($baseUrl , $param = [] ){
         $host       = Env::value('ServiceEntryHost') ? : '127.0.0.1';
         $port       = '19919';
         
         $qParam['url']   = $baseUrl;
         $qParam['param'] = $param;
+        
         return TcpSync::request($host, $port, $qParam);
     }
     
@@ -136,6 +137,23 @@ class EntrySdk {
             $res            = static::wQuery($baseUrl, $data);
             return isset($res['data']) ? $res['data'] : null;
         });
+    }
+    
+    /**
+     * 2026年3月11日
+     * @param type $host
+     * @return type
+     * @throws Exception
+     */
+    public static function hostCovMap(){
+        $cacheKey = static::generateCacheKey(__FUNCTION__);
+        // SCache::rm($cacheKey);
+        $res = SCache::funcGet($cacheKey, function (){
+            $baseUrl        = 'entry/hostCov/map';
+            $res = static::wQuery($baseUrl);
+            return $res['data'];
+        });
+        return $res;
     }
     /**
      * 中台key,提取server列表

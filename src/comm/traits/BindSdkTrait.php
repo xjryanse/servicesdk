@@ -3,6 +3,7 @@ namespace xjryanse\servicesdk\comm\traits;
 
 use xjryanse\servicesdk\entry\EntrySdk;
 use xjryanse\phplite\logic\Arrays;
+use xjryanse\phplite\logic\Network;
 use Exception;
 /**
  * 缓存类
@@ -53,7 +54,14 @@ trait BindSdkTrait{
      */
     protected function sdkIp(){
         $serverInfo = $this->serverInfoRand();
-        return $serverInfo['http_ip'];
+        $ip = $serverInfo['http_ip'];
+        // 转换ip:
+        $map = EntrySdk::hostCovMap();
+        if(Arrays::value($map, $ip) && Network::isPingable($map[$ip])){
+            // 如果是可ping通的本地地址，转换一下
+            $ip = $map[$ip];
+        }
+        return $ip;
     }
     
     protected function sdkPort(){
@@ -67,7 +75,14 @@ trait BindSdkTrait{
 
     protected function workerIp(){
         $serverInfo = $this->serverInfoRand();
-        return $serverInfo['workerman_ip'];
+        $ip = $serverInfo['workerman_ip'];
+        // 转换ip:
+        $map = EntrySdk::hostCovMap();
+        if(Arrays::value($map, $ip) && Network::isPingable($map[$ip])){
+            // 如果是可ping通的本地地址，转换一下
+            $ip = $map[$ip];
+        }
+        return $ip;
     }
 
     protected function workerPort(){
