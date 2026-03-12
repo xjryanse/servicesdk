@@ -112,7 +112,7 @@ class EntrySdk {
     public static function companyKeyInfo($key){
         $cacheKey = static::generateCacheKey(__FUNCTION__, $key);
         // SCache::rm($cacheKey);
-        return SCache::funcGet($cacheKey, function () use ($key){
+        $res = SCache::funcGet($cacheKey, function () use ($key){
             // 默认发本地消息中间件
             // TODO:配置解耦
             $data['key']   = $key;
@@ -122,6 +122,10 @@ class EntrySdk {
 
             return isset($res['data']) ? $res['data'] : null;
         });
+        if(!$res){
+            SCache::rm($cacheKey);
+        }
+        return $res;
     }
     
     
@@ -134,13 +138,17 @@ class EntrySdk {
     public static function companyIdInfo($id){
         $cacheKey = static::generateCacheKey(__FUNCTION__, $id);
         // SCache::rm($cacheKey);
-        return SCache::funcGet($cacheKey, function () use ($id){
+        $res = SCache::funcGet($cacheKey, function () use ($id){
             // TODO:配置解耦
             $data['id']     = $id;
             $baseUrl        = 'entry/company/info';
             $res            = static::wQuery($baseUrl, $data);
             return isset($res['data']) ? $res['data'] : null;
-        });
+        });        
+        if(!$res){
+            SCache::rm($cacheKey);
+        }
+        return $res;
     }
     
     /**
