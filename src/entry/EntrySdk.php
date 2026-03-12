@@ -36,12 +36,13 @@ class EntrySdk {
     /**
      * 
      */
-    protected static function wQuery($baseUrl , $param = [] ){
+    protected static function wQuery($baseUrl , $param ){
         $host       = Env::value('ServiceEntryHost') ? : '127.0.0.1';
         $port       = '19919';
         
         $qParam['url']   = $baseUrl;
         $qParam['param'] = $param;
+
         return TcpSync::request($host, $port, $qParam);
     }
     
@@ -57,13 +58,21 @@ class EntrySdk {
         }
         $cacheKey = static::generateCacheKey(__FUNCTION__, $host);
         // SCache::rm($cacheKey);
-        return SCache::funcGet($cacheKey, function () use ($host){        
+        $resp = SCache::funcGet($cacheKey, function () use ($host){        
             // $url = static::sdkUrl('entry/host/bindInfo');
             $baseUrl        = 'entry/host/bindInfo';
             $data['host']   = $host;
             $res = static::wQuery($baseUrl, $data);
+            // 2026-03-11：防止$res为null或无data字段时报Trying to access array offset on value of type null
+            if(!$res || !is_array($res) || !array_key_exists('data', $res)){
+                return null;
+            }
             return $res['data'];
         });
+        if(!$resp){
+            SCache::rm($cacheKey);
+        }
+        return $resp;
     }
 
     /**
@@ -102,7 +111,8 @@ class EntrySdk {
      */
     public static function companyKeyInfo($key){
         $cacheKey = static::generateCacheKey(__FUNCTION__, $key);
-        $res = SCache::funcGet($cacheKey, function () use ($key){
+        // SCache::rm($cacheKey);
+        return SCache::funcGet($cacheKey, function () use ($key){
             // 默认发本地消息中间件
             // TODO:配置解耦
             $data['key']   = $key;
@@ -112,11 +122,6 @@ class EntrySdk {
 
             return isset($res['data']) ? $res['data'] : null;
         });
-        if(!$res){
-            SCache::rm($cacheKey);
-        }
-        
-        return $res;
     }
     
     
