@@ -3,7 +3,7 @@ namespace xjryanse\servicesdk\msgq;
 
 use xjryanse\servicesdk\comm\SdkBase;
 use xjryanse\phplite\tcp\Sync as TcpSync;
-use xjryanse\phplite\logic\Redis;
+use xjryanse\phplite\logic\LogBuffer;
 use xjryanse\phplite\logic\Arrays;
 use Exception;
 /**
@@ -15,9 +15,12 @@ class WQLogSdk extends SdkBase{
     protected static $serverKey = 'service_msgq';
 
     /**
-     * 
+     * 调用 Workerman 时透传 TraceId，便于对端 Worker 串联同一链路
      */
     public static function request($host, $port, $url, $param){
+        if (!empty($GLOBALS['trace_id'])) {
+            $param = array_merge(is_array($param) ? $param : [], ['X-Trace-Id' => $GLOBALS['trace_id']]);
+        }
         $qParam = [];
         $qParam['url']   = $url;
         $qParam['param'] = $param;
@@ -41,31 +44,25 @@ class WQLogSdk extends SdkBase{
     }
     
     /**
-     * 记录日志
+     * 记录日志：入队后请求结束批量写 Redis，带 TraceId/来源，减轻跨网开销
      */
     public static function log($url, $request, $response, $startMTs, $endMTs){
-        // 记录服务间的链路调用关系
-        global $serviceTraceArr;        
-        $msg            = [
+        global $serviceTraceArr;
+        $msg = [
+            'trace_id'          => isset($GLOBALS['trace_id']) ? $GLOBALS['trace_id'] : '',
+            'env'               => getenv('APP_ENV') !== false && getenv('APP_ENV') !== '' ? getenv('APP_ENV') : 'prod',
+            'service_name'      => getenv('SERVICE_NAME') !== false && getenv('SERVICE_NAME') !== '' ? getenv('SERVICE_NAME') : (gethostname() ?: 'unknown'),
             'url'               => $url,
             'micro_diff'        => $endMTs - $startMTs,
             'queryType'         => 'workerman',
             'host'              => '',
-            // 请求源主机标识
             'sourceHostName'    => gethostname(),
-            'request'           => json_encode($request,JSON_UNESCAPED_UNICODE),
-            'response'          => mb_substr(json_encode($response,JSON_UNESCAPED_UNICODE), 0, 500).'……',
+            'request'           => json_encode($request, JSON_UNESCAPED_UNICODE),
+            'response'          => mb_substr(json_encode($response, JSON_UNESCAPED_UNICODE), 0, 500) . '……',
             'create_time'       => date('Y-m-d H:i:s'),
         ];
-        
-        $tMsg = $msg;
-        // $tMsg['serviceTrace']   = $serviceTraceArr;
-        $serviceTraceArr[]      = $tMsg;
-
-        // 存储链路间调用关系
-        $expireKey = 'SERVICE_QUERY_LOG:'. microtime(true);
-        return Redis::inst()->msgUpdate($expireKey, $msg);        
-        // return static::generate($url, $request, $response, $startMTs, $endMTs);
+        $serviceTraceArr[] = $msg;
+        LogBuffer::push($msg);
     }
     
 }
