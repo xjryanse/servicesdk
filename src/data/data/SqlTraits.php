@@ -19,8 +19,6 @@ trait SqlTraits{
      * @throws Exception
      */
     public function sqlDataPaginate($sqlKey, $orderBy='', $param=[]){
-        $url = static::sdkUrl('data/sql/paginate');
-        
         $param['sqlKey']        = $sqlKey;
         if($orderBy){
             $param['orderBy']    = $orderBy;
@@ -31,14 +29,8 @@ trait SqlTraits{
         $param['svBindId']   = $this->uuid;
 
         $baseUrl = 'data/sql/paginate';
-        // 默认发本地消息中间件
-        // TODO:配置解耦
-        $host = $this->workerIp();
-        $port = $this->workerPort();
-        $res = WQLogSdk::request($host, $port, $baseUrl, $param);        
-        if(!$res){
-            throw new Exception('没有获取到接口数据:'.$url);
-        }
+        $res = $this->queryLog($baseUrl, $param, 'curl');
+
         return $res['data'];
     }
     
