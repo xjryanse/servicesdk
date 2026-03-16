@@ -47,14 +47,17 @@ class SqlSdk extends SdkBase{
      */
     public function searchFields($sqlKey){
         $key = __CLASS__.__METHOD__.$sqlKey;
-        return SqlCache::funcGet($key,function () use ($sqlKey) {        
-            $url    = static::sdkUrl('sql/sql/searchFields');
+        $res = SqlCache::funcGet($key,function () use ($sqlKey) {        
+            $baseUrl = 'sql/sql/searchFields';
             $data           = $this->postBaseData();
             $data['sqlKey'] = $sqlKey;
-
-            $res            = QLogSdk::postAndLog($url, $data);
-            return $res['data'];
+            $res = $this->queryLog($baseUrl, $data, 'worker');
+            return $res['data'];                
         });
+        if(!$res){
+            SqlCache::rm($key);
+        }
+        return $res;
     }
     
     /**
