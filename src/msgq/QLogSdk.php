@@ -32,6 +32,13 @@ class QLogSdk extends SdkBase{
             throw new Exception('异常:'.$url.'内容:'.$res['message'].'请求参数:'.json_encode($request,JSON_UNESCAPED_UNICODE));
         }
         
+        // 2026年3月22日：开发
+        if(isset($res['$dev']) && isset($res['$dev']['serviceArr']) && $res['$dev']['serviceArr']){
+            global $serviceTraceArr;
+            $serviceTraceArr = $serviceTraceArr 
+                    ? array_merge($serviceTraceArr, $res['$dev']['serviceArr']) 
+                    : $res['$dev']['serviceArr'];
+        }
         // 调用记录日志
         static::log($url, $request, $res, $startMTs, $endMTs);
         return $res;
