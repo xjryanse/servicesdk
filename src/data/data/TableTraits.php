@@ -230,6 +230,9 @@ trait TableTraits{
      * @return type
      */
     public function tableDataDelete($tableName, $id){
+        if ($id === null || $id === '' || (is_string($id) && trim($id) === '')) {
+            throw new Exception('删除操作必须传入有效主键 id（table=' . $tableName . '）');
+        }
         $url                        = static::sdkUrl('data/table/delete');
         $param['table_name']        = $tableName;
         $param['table_data']['id']  = $id;
