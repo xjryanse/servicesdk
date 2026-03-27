@@ -251,7 +251,11 @@ class ErrNotice {
         return ['ok' => true, 'sent' => true];
     }
 
-    public static function notice($e = null){
+    public static function notice($e = null, array $context = []){
+        $runtime = trim((string)($context['runtime'] ?? ''));
+        if($runtime === ''){
+            $runtime = php_sapi_name() === 'cli' ? 'worker' : 'phpfpm';
+        }
         $message = $e ? $e->getMessage() : '未知异常';
         $file = $e ? $e->getFile() : '';
         $line = $e ? $e->getLine() : '';
@@ -270,6 +274,7 @@ class ErrNotice {
         if($paramsLine !== ''){
             $text .= "\n[参数]".$paramsLine;
         }
+        $text .= "\n[运行时]".$runtime;
 
         $eventId = 'err-'.md5($server.'|'.$message.'|'.$file.'|'.$line.'|'.date('YmdHi'));
 
@@ -281,8 +286,9 @@ class ErrNotice {
             't'          => (int)(microtime(true) * 1000),
             // 约定：0=调试 1=信息 2=警告 3=错误 4=严重
             'sv'         => 3,
-            'ttl'        => '业务异常告警',
-            'm'          => $text
+            'ttl'        => '业务异常告警['.$runtime.']',
+            'm'          => $text,
+            's'          => self::siteSource().'|'.$runtime
         ];
 
         return self::pushToOpsBao($payload);
