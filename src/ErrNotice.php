@@ -5,6 +5,11 @@ namespace xjryanse\servicesdk;
  * 异常消息通知1
  */
 class ErrNotice {
+    /**
+     * 进程内去重缓存：key = sid@ver
+     * @var array<string,bool>
+     */
+    private static $siteDictSentMap = [];
     private static function serverName(){
         return isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : php_uname('n');
     }
@@ -103,6 +108,36 @@ class ErrNotice {
         return getenv('OPSBAO_PUSH_TOKEN') ?: '';
     }
 
+    /**
+     * V2 协议站点 ID（必须稳定且非空）。
+     * 可通过环境变量显式指定：OPSBAO_SITE_ID。
+     */
+    private static function siteId(){
+        $sid = trim((string)(getenv('OPSBAO_SITE_ID') ?: ''));
+        if($sid !== ''){
+            return $sid;
+        }
+        $server = self::serverName();
+        $ip = self::localIp();
+        return 'sid-'.substr(md5($server.'|'.$ip), 0, 12);
+    }
+
+    /**
+     * V2 站点展示名（可选，便于 App 端展示）。
+     */
+    private static function siteName(){
+        $name = trim((string)(getenv('OPSBAO_SITE_NAME') ?: ''));
+        return $name !== '' ? $name : self::serverName();
+    }
+
+    /**
+     * V2 来源短字段 s（可选）。
+     */
+    private static function siteSource(){
+        $src = trim((string)(getenv('OPSBAO_SITE_SOURCE') ?: ''));
+        return $src !== '' ? $src : ('service_logdb@'.self::localIp());
+    }
+
     private static function pushToOpsBao(array $payload){
         $host = self::pushHost();
         $port = self::pushPort();
@@ -112,6 +147,43 @@ class ErrNotice {
             $payload['token'] = $token;
         }
         return self::tcpPush($host, $port, $payload);
+    }
+
+    /**
+     * 发送 V2 站点字典（控制消息）。
+     * 建议在服务启动、部署后或站点信息变更时调用一次。
+     *
+     * @param int|null $ver 字典版本号（递增）；为空时使用当前时间戳
+     * @return array
+     */
+    public static function sendSiteDict($ver = null){
+        $sid = self::siteId();
+        $name = self::siteName();
+        $source = self::siteSource();
+        if($ver === null){
+            $ver = time();
+        }
+        $dedupKey = $sid.'@'.(string)$ver;
+        if(isset(self::$siteDictSentMap[$dedupKey])){
+            return ['ok' => true, 'skipped' => true, 'reason' => 'already_sent_in_process', 'key' => $dedupKey];
+        }
+
+        $payload = [
+            'tp'    => 'site_dict',
+            'ver'   => (int)$ver,
+            'sites' => [
+                $sid => [
+                    'n' => $name,
+                    's' => $source
+                ]
+            ]
+        ];
+
+        $res = self::pushToOpsBao($payload);
+        if(is_array($res) && isset($res['ok']) && $res['ok']){
+            self::$siteDictSentMap[$dedupKey] = true;
+        }
+        return $res;
     }
 
     /**
@@ -202,22 +274,15 @@ class ErrNotice {
         $eventId = 'err-'.md5($server.'|'.$message.'|'.$file.'|'.$line.'|'.date('YmdHi'));
 
         $payload = [
-            'eventId'    => $eventId,
-            'type'       => 'alarm',
-            'severity'   => 3,
-            'title'      => '业务异常告警',
-            'message'    => $text,
-            'timestamp'  => (int)(microtime(true) * 1000),
-            'source'     => 'service_logdb',
-            'extra'      => [
-                'server' => $server,
-                'ip'     => $ip,
-                'file'   => $file,
-                'line'   => $line,
-                'request_url'    => $req['url'],
-                'request_method' => $req['method'],
-                'request_params' => $req['params'],
-            ]
+            // V2 协议核心字段
+            'tp'         => 'event',
+            'id'         => $eventId,
+            'sid'        => self::siteId(),
+            't'          => (int)(microtime(true) * 1000),
+            // 约定：0=调试 1=信息 2=警告 3=错误 4=严重
+            'sv'         => 3,
+            'ttl'        => '业务异常告警',
+            'm'          => $text
         ];
 
         return self::pushToOpsBao($payload);
@@ -234,19 +299,15 @@ class ErrNotice {
         $text.= "\n当前数量：".$count;
 
         $payload = [
-            'eventId'    => 'queue-jam-'.md5($server.'|'.$queueName.'|'.date('YmdHi')),
-            'type'       => 'alarm',
-            'severity'   => 2,
-            'title'      => '队列堵塞告警',
-            'message'    => $text,
-            'timestamp'  => (int)(microtime(true) * 1000),
-            'source'     => 'service_logdb',
-            'extra'      => [
-                'server'     => $server,
-                'ip'         => $ip,
-                'queue_name' => $queueName,
-                'count'      => (int)$count
-            ]
+            // V2 协议核心字段
+            'tp'         => 'event',
+            'id'         => 'queue-jam-'.md5($server.'|'.$queueName.'|'.date('YmdHi')),
+            'sid'        => self::siteId(),
+            't'          => (int)(microtime(true) * 1000),
+            // 约定：0=调试 1=信息 2=警告 3=错误 4=严重
+            'sv'         => 2,
+            'ttl'        => '队列堵塞告警',
+            'm'          => $text
         ];
 
         return self::pushToOpsBao($payload);
