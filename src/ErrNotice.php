@@ -1,6 +1,8 @@
 <?php
 namespace xjryanse\servicesdk;
 
+use xjryanse\servicesdk\comm\TcpRetry;
+
 /**
  * 异常消息通知1
  */
@@ -187,10 +189,34 @@ class ErrNotice {
     }
 
     /**
-     * 通过 TCP 短连接推送一条消息：
+     * 通过 TCP 短连接推送一条消息（含连接/发送失败重试，与 TcpRetry 环境变量一致）：
      * 4 字节大端长度 + UTF-8 JSON。
      */
     private static function tcpPush($host, $port, array $payload){
+        $max = TcpRetry::maxAttempts();
+        $delayMs = TcpRetry::delayMsBetweenAttempts();
+        $last = null;
+        for($i = 0; $i < $max; $i++){
+            $last = self::tcpPushOnce($host, $port, $payload);
+            if(!is_array($last)){
+                return $last;
+            }
+            $err = $last['error'] ?? null;
+            if(($err === 'connect_failed' || $err === 'send_failed') && $i + 1 < $max){
+                if($delayMs > 0){
+                    usleep($delayMs * 1000);
+                }
+                continue;
+            }
+            return $last;
+        }
+        return $last;
+    }
+
+    /**
+     * 单次 TCP 推送（不重试）。
+     */
+    private static function tcpPushOnce($host, $port, array $payload){
         $json = json_encode($payload, JSON_UNESCAPED_UNICODE);
         if($json === false){
             return ['ok' => false, 'error' => 'json_encode_failed'];

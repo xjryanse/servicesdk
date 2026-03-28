@@ -2,7 +2,7 @@
 namespace xjryanse\servicesdk\msgq;
 
 use xjryanse\servicesdk\comm\SdkBase;
-use xjryanse\phplite\tcp\Sync as TcpSync;
+use xjryanse\servicesdk\comm\TcpRetry;
 use xjryanse\phplite\logic\LogBuffer;
 use xjryanse\phplite\logic\Arrays;
 use Exception;
@@ -25,7 +25,7 @@ class WQLogSdk extends SdkBase{
         $qParam['url']   = $url;
         $qParam['param'] = $param;
         $startMTs   = intval(microtime(true) * 1000);
-        $resp       = TcpSync::request($host, $port, $qParam);
+        $resp       = TcpRetry::syncRequest($host, $port, $qParam);
         $endMTs     = intval(microtime(true) * 1000);
 
         $urlStr = $host.':'.$port.'/'.$url;

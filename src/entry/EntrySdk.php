@@ -1,7 +1,7 @@
 <?php
 namespace xjryanse\servicesdk\entry;
 
-use xjryanse\phplite\tcp\Sync as TcpSync;
+use xjryanse\servicesdk\comm\TcpRetry;
 use xjryanse\phplite\logic\Arrays;
 use xjryanse\phplite\cache\SCache;
 use xjryanse\phplite\logic\Env;
@@ -43,7 +43,7 @@ class EntrySdk {
         $qParam['url']   = $baseUrl;
         $qParam['param'] = $param;
 
-        return TcpSync::request($host, $port, $qParam);
+        return TcpRetry::syncRequest($host, $port, $qParam);
     }
     
     /**

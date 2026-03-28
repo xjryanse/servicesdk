@@ -1,7 +1,7 @@
 <?php
 namespace xjryanse\servicesdk\comm;
 
-use xjryanse\phplite\tcp\Sync as TcpSync;
+use xjryanse\servicesdk\comm\TcpRetry;
 /**
  * 异常消息通知1
  */
@@ -19,7 +19,7 @@ class Worker {
         $qParam['url']   = $baseUrl;
         $qParam['param'] = $param;
         
-        return TcpSync::request($host, $port, $qParam);
+        return TcpRetry::syncRequest($host, $port, $qParam);
     }
     
 }
