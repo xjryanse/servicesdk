@@ -162,9 +162,8 @@ class EntrySdk {
         // SCache::rm($cacheKey);
         $res = SCache::funcGet($cacheKey, function (){
             $baseUrl        = 'entry/hostCov/map';
-            // 2026年3月11日：发现此处问题
-            $res = static::wQuery($baseUrl);
-            return $res['data'];
+            $res = static::wQuery($baseUrl, []);
+            return isset($res['data']) ? $res['data'] : [];
         });
         if(!$res){
             SCache::rm($cacheKey);
