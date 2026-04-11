@@ -8,7 +8,7 @@ use xjryanse\phplite\logic\DataCheck;
 use Exception;
 
 /**
- * 缓存类
+ * 数据表微服务访问；读路径带「单次请求内」内存去重（非跨请求持久化）。
  */
 trait TableTraits{
     /**
@@ -31,8 +31,10 @@ trait TableTraits{
 
         $host = $this->workerIp();
         $port = $this->workerPort();
-        $res = WQLogSdk::request($host, $port, $baseUrl, $data);        
-        return $res['data'];
+        return $this->dataSdkWorkermanMemoRead('data/table/get', $data, function () use ($host, $port, $baseUrl, $data) {
+            $res = WQLogSdk::request($host, $port, $baseUrl, $data);
+            return $res['data'];
+        });
     }
     /**
      * 取单挑数据
@@ -55,9 +57,10 @@ trait TableTraits{
         $baseUrl = 'data/table/find';
         $host = $this->workerIp();
         $port = $this->workerPort();
-        $res = WQLogSdk::request($host, $port, $baseUrl, $data);   
-
-        return $res['data'];
+        return $this->dataSdkWorkermanMemoRead('data/table/find', $data, function () use ($host, $port, $baseUrl, $data) {
+            $res = WQLogSdk::request($host, $port, $baseUrl, $data);
+            return $res['data'];
+        });
     }
     /**
      * 2026年1月19日
@@ -78,8 +81,10 @@ trait TableTraits{
         $baseUrl = 'data/table/find';
         $host = $this->workerIp();
         $port = $this->workerPort();
-        $res = WQLogSdk::request($host, $port, $baseUrl, $data);        
-        return $res['data'];
+        return $this->dataSdkWorkermanMemoRead('data/table/conFind', $data, function () use ($host, $port, $baseUrl, $data) {
+            $res = WQLogSdk::request($host, $port, $baseUrl, $data);
+            return $res['data'];
+        });
     }    
     /**
      * 
@@ -124,12 +129,13 @@ trait TableTraits{
         // $res = Sync::request($host, $port, $send_data);
         $host = $this->workerIp();
         $port = $this->workerPort();
-        $res = WQLogSdk::request($host, $port, $baseUrl, $postP);
-        // $res                    = QLogSdk::postAndLog($url, $postP);
-        if(!$res){
-            throw new Exception('没有获取到接口数据:'.$baseUrl);
-        }
-        return $res['data'];
+        return $this->dataSdkWorkermanMemoRead('data/table/list', $postP, function () use ($host, $port, $baseUrl, $postP) {
+            $res = WQLogSdk::request($host, $port, $baseUrl, $postP);
+            if (!$res) {
+                throw new Exception('没有获取到接口数据:' . $baseUrl);
+            }
+            return $res['data'];
+        });
     }
     
     /**
@@ -157,12 +163,13 @@ trait TableTraits{
         // $res = Sync::request($host, $port, $send_data);
         $host = $this->workerIp();
         $port = $this->workerPort();
-        $res = WQLogSdk::request($host, $port, $baseUrl, $postP);
-        // $res                    = QLogSdk::postAndLog($url, $postP);
-        if(!$res){
-            throw new Exception('没有获取到接口数据:'.$url);
-        }
-        return $res['data'];
+        return $this->dataSdkWorkermanMemoRead('data/table/conList', $postP, function () use ($host, $port, $baseUrl, $postP, $url) {
+            $res = WQLogSdk::request($host, $port, $baseUrl, $postP);
+            if (!$res) {
+                throw new Exception('没有获取到接口数据:' . $url);
+            }
+            return $res['data'];
+        });
     }
     
     /**
@@ -286,9 +293,36 @@ trait TableTraits{
         $param['dbId']       = $this->dbId;
         $param['svBindId']   = $this->uuid;        
 
-        $res = $this->queryLog($baseUrl, $param, 'worker');
-        // $res                    = QLogSdk::postAndLog($url, $param);
-        return $res['data'];
-    }    
+        return $this->dataSdkWorkermanMemoRead('data/table/fieldArr', $param, function () use ($baseUrl, $param) {
+            $res = $this->queryLog($baseUrl, $param, 'worker');
+            return $res['data'];
+        });
+    }
+
+    /**
+     * 单次请求生命周期内：相同参数只调一次微服务，结果放在 $GLOBALS，请求结束随 PHP 回收销毁。
+     * FPM/mod_php 默认开启；CLI/Workerman 长进程默认关闭（避免多任务共用 $GLOBALS 串数据），需要时在单条消息入口清空后再设 DATA_SDK_REQ_MEMO=1。
+     * 关闭：DATA_SDK_REQ_MEMO=0
+     *
+     * @param string $op 区分操作，与 $data 一起参与键
+     * @param array $data 实际发往微服务的参数（含 dbId、svBindId）
+     */
+    private function dataSdkWorkermanMemoRead(string $op, array $data, callable $fetch) {
+        $forceOff = getenv('DATA_SDK_REQ_MEMO') === '0';
+        $forceOn = getenv('DATA_SDK_REQ_MEMO') === '1';
+        if ($forceOff || (!$forceOn && PHP_SAPI === 'cli')) {
+            return $fetch();
+        }
+        $key = $op . "\0" . md5(json_encode($data, JSON_UNESCAPED_UNICODE));
+        if (!isset($GLOBALS['__data_sdk_wm_memo']) || !is_array($GLOBALS['__data_sdk_wm_memo'])) {
+            $GLOBALS['__data_sdk_wm_memo'] = [];
+        }
+        $memo = &$GLOBALS['__data_sdk_wm_memo'];
+        if (array_key_exists($key, $memo)) {
+            return $memo[$key];
+        }
+        $memo[$key] = $fetch();
+        return $memo[$key];
+    }
     
 }
