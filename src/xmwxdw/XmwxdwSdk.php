@@ -25,5 +25,20 @@ class XmwxdwSdk extends SdkBase{
         $res = $this->queryLog($baseUrl, $data, 'curl');
         return $res['data'];
     }
-
+    /**
+     * 已审路单
+     * @param type $carNo
+     * @param type $time
+     * @return type
+     */
+    public function checkedTimeBusInfo($carNo, $time){
+        $baseUrl = 'xmwxdw/checked/timeBusInfo';
+        // 默认发本地消息中间件
+        // TODO:配置解耦
+        $data['car_no']     = $carNo;
+        $data['time']       = $time;
+        $data['svBindId']   = $this->uuid;
+        $res = $this->queryLog($baseUrl, $data, 'curl');
+        return $res['data'];
+    }
 }
