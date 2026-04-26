@@ -39,7 +39,7 @@ class EntrySdk {
     protected static function wQuery($baseUrl , $param ){
         $host       = Env::value('ServiceEntryHost') ? : '127.0.0.1';
         $port       = '19919';
-        
+
         $qParam['url']   = $baseUrl;
         $qParam['param'] = $param;
 
