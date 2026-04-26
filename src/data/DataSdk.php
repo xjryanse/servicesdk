@@ -15,6 +15,7 @@ class DataSdk extends SdkBase{
     // 需定义：配套BindSdkTrait使用
     protected static $serverKey = 'service_data';
     
+    use \xjryanse\servicesdk\data\data\DbTraits;
     use \xjryanse\servicesdk\data\data\SqlTraits;
     use \xjryanse\servicesdk\data\data\TableTraits;
     use \xjryanse\servicesdk\data\data\TableBatchTraits;

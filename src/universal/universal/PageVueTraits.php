@@ -19,20 +19,12 @@ trait PageVueTraits{
      * @return array 含 template/script/style 等，以及 _fromCache：true=缓存取，false=接口取
      */
     public function pageVue($pageKey){
-        $key = __CLASS__.__METHOD__.$pageKey;
-        $ttl = static::pageVueSdkTtl();
-        if ($ttl > 0 && PCache::exists($key)) {
-            $data = PCache::get($key);
-            return static::pageVueWithFromCache($data, true);
-        }
+        // $key = __CLASS__.__METHOD__.$pageKey;
         $url = static::sdkUrl('universal/page/vue');
         $data['pageKey']  = $pageKey;
         $data['svBindId'] = $this->uuid;
         $res              = QLogSdk::postAndLog($url, $data);
         $data             = $res['data'];
-        if ($ttl > 0) {
-            PCache::set($key, $data, $ttl);
-        }
         return static::pageVueWithFromCache($data, false);
     }
 
