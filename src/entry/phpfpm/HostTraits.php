@@ -16,7 +16,7 @@ trait HostTraits {
         $bindInfo   = static::hostBindInfo($host);
         if(!$bindInfo){
             static::clearCache('hostBindInfo', $host);
-            throw new Exception('没有配置域名绑定信息'.$host);
+            throw new Exception(static::sdkIp().'没有配置域名绑定信息'.$host);
         }
         return $bindInfo ? $bindInfo['id'] : '';
     }
@@ -29,7 +29,7 @@ trait HostTraits {
         $bindInfo   = static::hostBindInfo($host);
         if(!$bindInfo){
             static::clearCache('hostBindInfo', $host);
-            throw new Exception('没有配置域名绑定信息'.$host);
+            throw new Exception(static::sdkIp().'没有配置域名绑定信息'.$host);
         }
         return $bindInfo;
     }

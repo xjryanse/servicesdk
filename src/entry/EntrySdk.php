@@ -23,7 +23,7 @@ class EntrySdk {
     public static function sdkIp(){
         // return '127.0.0.1';
         // 入口库在哪里就用哪里的服务，这样避免io开销(临时加)
-        return config('database.dbEntry.hostname') ? : '127.0.0.1';
+        return Env::value('ServiceEntryHost') ? : '127.0.0.1';
     }
     
     protected static function sdkPort(){
@@ -37,7 +37,7 @@ class EntrySdk {
      * 
      */
     protected static function wQuery($baseUrl , $param ){
-        $host       = Env::value('ServiceEntryHost') ? : '127.0.0.1';
+        $host       = static::sdkIp();
         $port       = '19919';
 
         $qParam['url']   = $baseUrl;
