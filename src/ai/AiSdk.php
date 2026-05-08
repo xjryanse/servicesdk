@@ -23,16 +23,13 @@ class AiSdk extends SdkBase {
     /**
      * 文本生成
      */
-    public function generateText(array $payload = [], string $channel = 'curl') {
-        return $this->requestData('ai/generate/text', $payload, $channel);
-    }
-
-    /**
-     * 通用请求入口：返回服务端 data 字段
-     */
-    protected function requestData(string $baseUrl, array $payload = [], string $channel = 'curl') {
-        $data = array_merge($this->postBaseData(), $payload);
-        $res = $this->queryLog($baseUrl, $data, $channel);
-        return isset($res['data']) ? $res['data'] : null;
+    public function generateText(array $param = [], string $channel = 'curl') {
+        $baseUrl    = 'ai/generate/text';
+        // 默认发本地消息中间件
+        // TODO:配置解耦
+        $data   = $this->postBaseData();
+        $qParam = array_merge($param, $data);
+        $res    = $this->queryLog($baseUrl, $qParam, $channel);
+        return $res['data'];
     }
 }
