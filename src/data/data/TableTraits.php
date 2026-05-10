@@ -217,16 +217,19 @@ trait TableTraits{
      * @return type
      */
     public function tableDataUpdate($tableName, $data){
-        $url                    = static::sdkUrl('data/table/update');
+        // $url                    = static::sdkUrl('data/table/update');
+        
+        $baseUrl = 'data/table/update';        
         $param['table_name']     = $tableName;
         $param['table_data']     = $data;
         // 2026年1月21日：新增dbId入参
         $param['dbId']       = $this->dbId;
         $param['svBindId']   = $this->uuid;        
         
-        $res                    = QLogSdk::postAndLog($url, $param);
+        // $res                    = QLogSdk::postAndLog($url, $param);
+        $res = $this->queryLog($baseUrl, $param, 'worker');
         if(!$res){
-            throw new Exception('没有获取到接口数据:'.$url);
+            throw new Exception('没有获取到接口数据:'.$baseUrl);
         }
         return $res['data'];
     }    
