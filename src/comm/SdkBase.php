@@ -3,6 +3,7 @@ namespace xjryanse\servicesdk\comm;
 
 use xjryanse\servicesdk\msgq\QLogSdk;
 use xjryanse\servicesdk\msgq\WQLogSdk;
+use xjryanse\servicesdk\entry\EntrySdk;
 use Exception;
 /**
  * 17点20分
@@ -26,6 +27,14 @@ abstract class SdkBase {
      */
     public static function svInst(){
         global $svBindId;
+        return static::inst($svBindId);
+    }
+    /**
+     * 2026年5月10日
+     * 带当前域名：传统phpfpm使用
+     */
+    public static function currentHostSvInst(){
+        $svBindId = EntrySdk::currentHostBindId();
         return static::inst($svBindId);
     }
     

@@ -47,4 +47,23 @@ class UserSdk extends SdkBase{
         $res = $this->queryLog($baseUrl, $data, 'worker');
         return $res['data'];
     }
+    
+    /**
+     * 取单挑数据
+     * @param type $userId      用户
+     * @param type $ip          ip
+     * @param type $domainName  域名
+     * @return type
+     */
+    public function loginLog($userId, $ip='', $domainName=''){
+        $baseUrl    = 'user/login/log';
+        // 默认发本地消息中间件
+        $data = $this->postBaseData();
+        $data['user_id']         = $userId;
+        $data['login_ip']        = $ip;
+        $data['domain_name']     = $domainName;
+        
+        $res = $this->queryLog($baseUrl, $data, 'worker');
+        return $res['data'];
+    }
 }
