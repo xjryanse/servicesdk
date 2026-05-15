@@ -1,0 +1,24 @@
+<?php
+namespace xjryanse\servicesdk\page;
+
+use xjryanse\servicesdk\comm\SdkBase;
+use xjryanse\phplite\cache\PCache;
+use xjryanse\servicesdk\msgq\QLogSdk;
+/**
+ * 
+ */
+class PageSdk extends SdkBase{
+    // 需定义：配套BindSdkTrait使用
+    protected static $serverKey = 'service_page';
+    
+    public function pageVue($pageKey){
+        $url = static::sdkUrl('page/page/pageVue');
+        $data['pageKey']  = $pageKey;
+        $data['svBindId'] = $this->uuid;
+        $res              = QLogSdk::postAndLog($url, $data);
+        $data             = $res['data'];
+        return $data;
+    }
+
+
+}
