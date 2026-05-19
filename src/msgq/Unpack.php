@@ -10,11 +10,15 @@ use xjryanse\phplite\logic\Arrays;
  */
 class Unpack{
     
-    public static function unpack($param,$func){
+    public static function unpack($param,$func, $debug = false){
         $msgId      = Arrays::value($param, 'msgId');
         $data       = Arrays::value($param, 'data');
         $qData      = json_decode($data,JSON_UNESCAPED_UNICODE);
-        $func($qData);
+        $res = $func($qData);
+        if($debug){
+            return $res;
+        }
+        // 非调试模式下，标记消息已消费
         global $svBindId;
         MsgqSdk::inst($svBindId)->msgqCallBack($msgId);
         return true;
