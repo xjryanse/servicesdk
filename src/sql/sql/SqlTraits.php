@@ -38,28 +38,24 @@ trait SqlTraits{
      * @param type $sqlKey
      * @param type $param
      */
-    public function keyBaseSql(string $sqlKey,array $param = [], $catalog = ''){
+    public function keyBaseSql(string $sqlKey, array $param = []){
         $pMd5 = Arrays::md5($param);
         $key = __CLASS__.__METHOD__.$sqlKey.$pMd5;
         SqlCache::rm($key);
-        $sql = SqlCache::funcGet($key,function () use ($sqlKey, $param, $catalog) {
+        $sql = SqlCache::funcGet($key, function () use ($sqlKey, $param) {
             $baseUrl = 'sql/sql/keyBaseSql';
-            $data               = $this->postBaseData();
-            $data['sqlKey']     = $sqlKey;
-            $data['param']      = $param;
-            if($catalog){
-                $data['catalog'] = $catalog;
-            }
-
+            $data = $this->postBaseData();
+            $data['sqlKey'] = $sqlKey;
+            $data['param']  = $param;
             $res = $this->queryLog($baseUrl, $data, 'worker');
             return $res['data'];
         });
         if(!$sql){
             SqlCache::rm($key);
         }
-
         return $sql;
     }
+
 
     /**
      * 执行校验

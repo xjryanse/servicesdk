@@ -14,6 +14,7 @@ use Exception;
 class SqlSdk extends SdkBase{
 
     use \xjryanse\servicesdk\sql\sql\SqlTableTraits;
+    use \xjryanse\servicesdk\sql\sql\SqlAbnormalTraits;
     use \xjryanse\servicesdk\sql\sql\SqlTraits;
     
     // 需定义：配套BindSdkTrait使用
