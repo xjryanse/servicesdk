@@ -12,6 +12,7 @@ use Exception;
  */
 class EntrySdk {
 
+    use \xjryanse\servicesdk\entry\backup\BackupTraits;
     use \xjryanse\servicesdk\entry\db\DbTraits;
     use \xjryanse\servicesdk\entry\phpfpm\HostTraits;
     use \xjryanse\servicesdk\entry\svBind\SvBindTraits;
