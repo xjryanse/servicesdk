@@ -54,4 +54,40 @@ trait BackupTraits {
         }
         return is_array($resp) ? $resp : [];
     }
+
+    /**
+     * @return list<string>
+     * @throws Exception
+     */
+    public static function backupSyncBindList(): array
+    {
+        $cacheKey = static::generateCacheKey(__FUNCTION__, 'dbin');
+        $resp = SCache::funcGet($cacheKey, function () {
+            $res = static::wQuery('entry/backup/syncBindList', []);
+            if (!is_array($res) || (int) ($res['code'] ?? 1) !== 0) {
+                $msg = is_array($res) && isset($res['message'])
+                    ? (string) $res['message']
+                    : 'entry backup/syncBindList 失败';
+                throw new Exception($msg);
+            }
+            $payload = $res['data'] ?? null;
+            if (!is_array($payload)) {
+                throw new Exception('entry backup/syncBindList 返回 data 无效');
+            }
+            $ids = $payload['bind_ids'] ?? [];
+            if (!is_array($ids)) {
+                return [];
+            }
+            $out = [];
+            foreach ($ids as $id) {
+                $s = trim((string) $id);
+                if ($s !== '') {
+                    $out[] = $s;
+                }
+            }
+            return $out;
+        });
+
+        return is_array($resp) ? $resp : [];
+    }
 }
