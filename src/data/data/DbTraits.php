@@ -29,4 +29,19 @@ trait DbTraits{
         return $res['data'];
     }
 
+    /**
+     * SHOW CREATE TABLE（只读）
+     * @param string $tableName
+     * @return array<string,mixed>
+     */
+    public function dbCreateTableSql($tableName){
+        $param['table_name'] = $tableName;
+        $param['dbId']       = $this->dbId;
+        $param['svBindId']   = $this->uuid;
+
+        $baseUrl = 'data/db/createTableSql';
+        $res = $this->queryLog($baseUrl, $param, 'curl');
+        return $res['data'];
+    }
+
 }
