@@ -26,6 +26,21 @@ trait ExportTraits
     }
 
     /**
+     * POST dbout/export/count
+     *
+     * @param array<string,mixed> $payload table_name、dbId、orderBy、condition 等
+     * @return array<string,mixed>
+     */
+    public function exportCount(array $payload): array
+    {
+        $data = array_merge($this->postBaseData(), $payload);
+        $url = $this->sdkUrl('dbout/export/count');
+        $res = $this->postBackupJson($url, $data);
+        $out = $res['data'] ?? null;
+        return is_array($out) ? $out : [];
+    }
+
+    /**
      * POST dbout/export/byIds
      *
      * @param array<string,mixed> $payload
