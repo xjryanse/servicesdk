@@ -17,6 +17,14 @@ class ErrNotice {
     }
 
     private static function localIp(){
+        if(class_exists(\xjryanse\phplite\logic\Network::class)){
+            foreach(\xjryanse\phplite\logic\Network::serverIps() as $ip){
+                $ip = trim((string)$ip);
+                if($ip !== '' && strpos($ip, '10.') === 0){
+                    return $ip;
+                }
+            }
+        }
         if(!empty($_SERVER['SERVER_ADDR'])){
             return $_SERVER['SERVER_ADDR'];
         }
