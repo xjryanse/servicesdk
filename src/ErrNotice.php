@@ -28,33 +28,186 @@ class ErrNotice {
     }
 
     /**
-     * 当前 HTTP 请求的 URL、方法、参数（CLI 无请求上下文时为空）。
-     * 参数为 GET+POST 合并；常见敏感键脱敏。
+     * 合并调用方 context 与进程内 err_notice_ctx（Worker 请求上下文）。
+     */
+    private static function mergeContext(array $context){
+        if(!empty($GLOBALS['err_notice_ctx']) && is_array($GLOBALS['err_notice_ctx'])){
+            return array_merge($GLOBALS['err_notice_ctx'], $context);
+        }
+        return $context;
+    }
+
+    /**
+     * 当前 HTTP 请求的 URL、方法（CLI 无 HTTP 上下文时为空）。
      *
-     * @return array{url:string,method:string,params:array}
+     * @return array{url:string,method:string}
      */
     private static function requestSnapshot(){
         if(php_sapi_name() === 'cli'){
-            return ['url' => '', 'method' => 'CLI', 'params' => []];
+            return ['url' => '', 'method' => 'CLI'];
         }
         $uri = isset($_SERVER['REQUEST_URI']) ? (string)$_SERVER['REQUEST_URI'] : '';
         if($uri === ''){
-            return ['url' => '', 'method' => '', 'params' => []];
+            return ['url' => '', 'method' => ''];
         }
         $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
         $host = isset($_SERVER['HTTP_HOST']) ? (string)$_SERVER['HTTP_HOST'] : (isset($_SERVER['SERVER_NAME']) ? (string)$_SERVER['SERVER_NAME'] : '');
         $url = $host !== '' ? ($scheme.'://'.$host.$uri) : $uri;
         $method = isset($_SERVER['REQUEST_METHOD']) ? (string)$_SERVER['REQUEST_METHOD'] : 'GET';
-        $params = array_merge($_GET, $_POST);
-        $params = self::sanitizeRequestParams($params);
-        return ['url' => $url, 'method' => $method, 'params' => $params];
+        return ['url' => $url, 'method' => $method];
+    }
+
+    /**
+     * FPM 请求参数：优先已解析的 JSON Body（RqParams），再回退 GET/POST 与 php://input。
+     */
+    private static function fpmRequestParams(){
+        $params = [];
+        try {
+            if(class_exists(\xjryanse\phplite\facade\Request::class)){
+                $merged = \xjryanse\phplite\facade\Request::param();
+                if(is_array($merged) && $merged !== []){
+                    $params = $merged;
+                }
+            }
+        } catch (\Throwable $ignore) {
+        }
+        if($params === []){
+            $get = is_array($_GET) ? $_GET : [];
+            $post = is_array($_POST) ? $_POST : [];
+            $params = array_merge($get, $post);
+        }
+        if($params === [] && php_sapi_name() !== 'cli'){
+            $raw = @file_get_contents('php://input');
+            if(is_string($raw) && $raw !== ''){
+                $decoded = json_decode($raw, true);
+                if(is_array($decoded)){
+                    $params = $decoded;
+                }
+            }
+        }
+        return self::sanitizeRequestParams($params);
+    }
+
+    /**
+     * 客户端 IP（优先 Request facade，再回退常见代理头）。
+     */
+    private static function clientIp(){
+        try {
+            if(class_exists(\xjryanse\phplite\facade\Request::class)){
+                $ip = trim((string)\xjryanse\phplite\facade\Request::ip());
+                if($ip !== ''){
+                    return $ip;
+                }
+            }
+        } catch (\Throwable $ignore) {
+        }
+        foreach(['HTTP_X_REAL_IP', 'HTTP_X_FORWARDED_FOR', 'REMOTE_ADDR'] as $key){
+            if(empty($_SERVER[$key])){
+                continue;
+            }
+            $ip = (string)$_SERVER[$key];
+            if($key === 'HTTP_X_FORWARDED_FOR'){
+                $ip = trim(explode(',', $ip)[0]);
+            }
+            if($ip !== ''){
+                return $ip;
+            }
+        }
+        return '';
+    }
+
+    /**
+     * FPM 业务路由 module/controller/action。
+     */
+    private static function fpmBusinessRoute(){
+        try {
+            if(class_exists(\xjryanse\phplite\facade\Route::class)){
+                $module = (string)\xjryanse\phplite\facade\Route::module();
+                $controller = (string)\xjryanse\phplite\facade\Route::controller();
+                $action = (string)\xjryanse\phplite\facade\Route::action();
+                if($module !== '' && $controller !== '' && $action !== ''){
+                    return $module.'/'.$controller.'/'.$action;
+                }
+            }
+        } catch (\Throwable $ignore) {
+        }
+        return '';
+    }
+
+    private static function resolveTraceId(array $context){
+        $traceId = trim((string)($context['trace_id'] ?? ''));
+        if($traceId === '' && !empty($GLOBALS['trace_id'])){
+            $traceId = trim((string)$GLOBALS['trace_id']);
+        }
+        return $traceId;
+    }
+
+    private static function resolveRoute(array $context, $runtime){
+        $route = trim((string)($context['url'] ?? ''));
+        if($route === '' && $runtime === 'phpfpm'){
+            $route = self::fpmBusinessRoute();
+        }
+        return $route;
+    }
+
+    private static function resolveRequestParams(array $context, $runtime){
+        if(isset($context['param']) && is_array($context['param']) && $context['param'] !== []){
+            return self::sanitizeRequestParams($context['param']);
+        }
+        if($runtime === 'phpfpm'){
+            return self::fpmRequestParams();
+        }
+        return [];
+    }
+
+    private static function sessionId(){
+        global $sessionId;
+        if(!empty($sessionId)){
+            return (string)$sessionId;
+        }
+        if(session_status() === PHP_SESSION_ACTIVE){
+            return (string)session_id();
+        }
+        return '';
+    }
+
+    private static function formatExceptionChain(\Throwable $e, $maxDepth = 3){
+        $lines = [];
+        $cur = $e->getPrevious();
+        $depth = 0;
+        while($cur && $depth < $maxDepth){
+            $lines[] = '[Caused by] '.get_class($cur).': '.$cur->getMessage()
+                .' @ '.$cur->getFile().':'.$cur->getLine();
+            $cur = $cur->getPrevious();
+            $depth++;
+        }
+        return implode("\n", $lines);
+    }
+
+    private static function formatTrace(\Throwable $e, $maxLen = 4096){
+        $trace = $e->getTraceAsString();
+        if(strlen($trace) > $maxLen){
+            return substr($trace, 0, $maxLen).'...(truncated)';
+        }
+        return $trace;
+    }
+
+    private static function appendLine($text, $label, $value){
+        $value = trim((string)$value);
+        if($value === ''){
+            return $text;
+        }
+        return $text."\n".'['.$label.']'.$value;
     }
 
     /**
      * 对 password/token 等键脱敏，避免告警里泄露凭证。
      */
     private static function sanitizeRequestParams(array $params){
-        $maskKeys = ['password','pwd','passwd','pass','token','secret','authorization','cookie'];
+        $maskKeys = [
+            'password','pwd','passwd','pass','token','secret','authorization','cookie',
+            'api_key','apikey','access_key','private_key','sessionid','session_id',
+        ];
         $out = [];
         foreach($params as $k => $v){
             $key = is_string($k) ? strtolower($k) : $k;
@@ -111,33 +264,40 @@ class ErrNotice {
     }
 
     /**
-     * V2 协议站点 ID（必须稳定且非空）。
-     * 可通过环境变量显式指定：OPSBAO_SITE_ID。
+     * 项目根目录名（零配置）：如 /www/wwwroot/service_entry → service_entry。
+     */
+    private static function projectRootName(){
+        if(defined('ROOT_PATH') && ROOT_PATH !== ''){
+            $base = basename(rtrim(ROOT_PATH, '/\\'));
+            if($base !== ''){
+                return $base;
+            }
+        }
+        if(!empty($_SERVER['DOCUMENT_ROOT'])){
+            $parent = basename(dirname(rtrim((string)$_SERVER['DOCUMENT_ROOT'], '/\\')));
+            if($parent !== ''){
+                return $parent;
+            }
+        }
+        return 'unknown';
+    }
+
+    /**
+     * V2 协议站点 ID：按「项目根目录名 + 主机 IP」生成，同一库在不同域名下 sid 一致。
      */
     private static function siteId(){
-        $sid = trim((string)(getenv('OPSBAO_SITE_ID') ?: ''));
-        if($sid !== ''){
-            return $sid;
-        }
-        $server = self::serverName();
         $ip = self::localIp();
-        return 'sid-'.substr(md5($server.'|'.$ip), 0, 12);
+        return 'sid-'.substr(md5(self::projectRootName().'|'.$ip), 0, 12);
     }
 
-    /**
-     * V2 站点展示名（可选，便于 App 端展示）。
-     */
+    /** V2 站点展示名：与项目根目录名一致。 */
     private static function siteName(){
-        $name = trim((string)(getenv('OPSBAO_SITE_NAME') ?: ''));
-        return $name !== '' ? $name : self::serverName();
+        return self::projectRootName();
     }
 
-    /**
-     * V2 来源短字段 s（可选）。
-     */
+    /** V2 来源短字段 s；notice 会追加 |phpfpm|worker 等运行时后缀。 */
     private static function siteSource(){
-        $src = trim((string)(getenv('OPSBAO_SITE_SOURCE') ?: ''));
-        return $src !== '' ? $src : ('service_logdb@'.self::localIp());
+        return self::projectRootName();
     }
 
     private static function pushToOpsBao(array $payload){
@@ -186,6 +346,19 @@ class ErrNotice {
             self::$siteDictSentMap[$dedupKey] = true;
         }
         return $res;
+    }
+
+    /** 首次告警前推送 site_dict，便于运维平台展示项目名与来源。 */
+    private static function ensureSiteDictOnce(){
+        static $done = false;
+        if($done){
+            return;
+        }
+        $done = true;
+        try {
+            self::sendSiteDict();
+        } catch (\Throwable $ignore) {
+        }
     }
 
     /**
@@ -278,29 +451,73 @@ class ErrNotice {
     }
 
     public static function notice($e = null, array $context = []){
+        self::ensureSiteDictOnce();
+
+        $context = self::mergeContext($context);
         $runtime = trim((string)($context['runtime'] ?? ''));
         if($runtime === ''){
             $runtime = php_sapi_name() === 'cli' ? 'worker' : 'phpfpm';
         }
+
         $message = $e ? $e->getMessage() : '未知异常';
         $file = $e ? $e->getFile() : '';
         $line = $e ? $e->getLine() : '';
+        $exClass = $e ? get_class($e) : '';
+        $exCode = $e ? (string)$e->getCode() : '';
         $server = self::serverName();
         $ip = self::localIp();
         $req = self::requestSnapshot();
+        $traceId = self::resolveTraceId($context);
+        $route = self::resolveRoute($context, $runtime);
+        $params = self::resolveRequestParams($context, $runtime);
+        $clientIp = self::clientIp();
+        $sessionId = self::sessionId();
 
         $text = $message;
-        $text .= "\n"."[主机]".$server." (".$ip.")";
-        $text .= $file ? "\n[文件]".$file : '';
-        $text .= $line ? "\n[行数]".$line : '';
-        if($req['url'] !== ''){
-            $text .= "\n[请求]".($req['method'] !== '' ? $req['method'].' ' : '').$req['url'];
+        $text = self::appendLine($text, '类型', $exClass);
+        if($exCode !== '' && $exCode !== '0'){
+            $text = self::appendLine($text, '错误码', $exCode);
         }
-        $paramsLine = self::formatParamsLine($req['params']);
+        $text = self::appendLine($text, '主机', $server.' ('.$ip.')');
+        $text = self::appendLine($text, '文件', $file);
+        $text = self::appendLine($text, '行数', $line !== '' ? (string)$line : '');
+        $text = self::appendLine($text, 'TraceId', $traceId);
+        if($route !== ''){
+            $text = self::appendLine($text, '路由', $route);
+        } elseif($req['url'] !== ''){
+            $text = self::appendLine($text, '请求', ($req['method'] !== '' ? $req['method'].' ' : '').$req['url']);
+        }
+        $paramsLine = self::formatParamsLine($params);
         if($paramsLine !== ''){
-            $text .= "\n[参数]".$paramsLine;
+            $text = self::appendLine($text, '参数', $paramsLine);
         }
-        $text .= "\n[运行时]".$runtime;
+        $text = self::appendLine($text, '客户端IP', $clientIp);
+        $text = self::appendLine($text, 'Session', $sessionId);
+        $text = self::appendLine($text, '运行时', $runtime);
+
+        $env = trim((string)(getenv('APP_ENV') ?: getenv('RUNTIME_ENV') ?: ''));
+        if($env !== ''){
+            $text = self::appendLine($text, '环境', $env);
+        }
+        $text = self::appendLine($text, 'PHP', PHP_VERSION);
+
+        if($e){
+            $chain = self::formatExceptionChain($e);
+            if($chain !== ''){
+                $text = self::appendLine($text, '异常链', $chain);
+            }
+            $trace = self::formatTrace($e);
+            if($trace !== ''){
+                $text = self::appendLine($text, '堆栈', $trace);
+            }
+        }
+
+        if(!empty($GLOBALS['serviceTraceArr']) && is_array($GLOBALS['serviceTraceArr'])){
+            $serviceLine = self::formatParamsLine($GLOBALS['serviceTraceArr'], 1500);
+            if($serviceLine !== ''){
+                $text = self::appendLine($text, '微服务调用', $serviceLine);
+            }
+        }
 
         $eventId = 'err-'.md5($server.'|'.$message.'|'.$file.'|'.$line.'|'.date('YmdHi'));
 
@@ -316,6 +533,24 @@ class ErrNotice {
             'm'          => $text,
             's'          => self::siteSource().'|'.$runtime
         ];
+        if($traceId !== ''){
+            $payload['trace_id'] = $traceId;
+        }
+        if($route !== ''){
+            $payload['route'] = $route;
+        }
+        if($exClass !== ''){
+            $payload['ex'] = $exClass;
+        }
+        if($exCode !== '' && $exCode !== '0'){
+            $payload['ex_code'] = $exCode;
+        }
+        if($file !== ''){
+            $payload['file'] = $file;
+        }
+        if($line !== ''){
+            $payload['line'] = (int)$line;
+        }
 
         return self::pushToOpsBao($payload);
     }
