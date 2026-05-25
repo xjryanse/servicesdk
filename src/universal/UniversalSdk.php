@@ -14,7 +14,7 @@ class UniversalSdk extends SdkBase{
     use \xjryanse\servicesdk\universal\universal\PageTraits;
     use \xjryanse\servicesdk\universal\universal\PageVueTraits;
     use \xjryanse\servicesdk\universal\universal\PageItemTraits;
-
+    use \xjryanse\servicesdk\universal\universal\PageItemVueTraits;
     /**
      * 取单挑数据
      * @param type $msgId   消息id
