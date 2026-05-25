@@ -20,5 +20,20 @@ class PageSdk extends SdkBase{
         return $data;
     }
 
+    /**
+     * 2026年5月25日
+     * @param type $pageKey
+     * @return type
+     */
+    public function pageItemVue($pageKey){
+        $url = static::sdkUrl('page/page/itemVue');
+        $data['pageKey']  = $pageKey;
+        $data['svBindId'] = $this->uuid;
+        $res              = QLogSdk::postAndLog($url, $data);
+        $data             = $res['data'];
+        return $data;
+    }
+    
+
 
 }
