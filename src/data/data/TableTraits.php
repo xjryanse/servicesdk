@@ -105,6 +105,30 @@ trait TableTraits{
         $res        = $this->queryLog($baseUrl, $param, 'curl');
         return $res['data'];
     }
+
+    /**
+     * 分页仅主键列（SELECT tie 字段），条件/排序/分页参数同 tableDataPaginate。
+     *
+     * @param string $tableName
+     * @param string $orderBy
+     * @param array $con
+     * @param array $param 可选 tie_field / id_field
+     * @return mixed
+     */
+    public function tableDataPaginateOnlyId($tableName, $orderBy = '', $con = [], $param = [])
+    {
+        $param['table_name'] = $tableName;
+        if ($orderBy) {
+            $param['orderBy'] = $orderBy;
+        }
+        $param['dbId'] = $this->dbId;
+        $param['svBindId'] = $this->uuid;
+        $param['condition'] = $con;
+
+        $baseUrl = 'data/table/paginateOnlyId';
+        $res = $this->queryLog($baseUrl, $param, 'curl');
+        return $res['data'];
+    }
     
     /**
      * 
