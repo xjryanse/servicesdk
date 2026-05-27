@@ -126,7 +126,7 @@ trait TableTraits{
         $param['condition'] = $con;
 
         $baseUrl = 'data/table/paginateOnlyId';
-        $res = $this->queryLog($baseUrl, $param, 'curl');
+        $res = $this->queryLog($baseUrl, $param, 'worker');
         return $res['data'];
     }
     
@@ -183,7 +183,6 @@ trait TableTraits{
         // 2026年1月21日：新增dbId入参
         $postP['dbId']       = $this->dbId;
         $postP['svBindId']   = $this->uuid;
-        
         // $res = Sync::request($host, $port, $send_data);
         $host = $this->workerIp();
         $port = $this->workerPort();
