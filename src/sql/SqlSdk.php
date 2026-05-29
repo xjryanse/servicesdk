@@ -16,6 +16,7 @@ class SqlSdk extends SdkBase{
     use \xjryanse\servicesdk\sql\sql\SqlTableTraits;
     use \xjryanse\servicesdk\sql\sql\SqlAbnormalTraits;
     use \xjryanse\servicesdk\sql\sql\SqlTraits;
+    use \xjryanse\servicesdk\sql\sql\CacheSqlTraits;
     
     // 需定义：配套BindSdkTrait使用
     protected static $serverKey = 'service_sql';
