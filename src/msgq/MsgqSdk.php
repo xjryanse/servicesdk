@@ -30,7 +30,7 @@ class MsgqSdk extends SdkBase{
      * @param type $type    消息类型
      * @param type $param   参数
      */
-    public function commGenerate($msgId, $type, $param){
+    public function commGenerate($msgId, $type, $param, $delaySec = null){
         $url = 'http://'.static::sdkIp().':9907/msgq/busi_msg/produce';        
         // 默认发本地消息中间件
         // TODO:配置解耦
@@ -40,6 +40,9 @@ class MsgqSdk extends SdkBase{
         $data['msg']            = $param;
         //2026年1月26日
         $data['svBindId']       = $this->uuid;
+        if($delaySec !== null && $delaySec !== ''){
+            $data['delaySec']   = max(1, (int) $delaySec);
+        }
 
         $res                    = Query::posturl($url, $data);
 
