@@ -70,9 +70,11 @@ class EntrySdk {
             }
             return $res['data'];
         });
+        /*
         if(!$resp){
             SCache::rm($cacheKey);
         }
+         */
         return $resp;
     }
 
@@ -145,10 +147,12 @@ class EntrySdk {
             $baseUrl        = 'entry/company/info';
             $res            = static::wQuery($baseUrl, $data);
             return isset($res['data']) ? $res['data'] : null;
-        });        
+        });       
+        /*
         if(!$res){
             SCache::rm($cacheKey);
         }
+         */
         return $res;
     }
     
@@ -166,9 +170,11 @@ class EntrySdk {
             $res = static::wQuery($baseUrl, []);
             return isset($res['data']) ? $res['data'] : [];
         });
+        /*
         if(!$res){
             SCache::rm($cacheKey);
         }
+         */
         return $res;
     }
     /**
