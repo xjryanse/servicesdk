@@ -102,7 +102,7 @@ trait TableTraits{
         $param['condition']  = $con;
 
         $baseUrl    = 'data/table/paginate';
-        $res        = $this->queryLog($baseUrl, $param, 'curl');
+        $res        = $this->queryLog($baseUrl, $param, 'worker');
         return $res['data'];
     }
 

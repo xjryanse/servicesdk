@@ -15,7 +15,7 @@ trait TableBatchTraits{
      * @param type $param   参数
      */
     public function tableBatchDataGet($tableName,$ids){
-        $url = static::sdkUrl('data/tableBatch/get');
+        // $url = static::sdkUrl('data/tableBatch/get');
         // 默认发本地消息中间件
         // TODO:配置解耦
         $data['table_name'] = $tableName;
@@ -24,7 +24,9 @@ trait TableBatchTraits{
         $data['dbId']       = $this->dbId;
         $data['svBindId']   = $this->uuid;
         
-        $res                = QLogSdk::postAndLog($url, $data);
+        // $res                = QLogSdk::postAndLog($url, $data);
+        $baseUrl    = 'data/tableBatch/get';
+        $res        = $this->queryLog($baseUrl, $data, 'worker');        
         return $res['data'];
     }
     
