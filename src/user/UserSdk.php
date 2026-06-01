@@ -23,7 +23,8 @@ class UserSdk extends SdkBase{
         // 默认发本地消息中间件
         // TODO:配置解耦
         $data['username']       = $username;
-        $data['password']       = $password;
+        // service_user/session/login 约定 password 字段为 Base64（与前端直调一致）
+        $data['password']       = base64_encode((string) $password);
         $data['svBindId']       = $this->uuid;
         $res                    = QLogSdk::postAndLog($url, $data);
         if($res['code'] <>0){
