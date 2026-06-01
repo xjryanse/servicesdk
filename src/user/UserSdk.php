@@ -4,7 +4,6 @@ namespace xjryanse\servicesdk\user;
 use xjryanse\servicesdk\comm\SdkBase;
 use xjryanse\servicesdk\msgq\QLogSdk;
 use xjryanse\servicesdk\entry\EntrySdk;
-use Exception;
 /**
  * 公众号接入sdk
  */
@@ -27,9 +26,6 @@ class UserSdk extends SdkBase{
         $data['password']       = base64_encode((string) $password);
         $data['svBindId']       = $this->uuid;
         $res                    = QLogSdk::postAndLog($url, $data);
-        if($res['code'] <>0){
-            throw new Exception($res['message']);
-        }
         return $res['data'];
     }
     
