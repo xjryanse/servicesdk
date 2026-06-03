@@ -20,7 +20,7 @@ class Unpack{
         }
         // 非调试模式下，标记消息已消费
         global $svBindId;
-        MsgqSdk::inst($svBindId)->msgqCallBack($msgId);
-        return true;
+        $resp = MsgqSdk::inst($svBindId)->msgqCallBack($msgId);
+        return $resp;
     }
 }
