@@ -2,7 +2,7 @@
 namespace xjryanse\servicesdk\data;
 
 use xjryanse\servicesdk\comm\SdkBase;
-
+use xjryanse\servicesdk\DbSdk;
 
 /**
  * 17点20分
@@ -24,6 +24,15 @@ class DataSdk extends SdkBase{
     protected $dbId;
     public function dbBind($dbId){
         $this->dbId = $dbId;
+        return $this;
+    }
+    /**
+     * 2026年6月2日：默认业务库
+     * @param type $dbCate
+     */
+    public function dbBindByCate($dbCate = 'dbBusi'){
+        global $svBindId;
+        $this->dbId = DbSdk::dbId($dbCate, $svBindId);
         return $this;
     }
 
