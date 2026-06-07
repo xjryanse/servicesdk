@@ -76,4 +76,43 @@ trait SqlTraits{
         }
         return $res;
     }
+
+    public function sqlGet($sqlId)
+    {
+        $key = __CLASS__ . __METHOD__ . $sqlId;
+        return SqlCache::funcGet($key, function () use ($sqlId) {
+            $data = $this->postBaseData();
+            $data['id'] = $sqlId;
+            $res = $this->queryLog('sql/sql/get', $data, 'worker');
+
+            return $res['data'];
+        });
+    }
+
+    public function sumFields($sqlId, array $param = [])
+    {
+        $pMd5 = Arrays::md5($param);
+        $key = __CLASS__ . __METHOD__ . $sqlId . $pMd5;
+        return SqlCache::funcGet($key, function () use ($sqlId, $param) {
+            $data = $this->postBaseData();
+            $data['sqlId'] = $sqlId;
+            $data['param'] = $param;
+            $res = $this->queryLog('sql/sql/sumFields', $data, 'worker');
+
+            return $res['data'];
+        });
+    }
+
+    public function fieldAsByType($sqlId, $fieldType)
+    {
+        $key = __CLASS__ . __METHOD__ . $sqlId . $fieldType;
+        return SqlCache::funcGet($key, function () use ($sqlId, $fieldType) {
+            $data = $this->postBaseData();
+            $data['sqlId'] = $sqlId;
+            $data['fieldType'] = $fieldType;
+            $res = $this->queryLog('sql/sql/fieldAsByType', $data, 'worker');
+
+            return $res['data'];
+        });
+    }
 }

@@ -35,4 +35,48 @@ class UniversalSdk extends SdkBase{
         });
     }
 
+    /**
+     * 2026年6月：表单字段单条配置（uniDynSearch 等）
+     */
+    public function formGet($fieldId){
+        $key = __CLASS__.__METHOD__.$fieldId;
+        return PCache::funcGet($key,function () use ($fieldId) {
+            $data = $this->postBaseData();
+            $data['id'] = $fieldId;
+            $res = $this->queryLog('universal/form/get', $data, 'curl');
+            return $res['data'];
+        });
+    }
+
+    /**
+     * page_item 单条 catalog 原始行（field_filter / auth_check 等）
+     */
+    public function pageItemGet($pageItemId)
+    {
+        $key = __CLASS__ . __METHOD__ . $pageItemId;
+        return PCache::funcGet($key, function () use ($pageItemId) {
+            $data = $this->postBaseData();
+            $data['id'] = $pageItemId;
+            $data['pageItemId'] = $pageItemId;
+            $res = $this->queryLog('universal/pageItem/get', $data, 'curl');
+
+            return $res['data'];
+        });
+    }
+
+    /**
+     * page 单条 catalog 原始行（base_table / page_key 等）
+     */
+    public function pageGet($pageId)
+    {
+        $key = __CLASS__ . __METHOD__ . $pageId;
+        return PCache::funcGet($key, function () use ($pageId) {
+            $data = $this->postBaseData();
+            $data['id'] = $pageId;
+            $res = $this->queryLog('universal/page/get', $data, 'curl');
+
+            return $res['data'];
+        });
+    }
+
 }
