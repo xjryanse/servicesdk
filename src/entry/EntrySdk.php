@@ -113,6 +113,10 @@ class EntrySdk {
      * @param type $param   参数
      */
     public static function companyKeyInfo($key){
+        // 20260607
+        if(mb_strlen($key)!=8){
+            throw new Exception('不是合法租户key');
+        }        
         $cacheKey = static::generateCacheKey(__FUNCTION__, $key);
         // SCache::rm($cacheKey);
         $res = SCache::funcGet($cacheKey, function () use ($key){
