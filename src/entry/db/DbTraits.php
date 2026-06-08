@@ -26,5 +26,40 @@ trait DbTraits {
         }
         return $resp;
     }
+
+    /**
+     * 按 w_db_cnn.id 反查 svBindId
+     *
+     * @throws Exception
+     */
+    public static function bindByDbId(string $dbId): string
+    {
+        $dbId = trim($dbId);
+        if ($dbId === '' || $dbId === '0') {
+            throw new Exception('dbId 不能为空');
+        }
+
+        $cacheKey = static::generateCacheKey(__FUNCTION__, $dbId);
+        $resp = SCache::funcGet($cacheKey, function () use ($dbId) {
+            $res = static::wQuery('entry/dbCnn/bindByDbId', ['dbId' => $dbId]);
+            if (!is_array($res) || (int) ($res['code'] ?? 1) !== 0) {
+                $msg = is_array($res) && isset($res['message'])
+                    ? (string) $res['message']
+                    : 'entry dbCnn/bindByDbId 失败';
+                throw new Exception($msg);
+            }
+            $payload = $res['data'] ?? null;
+            if (!is_array($payload)) {
+                throw new Exception('entry dbCnn/bindByDbId 返回 data 无效');
+            }
+            $bindId = trim((string) ($payload['bindId'] ?? ''));
+            if ($bindId === '') {
+                throw new Exception('entry dbCnn/bindByDbId 未返回 bindId');
+            }
+            return $bindId;
+        });
+
+        return is_string($resp) ? $resp : '';
+    }
 }
 
