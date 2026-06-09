@@ -8,6 +8,8 @@ use xjryanse\servicesdk\entry\EntrySdk;
  * 公众号接入sdk
  */
 class UserSdk extends SdkBase{
+    use \xjryanse\servicesdk\user\user\IdNoTraits;
+    
     // 需定义：配套BindSdkTrait使用
     protected static $serverKey = 'service_user';
 
