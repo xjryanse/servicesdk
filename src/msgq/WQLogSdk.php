@@ -32,7 +32,7 @@ class WQLogSdk extends SdkBase{
         if(!$resp){
             $span = SdkTrace::buildWorkerSpan($host, $port, $url, is_array($param) ? $param : [], null, $startMTs, $endMTs, 'fail', '服务无响应');
             SdkTrace::pushSpan($span);
-            throw new SdkCallException('服务无响应', $span, null, gethostname().'接口无值:'.$urlStr);
+            throw new SdkCallException($url.'无响应', $span, null, gethostname().'接口无值:'.$urlStr);
         }
         if($resp['code'] <> 0){
             SdkTrace::mergeServiceArrIntoGlobal($resp);
