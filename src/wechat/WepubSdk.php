@@ -10,5 +10,15 @@ class WepubSdk extends SdkBase{
     // 需定义：配套BindSdkTrait使用
     protected static $serverKey = 'service_wechat';
 
-    
+    /**
+     * 公众号模板消息 relay
+     */
+    public function wePubTplRelay($info){
+        $baseUrl = 'wepub/relay/wePubTpl';
+
+        $data = $this->postBaseData();
+        $data['info'] = $info;
+        $res = $this->queryLog($baseUrl, $data, 'curl');
+        return $res['data'];
+    }
 }
