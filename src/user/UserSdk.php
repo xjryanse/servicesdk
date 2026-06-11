@@ -46,6 +46,14 @@ class UserSdk extends SdkBase{
         $res = $this->queryLog($baseUrl, $data, 'worker');
         return $res['data'];
     }
+    /**
+     * 单条（也走批量）
+     * @param type $userId
+     */
+    public function get($userId){
+        $lists = $this->batchGet([$userId]);
+        return $lists ? $lists[0] : []; 
+    }
     
     /**
      * 取单挑数据
