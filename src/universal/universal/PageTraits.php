@@ -13,9 +13,8 @@ trait PageTraits{
      * @return type
      */
     public function pageConfig($pageKey, $pageDbSource, $sessionUserId = ''){
-        $guestKey = $sessionUserId !== '' && $sessionUserId !== null ? (string) $sessionUserId : '_guest_';
-        $key = __CLASS__.__METHOD__.$pageKey.$this->uuid.$guestKey;
-        PCache::rm($key);        
+        $key = __CLASS__.__METHOD__.$pageKey.$this->uuid.$sessionUserId;
+        // PCache::rm($key);        
         return PCache::funcGet($key,function () use ($pageKey, $pageDbSource, $sessionUserId) {
             // $url = static::sdkUrl('universal/page/config');
             // 默认发本地消息中间件
@@ -26,7 +25,7 @@ trait PageTraits{
             $data['sessionUserId']  = (string) $sessionUserId;
             
             $baseUrl    = 'universal/page/config';
-            $res        = $this->queryLog($baseUrl, $data, 'curl');
+            $res        = $this->queryLog($baseUrl, $data, 'worker');
             // $res                = QLogSdk::postAndLog($url, $data);
             return $res['data'];
         });

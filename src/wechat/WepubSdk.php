@@ -21,4 +21,18 @@ class WepubSdk extends SdkBase{
         $res = $this->queryLog($baseUrl, $data, 'curl');
         return $res['data'];
     }
+    /**
+     * 2026年6月13日
+     * @param type $openid
+     * @return type
+     */
+    public function wePubFansBindUserIds($openid){
+        $baseUrl        = 'wepub/fans/bindUserIds';
+
+        $data           = $this->postBaseData();
+        $data['openid'] = $openid;
+        $res            = $this->queryLog($baseUrl, $data, 'worker');
+        return $res['data'];
+    }
+
 }
