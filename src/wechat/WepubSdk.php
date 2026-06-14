@@ -21,6 +21,18 @@ class WepubSdk extends SdkBase{
         $res = $this->queryLog($baseUrl, $data, 'curl');
         return $res['data'];
     }
+
+    /**
+     * 公众号模板消息投递前预检（校验 openid 等，不产生发送记录）
+     */
+    public function wePubTplPrecheck($info){
+        $baseUrl = 'wepub/relay/wePubTplPrecheck';
+
+        $data = $this->postBaseData();
+        $data['info'] = $info;
+        $res = $this->queryLog($baseUrl, $data, 'curl');
+        return $res['data'];
+    }
     /**
      * 2026年6月13日
      * @param type $openid
