@@ -36,11 +36,14 @@ class ErrNotice {
     }
 
     /**
-     * 合并调用方 context 与进程内 err_notice_ctx（Worker 请求上下文）。
+     * 合并 Worker 请求上下文（WorkerRequest）与调用方传入 context。
      */
     private static function mergeContext(array $context){
-        if(!empty($GLOBALS['err_notice_ctx']) && is_array($GLOBALS['err_notice_ctx'])){
-            return array_merge($GLOBALS['err_notice_ctx'], $context);
+        if(class_exists(\xjryanse\phplite\service\WorkerRequest::class)){
+            $wr = \xjryanse\phplite\service\WorkerRequest::current();
+            if($wr !== null){
+                return array_merge($wr->toErrNoticeCtx(), $context);
+            }
         }
         return $context;
     }
@@ -144,10 +147,34 @@ class ErrNotice {
 
     private static function resolveTraceId(array $context){
         $traceId = trim((string)($context['trace_id'] ?? ''));
+        if($traceId === '' && class_exists(\xjryanse\phplite\service\WorkerRequest::class)){
+            $wr = \xjryanse\phplite\service\WorkerRequest::current();
+            if($wr !== null){
+                $traceId = trim($wr->traceId());
+            }
+        }
         if($traceId === '' && !empty($GLOBALS['trace_id'])){
             $traceId = trim((string)$GLOBALS['trace_id']);
         }
         return $traceId;
+    }
+
+    /**
+     * Worker 请求内出站 span；FPM 仍读 $serviceTraceArr。
+     *
+     * @return list<array<string,mixed>>
+     */
+    private static function currentServiceSpans(){
+        if(class_exists(\xjryanse\phplite\service\WorkerRequest::class)){
+            $wr = \xjryanse\phplite\service\WorkerRequest::current();
+            if($wr !== null){
+                return $wr->serviceSpans();
+            }
+        }
+        if(!empty($GLOBALS['serviceTraceArr']) && is_array($GLOBALS['serviceTraceArr'])){
+            return $GLOBALS['serviceTraceArr'];
+        }
+        return [];
     }
 
     private static function resolveRoute(array $context, $runtime){
@@ -526,8 +553,9 @@ class ErrNotice {
             }
         }
 
-        if(!empty($GLOBALS['serviceTraceArr']) && is_array($GLOBALS['serviceTraceArr'])){
-            $serviceLine = self::formatParamsLine($GLOBALS['serviceTraceArr'], 1500);
+        $serviceSpans = self::currentServiceSpans();
+        if($serviceSpans !== []){
+            $serviceLine = self::formatParamsLine($serviceSpans, 1500);
             if($serviceLine !== ''){
                 $text = self::appendLine($text, '微服务调用', $serviceLine);
             }
@@ -545,7 +573,11 @@ class ErrNotice {
             'sv'         => 3,
             'ttl'        => '业务异常告警['.$runtime.']',
             'm'          => $text,
-            's'          => self::siteSource().'|'.$runtime
+            's'          => self::siteSource().'|'.$runtime,
+            //2026年6月14日：新增字段；
+            'url'   => '',
+            
+            
         ];
         if($traceId !== ''){
             $payload['trace_id'] = $traceId;

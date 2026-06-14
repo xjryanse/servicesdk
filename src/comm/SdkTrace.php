@@ -89,12 +89,21 @@ class SdkTrace
      */
     public static function mergeServiceArrIntoGlobal(array $resp): void
     {
-        global $serviceTraceArr;
-        if (!empty($resp['$dev']['serviceArr']) && is_array($resp['$dev']['serviceArr'])) {
-            $serviceTraceArr = !empty($serviceTraceArr) && is_array($serviceTraceArr)
-                ? array_merge($serviceTraceArr, $resp['$dev']['serviceArr'])
-                : $resp['$dev']['serviceArr'];
+        if (empty($resp['$dev']['serviceArr']) || !is_array($resp['$dev']['serviceArr'])) {
+            return;
         }
+        $spans = $resp['$dev']['serviceArr'];
+        if (class_exists(\xjryanse\phplite\service\WorkerRequest::class)) {
+            $wr = \xjryanse\phplite\service\WorkerRequest::current();
+            if ($wr !== null) {
+                $wr->mergeServiceSpans($spans);
+                return;
+            }
+        }
+        global $serviceTraceArr;
+        $serviceTraceArr = !empty($serviceTraceArr) && is_array($serviceTraceArr)
+            ? array_merge($serviceTraceArr, $spans)
+            : $spans;
     }
 
     /**
@@ -189,6 +198,14 @@ class SdkTrace
      */
     public static function pushSpan(array $span): void
     {
+        if (class_exists(\xjryanse\phplite\service\WorkerRequest::class)) {
+            $wr = \xjryanse\phplite\service\WorkerRequest::current();
+            if ($wr !== null) {
+                $wr->addServiceSpan($span);
+                LogBuffer::push($span);
+                return;
+            }
+        }
         global $serviceTraceArr;
         if (!isset($serviceTraceArr) || !is_array($serviceTraceArr)) {
             $serviceTraceArr = [];
@@ -220,7 +237,7 @@ class SdkTrace
             $respSnippet = mb_substr(json_encode($response, JSON_UNESCAPED_UNICODE), 0, 500) . '……';
         }
         return [
-            'trace_id'       => isset($GLOBALS['trace_id']) ? $GLOBALS['trace_id'] : '',
+            'trace_id'       => self::currentTraceId(),
             'call_seq'       => OutboundLogUtil::nextSeq(),
             'call_direction' => 'outbound',
             'transport'      => 'workerman',
@@ -275,7 +292,7 @@ class SdkTrace
             $respSnippet = mb_substr(json_encode($response, JSON_UNESCAPED_UNICODE), 0, 500) . '……';
         }
         return [
-            'trace_id'       => isset($GLOBALS['trace_id']) ? $GLOBALS['trace_id'] : '',
+            'trace_id'       => self::currentTraceId(),
             'call_seq'       => OutboundLogUtil::nextSeq(),
             'call_direction' => 'outbound',
             'transport'      => 'http',
@@ -298,5 +315,16 @@ class SdkTrace
             'error_message'  => (string) $errorMessage,
             'create_time'    => date('Y-m-d H:i:s'),
         ];
+    }
+
+    private static function currentTraceId(): string
+    {
+        if (class_exists(\xjryanse\phplite\service\WorkerRequest::class)) {
+            $wr = \xjryanse\phplite\service\WorkerRequest::current();
+            if ($wr !== null && $wr->traceId() !== '') {
+                return $wr->traceId();
+            }
+        }
+        return isset($GLOBALS['trace_id']) ? (string) $GLOBALS['trace_id'] : '';
     }
 }

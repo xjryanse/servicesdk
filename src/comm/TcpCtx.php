@@ -14,8 +14,6 @@ class TcpCtx
     ];
 
     /**
-     * 标准 Workerman TCP 请求包。
-     *
      * @param array<string,mixed> $bizParam
      * @return array<string,mixed>
      */
@@ -33,14 +31,11 @@ class TcpCtx
      */
     public static function buildForOutbound(): array
     {
-        $traceId = trim((string) ($GLOBALS['trace_id'] ?? ''));
-        if ($traceId === '') {
-            $traceId = uniqid('t' . substr((string) microtime(true), -6) . '_', true);
-            $GLOBALS['trace_id'] = $traceId;
-        }
+        $wr = self::workerRequest();
+        $traceId = self::resolveTraceId($wr);
 
-        if (!empty($GLOBALS['inbound_caller_ctx']) && is_array($GLOBALS['inbound_caller_ctx'])) {
-            $ctx = $GLOBALS['inbound_caller_ctx'];
+        if ($wr !== null && $wr->ctx() !== []) {
+            $ctx = $wr->ctx();
             $ctx['trace_id'] = $traceId;
             return self::normalize($ctx);
         }
@@ -56,7 +51,7 @@ class TcpCtx
     }
 
     /**
-     * 从 TCP 请求包 ctx 字段解析入站调用方信息。
+     * 从 TCP 请求包 ctx 字段解析入站调用方信息（不写 global）。
      *
      * @param array<string,mixed> $reqArr
      * @return array<string,string>
@@ -71,12 +66,7 @@ class TcpCtx
         if ($peerIp !== '' && empty($ctx['caller_peer_ip'])) {
             $ctx['caller_peer_ip'] = $peerIp;
         }
-        if (!empty($ctx['trace_id'])) {
-            $GLOBALS['trace_id'] = $ctx['trace_id'];
-        }
-        if ($ctx !== []) {
-            $GLOBALS['inbound_caller_ctx'] = $ctx;
-        }
+
         return $ctx;
     }
 
@@ -96,19 +86,52 @@ class TcpCtx
         return $base;
     }
 
+    /**
+     * @return object|null WorkerRequest 实例（phplite 未加载时为 null）
+     */
+    private static function workerRequest()
+    {
+        if (!class_exists(\xjryanse\phplite\service\WorkerRequest::class)) {
+            return null;
+        }
+        return \xjryanse\phplite\service\WorkerRequest::current();
+    }
+
+    /**
+     * @param object|null $wr
+     */
+    private static function resolveTraceId($wr): string
+    {
+        if ($wr !== null && method_exists($wr, 'traceId')) {
+            $traceId = trim((string) $wr->traceId());
+            if ($traceId !== '') {
+                return $traceId;
+            }
+        }
+        $traceId = trim((string) ($GLOBALS['trace_id'] ?? ''));
+        if ($traceId === '') {
+            $traceId = uniqid('t' . substr((string) microtime(true), -6) . '_', true);
+            if ($wr === null) {
+                $GLOBALS['trace_id'] = $traceId;
+            }
+        }
+        return $traceId;
+    }
+
     private static function currentRoute(): string
     {
-        if (!empty($GLOBALS['err_notice_ctx']['url'])) {
-            return trim((string) $GLOBALS['err_notice_ctx']['url']);
+        $wr = self::workerRequest();
+        if ($wr !== null) {
+            return $wr->url();
         }
         return '';
     }
 
     private static function currentRuntime(): string
     {
-        $runtime = trim((string) ($GLOBALS['err_notice_ctx']['runtime'] ?? ''));
-        if ($runtime !== '') {
-            return $runtime;
+        $wr = self::workerRequest();
+        if ($wr !== null) {
+            return $wr->runtime();
         }
         return php_sapi_name() === 'cli' ? 'worker' : 'phpfpm';
     }
