@@ -2,6 +2,7 @@
 namespace xjryanse\servicesdk\entry;
 
 use xjryanse\servicesdk\comm\TcpRetry;
+use xjryanse\servicesdk\comm\TcpCtx;
 use xjryanse\phplite\logic\Arrays;
 use xjryanse\phplite\cache\SCache;
 use xjryanse\phplite\logic\Env;
@@ -40,9 +41,7 @@ class EntrySdk {
     protected static function wQuery($baseUrl , $param ){
         $host       = static::sdkIp();
         $port       = '19919';
-
-        $qParam['url']   = $baseUrl;
-        $qParam['param'] = $param;
+        $qParam     = TcpCtx::envelope($baseUrl, $param);
 
         return TcpRetry::syncRequest($host, $port, $qParam);
     }

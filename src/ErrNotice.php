@@ -490,6 +490,12 @@ class ErrNotice {
         $text = self::appendLine($text, '文件', $file);
         $text = self::appendLine($text, '行数', $line !== '' ? (string)$line : '');
         $text = self::appendLine($text, 'TraceId', $traceId);
+        $text = self::appendLine($text, '调用方', trim((string)($context['caller_service'] ?? '')));
+        $text = self::appendLine($text, '调用路由', trim((string)($context['caller_route'] ?? '')));
+        $text = self::appendLine($text, '调用位置', trim((string)($context['caller_from'] ?? '')));
+        $text = self::appendLine($text, '调用方IP', trim((string)($context['caller_ip'] ?? '')));
+        $text = self::appendLine($text, '对端IP', trim((string)($context['caller_peer_ip'] ?? '')));
+        $text = self::appendLine($text, '调用方运行时', trim((string)($context['caller_runtime'] ?? '')));
         if($route !== ''){
             $text = self::appendLine($text, '路由', $route);
         } elseif($req['url'] !== ''){
@@ -543,6 +549,14 @@ class ErrNotice {
         ];
         if($traceId !== ''){
             $payload['trace_id'] = $traceId;
+        }
+        $callerService = trim((string)($context['caller_service'] ?? ''));
+        $callerRoute = trim((string)($context['caller_route'] ?? ''));
+        if($callerService !== ''){
+            $payload['caller_service'] = $callerService;
+        }
+        if($callerRoute !== ''){
+            $payload['caller_route'] = $callerRoute;
         }
         if($route !== ''){
             $payload['route'] = $route;

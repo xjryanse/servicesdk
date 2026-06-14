@@ -16,9 +16,8 @@ class Worker {
      * @return type
      */
     public static function query($host, $port, $baseUrl , $param ){
-        $qParam['url']   = $baseUrl;
-        $qParam['param'] = $param;
-        
+        $qParam   = TcpCtx::envelope($baseUrl, $param);
+
         return TcpRetry::syncRequest($host, $port, $qParam);
     }
     

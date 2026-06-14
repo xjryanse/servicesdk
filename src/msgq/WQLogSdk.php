@@ -4,6 +4,7 @@ namespace xjryanse\servicesdk\msgq;
 use xjryanse\servicesdk\comm\SdkBase;
 use xjryanse\servicesdk\comm\TcpRetry;
 use xjryanse\servicesdk\comm\SdkTrace;
+use xjryanse\servicesdk\comm\TcpCtx;
 use xjryanse\phplite\logic\Arrays;
 use xjryanse\servicesdk\exception\SdkCallException;
 /**
@@ -18,19 +19,15 @@ class WQLogSdk extends SdkBase{
      * 调用 Workerman 时透传 TraceId，便于对端 Worker 串联同一链路
      */
     public static function request($host, $port, $url, $param){
-        if (!empty($GLOBALS['trace_id'])) {
-            $param = array_merge(is_array($param) ? $param : [], ['X-Trace-Id' => $GLOBALS['trace_id']]);
-        }
-        $qParam = [];
-        $qParam['url']   = $url;
-        $qParam['param'] = $param;
+        $bizParam = is_array($param) ? $param : [];
+        $qParam   = TcpCtx::envelope($url, $bizParam);
         $startMTs   = intval(microtime(true) * 1000);
         $resp       = TcpRetry::syncRequest($host, $port, $qParam);
         $endMTs     = intval(microtime(true) * 1000);
 
         $urlStr = $host.':'.$port.'/'.$url;
         if(!$resp){
-            $span = SdkTrace::buildWorkerSpan($host, $port, $url, is_array($param) ? $param : [], null, $startMTs, $endMTs, 'fail', '服务无响应');
+            $span = SdkTrace::buildWorkerSpan($host, $port, $url, $bizParam, null, $startMTs, $endMTs, 'fail', '服务无响应');
             SdkTrace::pushSpan($span);
             throw new SdkCallException($url.'无响应', $span, null, gethostname().'接口无值:'.$urlStr);
         }
@@ -39,13 +36,13 @@ class WQLogSdk extends SdkBase{
             $msgStr = (string) Arrays::value($resp, 'message');
             $userMessage = SdkTrace::unwrapUserMessage($msgStr);
             $childTrace = SdkTrace::extractChildTraceFromResponse($resp);
-            $span = SdkTrace::buildWorkerSpan($host, $port, $url, is_array($param) ? $param : [], $resp, $startMTs, $endMTs, 'fail', $userMessage);
+            $span = SdkTrace::buildWorkerSpan($host, $port, $url, $bizParam, $resp, $startMTs, $endMTs, 'fail', $userMessage);
             SdkTrace::pushSpan($span);
             throw new SdkCallException($userMessage, $span, $childTrace, $msgStr);
         }
 
         SdkTrace::mergeServiceArrIntoGlobal($resp);
-        $span = SdkTrace::buildWorkerSpan($host, $port, $url, is_array($param) ? $param : [], $resp, $startMTs, $endMTs, 'ok', '');
+        $span = SdkTrace::buildWorkerSpan($host, $port, $url, $bizParam, $resp, $startMTs, $endMTs, 'ok', '');
         SdkTrace::pushSpan($span);
 
         return $resp;

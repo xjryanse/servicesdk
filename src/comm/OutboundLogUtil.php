@@ -67,6 +67,12 @@ class OutboundLogUtil {
             if (strpos($class, 'xjryanse\\servicesdk\\comm\\OutboundLogUtil') === 0) {
                 continue;
             }
+            if (strpos($class, 'xjryanse\\servicesdk\\comm\\TcpCtx') === 0) {
+                continue;
+            }
+            if (strpos($class, 'xjryanse\\servicesdk\\entry\\EntrySdk') === 0) {
+                continue;
+            }
             return $class . '::' . $fn;
         }
         return '';
