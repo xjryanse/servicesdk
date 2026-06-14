@@ -36,17 +36,16 @@ trait PageTraits{
      * @param type $pageKey
      * @return type
      */
-    public function defaultPageKey($companyId, $cate){
-        $key = __CLASS__.__METHOD__.$companyId.$cate;
+    public function defaultPageKey($cate){
+        $key = __CLASS__.__METHOD__.$cate;
         // PCache::rm($key);        
-        return PCache::funcGet($key,function () use ($companyId, $cate) {
+        return PCache::funcGet($key,function () use ($cate) {
             $baseUrl = 'universal/page/defaultPageKey';
             // 默认发本地消息中间件
             $data               = $this->postBaseData();            
-            $data['company_id'] = $companyId;
             $data['cate']       = $cate;
 
-            $res                = $this->queryLog($baseUrl, $data, 'curl');
+            $res                = $this->queryLog($baseUrl, $data, 'worker');
             return $res['data'];
         });
     }
