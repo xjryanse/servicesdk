@@ -20,6 +20,7 @@ class DataSdk extends SdkBase{
     use \xjryanse\servicesdk\data\data\TableTraits;
     use \xjryanse\servicesdk\data\data\TableBatchTraits;
     use \xjryanse\servicesdk\data\data\UniversalTraits;
+    use \xjryanse\servicesdk\data\data\DynTraits;
     
     protected $dbId;
     public function dbBind($dbId){
