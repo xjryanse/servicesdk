@@ -21,17 +21,15 @@ class UniversalSdk extends SdkBase{
      * @param type $type    消息类型
      * @param type $param   参数
      */
-    public function tableDynArrs($pageItemId, $pageDbSource = 'dbSys'){
-        $key = __CLASS__.__METHOD__.$pageItemId.$pageDbSource;
-        return PCache::funcGet($key,function () use ($pageItemId, $pageDbSource) {
+    public function tableDynArrs($pageItemId){
+        $key = __CLASS__.__METHOD__.$pageItemId;
+        return PCache::funcGet($key,function () use ($pageItemId) {
             $url = static::sdkUrl('universal/table/dynArrs');
             // 2026年2月1日
             $data = $this->postBaseData();
             // 默认发本地消息中间件
             // TODO:配置解耦
             $data['page_item_id'] = $pageItemId;
-            $data['pageItemId'] = $pageItemId;
-            $data['pageDbSource'] = $pageDbSource;
             $res                    = QLogSdk::postAndLog($url, $data);
             return $res['data'];
         });
@@ -51,18 +49,26 @@ class UniversalSdk extends SdkBase{
     }
 
     /**
+     * 通用动态枚举搜索。
+     */
+    public function dynSearch(array $param){
+        $data = array_merge($this->postBaseData(), $param);
+        $res = $this->queryLog('universal/dynSearch/search', $data, 'curl');
+        return $res['data'];
+    }
+
+    /**
      * page_item 单条 catalog 原始行（field_filter / auth_check 等）
      */
-    public function pageItemGet($pageItemId, $pageDbSource = 'dbSys')
+    public function pageItemGet($pageItemId)
     {
-        $key = __CLASS__ . __METHOD__ . $pageItemId . $pageDbSource;
+        $key = __CLASS__ . __METHOD__ . $pageItemId;
         return PCache::funcGet($key, function () use ($pageItemId) {
             $data = $this->postBaseData();
             $data['id'] = $pageItemId;
-            //$data['pageItemId'] = $pageItemId;
-            //$data['page_item_id'] = $pageItemId;
-            //$data['pageDbSource'] = $pageDbSource;
+            $data['pageItemId'] = $pageItemId;
             $res = $this->queryLog('universal/pageItem/get', $data, 'curl');
+
             return $res['data'];
         });
     }

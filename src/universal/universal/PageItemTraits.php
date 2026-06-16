@@ -12,15 +12,13 @@ trait PageItemTraits{
      * @param type $pageKey
      * @return type
      */
-    public function pageItemSubList($pageItemId, $itemKey, $pageDbSource = 'dbSys'){
-        $key = __CLASS__.__METHOD__.$pageItemId.$itemKey.$pageDbSource;
-        return PCache::funcGet($key,function () use ($pageItemId, $itemKey, $pageDbSource) {
+    public function pageItemSubList($pageItemId, $itemKey){
+        $key = __CLASS__.__METHOD__.$pageItemId.$itemKey;
+        return PCache::funcGet($key,function () use ($pageItemId, $itemKey) {
             // TODO:配置解耦
             $data = $this->postBaseData();            
             $data['pageItemId'] = $pageItemId;
-            $data['page_item_id'] = $pageItemId;
             $data['itemKey']    = $itemKey;
-            $data['pageDbSource'] = $pageDbSource;
 
             $baseUrl    = 'universal/pageItem/subList';
             $res        = $this->queryLog($baseUrl, $data, 'curl');
