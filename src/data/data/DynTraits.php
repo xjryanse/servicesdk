@@ -20,7 +20,7 @@ trait DynTraits {
         $param['dynDatas'] = $extraDynDatas;
 
         $baseUrl = 'data/dyn/dynDataList';
-        $res = $this->queryLog($baseUrl, $param, 'curl');
+        $res = $this->queryLog($baseUrl, $param, 'worker');
         return $res['data'];
     }
 }
