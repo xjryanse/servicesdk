@@ -4,6 +4,7 @@ namespace xjryanse\servicesdk\page;
 use xjryanse\servicesdk\comm\SdkBase;
 use xjryanse\phplite\cache\PCache;
 use xjryanse\servicesdk\msgq\QLogSdk;
+
 /**
  * 
  */
@@ -27,16 +28,17 @@ class PageSdk extends SdkBase{
      * @param type $pageKey
      * @return type
      */
-    public function pageItemVue($pageKey){
-        // $url = static::sdkUrl('page/page/itemVue');
-        $data['pageItemId'] = $pageKey;
-        $data['svBindId']   = $this->uuid;
-        // $res              = QLogSdk::postAndLog($url, $data);
-        
-        $baseUrl = 'page/page/itemVue';
-        $res = $this->queryLog($baseUrl, $data, 'curl');
-        $data             = $res['data'];
-        return $data;
+    public function pageItemVue($pageItemId){
+        $key = __CLASS__.__METHOD__.$pageItemId;
+        return PCache::funcGet($key,function () use ($pageItemId) {
+            $data['pageItemId'] = $pageItemId;
+            $data['svBindId']   = $this->uuid;
+
+            $baseUrl = 'page/page/itemVue';
+            $res = $this->queryLog($baseUrl, $data, 'worker');
+            $data             = $res['data'];
+            return $data;            
+        });
     }
     
 
