@@ -11,6 +11,8 @@ class MessageSdk extends SdkBase
 {
     protected static $serverKey = 'service_message';
 
+    use \xjryanse\servicesdk\message\message\SiteMsgTraits;
+
     /**
      * 统一推送入口：提交消息任务（组装并入队）
      * POST /message/task/submit
@@ -25,49 +27,11 @@ class MessageSdk extends SdkBase
             'bizId'         => $dataId,
             'tplCode'       => $msgTplCode,
             'rawData'       => $param,
-            'channels'      => $msgChannel,  // 可选，不传则用模板已绑定渠道
-            // 防止同一条业务消息被重复提交、重复推送的唯一键
-            // 'idempotentKey' => 'warehouse_out_20260611001:WAREHOUSE_OUT_NOTICE:webhook',  // 可选
+            'channels'      => $msgChannel,
         ];
-        
+
         $baseUrl = 'message/task/submit';
         $data = array_merge($this->postBaseData(), $qData);
-        $res = $this->queryLog($baseUrl, $data, $channel);
-        return $res['data'];
-    }
-
-    /**
-     * 站内信列表
-     * POST /message/siteMsg/list
-     */
-    public function siteMsgList(array $extra = [], $channel = 'worker')
-    {
-        $baseUrl = 'message/siteMsg/list';
-        $data = array_merge($this->postBaseData(), $extra);
-        $res = $this->queryLog($baseUrl, $data, $channel);
-        return $res['data'];
-    }
-
-    /**
-     * 标记单条已读
-     * POST /message/siteMsg/read
-     */
-    public function siteMsgRead($id, array $extra = [], $channel = 'worker')
-    {
-        $baseUrl = 'message/siteMsg/read';
-        $data = array_merge($this->postBaseData(), $extra, ['id' => $id]);
-        $res = $this->queryLog($baseUrl, $data, $channel);
-        return $res['data'];
-    }
-
-    /**
-     * 全部已读
-     * POST /message/siteMsg/readAll
-     */
-    public function siteMsgReadAll(array $extra = [], $channel = 'worker')
-    {
-        $baseUrl = 'message/siteMsg/readAll';
-        $data = array_merge($this->postBaseData(), $extra);
         $res = $this->queryLog($baseUrl, $data, $channel);
         return $res['data'];
     }
