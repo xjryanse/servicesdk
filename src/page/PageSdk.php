@@ -29,8 +29,8 @@ class PageSdk extends SdkBase{
      */
     public function pageItemVue($pageKey){
         // $url = static::sdkUrl('page/page/itemVue');
-        $data['pageKey']  = $pageKey;
-        $data['svBindId'] = $this->uuid;
+        $data['pageItemId'] = $pageKey;
+        $data['svBindId']   = $this->uuid;
         // $res              = QLogSdk::postAndLog($url, $data);
         
         $baseUrl = 'page/page/itemVue';
