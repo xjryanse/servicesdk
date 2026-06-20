@@ -12,11 +12,13 @@ class PageSdk extends SdkBase{
     protected static $serverKey = 'service_page';
     
     public function pageVue($pageKey){
-        $url = static::sdkUrl('page/page/pageVue');
+        // $url = static::sdkUrl('page/page/pageVue');
         $data['pageKey']  = $pageKey;
         $data['svBindId'] = $this->uuid;
-        $res              = QLogSdk::postAndLog($url, $data);
-        $data             = $res['data'];
+        // $res              = QLogSdk::postAndLog($url, $data);
+        $baseUrl        = 'page/page/pageVue';
+        $res            = $this->queryLog($baseUrl, $data, 'curl');
+        $data           = $res['data'];
         return $data;
     }
 
@@ -26,10 +28,13 @@ class PageSdk extends SdkBase{
      * @return type
      */
     public function pageItemVue($pageKey){
-        $url = static::sdkUrl('page/page/itemVue');
+        // $url = static::sdkUrl('page/page/itemVue');
         $data['pageKey']  = $pageKey;
         $data['svBindId'] = $this->uuid;
-        $res              = QLogSdk::postAndLog($url, $data);
+        // $res              = QLogSdk::postAndLog($url, $data);
+        
+        $baseUrl = 'page/page/itemVue';
+        $res = $this->queryLog($baseUrl, $data, 'curl');
         $data             = $res['data'];
         return $data;
     }
