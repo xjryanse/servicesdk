@@ -49,12 +49,25 @@ trait SiteMsgTraits
     /**
      * POST /message/siteMsg/internalCreate（运营/测试，不经 MsgTask）
      *
+     * [
+        {
+          "scope_type": "admin",
+          "scope_value": ""
+        }
+      ]
      * @param array $param title、content、details、scopes、tplCode、bizId、publishTime...
      */
-    public function siteMsgInternalCreate(array $param, $channel = 'worker')
+    public function siteMsgInternalCreate($svBindId, $title, $content,$sourceId, array $scopes, array $details)
     {
+        $param['svBindId']  = $svBindId;
+        $param['title']     = $title;
+        $param['content']   = $content;
+        $param['scopes']    = $scopes;
+        $param['sourceId']  = $sourceId;
+        $param['details']   = json_encode($details, JSON_UNESCAPED_UNICODE);
+        
         $data = array_merge($this->postBaseData(), $param);
-        return $this->siteMsgRequest('internalCreate', $data, $channel);
+        return $this->siteMsgRequest('internalCreate', $data, 'worker');
     }
 
     /**
