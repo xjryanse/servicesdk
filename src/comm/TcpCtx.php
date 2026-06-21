@@ -87,14 +87,14 @@ class TcpCtx
     }
 
     /**
-     * @return object|null WorkerRequest 实例（phplite 未加载时为 null）
+     * @return object|null AppRequest 实例（phplite 未加载时为 null）
      */
     private static function workerRequest()
     {
-        if (!class_exists(\xjryanse\phplite\service\WorkerRequest::class)) {
+        if (!class_exists(\xjryanse\phplite\service\AppRequest::class)) {
             return null;
         }
-        return \xjryanse\phplite\service\WorkerRequest::current();
+        return \xjryanse\phplite\service\AppRequest::current();
     }
 
     /**

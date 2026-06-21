@@ -36,13 +36,13 @@ class ErrNotice {
     }
 
     /**
-     * 合并 Worker 请求上下文（WorkerRequest）与调用方传入 context。
+     * 合并入站请求上下文（AppRequest）与调用方传入 context。
      */
     private static function mergeContext(array $context){
-        if(class_exists(\xjryanse\phplite\service\WorkerRequest::class)){
-            $wr = \xjryanse\phplite\service\WorkerRequest::current();
-            if($wr !== null){
-                return array_merge($wr->toErrNoticeCtx(), $context);
+        if(class_exists(\xjryanse\phplite\service\AppRequest::class)){
+            $req = \xjryanse\phplite\service\AppRequest::current();
+            if($req !== null){
+                return array_merge($req->toErrNoticeCtx(), $context);
             }
         }
         return $context;
@@ -147,10 +147,10 @@ class ErrNotice {
 
     private static function resolveTraceId(array $context){
         $traceId = trim((string)($context['trace_id'] ?? ''));
-        if($traceId === '' && class_exists(\xjryanse\phplite\service\WorkerRequest::class)){
-            $wr = \xjryanse\phplite\service\WorkerRequest::current();
-            if($wr !== null){
-                $traceId = trim($wr->traceId());
+        if($traceId === ''){
+            $req = self::inboundRequest();
+            if($req !== null){
+                $traceId = trim($req->traceId());
             }
         }
         if($traceId === '' && !empty($GLOBALS['trace_id'])){
@@ -160,16 +160,14 @@ class ErrNotice {
     }
 
     /**
-     * Worker 请求内出站 span；FPM 仍读 $serviceTraceArr。
+     * 入站请求内出站 span；FPM 仍读 $serviceTraceArr。
      *
      * @return list<array<string,mixed>>
      */
     private static function currentServiceSpans(){
-        if(class_exists(\xjryanse\phplite\service\WorkerRequest::class)){
-            $wr = \xjryanse\phplite\service\WorkerRequest::current();
-            if($wr !== null){
-                return $wr->serviceSpans();
-            }
+        $req = self::inboundRequest();
+        if($req !== null){
+            return $req->serviceSpans();
         }
         if(!empty($GLOBALS['serviceTraceArr']) && is_array($GLOBALS['serviceTraceArr'])){
             return $GLOBALS['serviceTraceArr'];
@@ -632,5 +630,16 @@ class ErrNotice {
         ];
 
         return self::pushToOpsBao($payload);
+    }
+
+    /**
+     * @return object|null
+     */
+    private static function inboundRequest()
+    {
+        if (!class_exists(\xjryanse\phplite\service\AppRequest::class)) {
+            return null;
+        }
+        return \xjryanse\phplite\service\AppRequest::current();
     }
 }

@@ -93,12 +93,10 @@ class SdkTrace
             return;
         }
         $spans = $resp['$dev']['serviceArr'];
-        if (class_exists(\xjryanse\phplite\service\WorkerRequest::class)) {
-            $wr = \xjryanse\phplite\service\WorkerRequest::current();
-            if ($wr !== null) {
-                $wr->mergeServiceSpans($spans);
-                return;
-            }
+        $req = self::inboundRequest();
+        if ($req !== null) {
+            $req->mergeServiceSpans($spans);
+            return;
         }
         global $serviceTraceArr;
         $serviceTraceArr = !empty($serviceTraceArr) && is_array($serviceTraceArr)
@@ -198,13 +196,11 @@ class SdkTrace
      */
     public static function pushSpan(array $span): void
     {
-        if (class_exists(\xjryanse\phplite\service\WorkerRequest::class)) {
-            $wr = \xjryanse\phplite\service\WorkerRequest::current();
-            if ($wr !== null) {
-                $wr->addServiceSpan($span);
-                LogBuffer::push($span);
-                return;
-            }
+        $req = self::inboundRequest();
+        if ($req !== null) {
+            $req->addServiceSpan($span);
+            LogBuffer::push($span);
+            return;
         }
         global $serviceTraceArr;
         if (!isset($serviceTraceArr) || !is_array($serviceTraceArr)) {
@@ -319,12 +315,21 @@ class SdkTrace
 
     private static function currentTraceId(): string
     {
-        if (class_exists(\xjryanse\phplite\service\WorkerRequest::class)) {
-            $wr = \xjryanse\phplite\service\WorkerRequest::current();
-            if ($wr !== null && $wr->traceId() !== '') {
-                return $wr->traceId();
-            }
+        $req = self::inboundRequest();
+        if ($req !== null && $req->traceId() !== '') {
+            return $req->traceId();
         }
         return isset($GLOBALS['trace_id']) ? (string) $GLOBALS['trace_id'] : '';
+    }
+
+    /**
+     * @return \xjryanse\phplite\service\AppRequest|null
+     */
+    private static function inboundRequest()
+    {
+        if (!class_exists(\xjryanse\phplite\service\AppRequest::class)) {
+            return null;
+        }
+        return \xjryanse\phplite\service\AppRequest::current();
     }
 }
