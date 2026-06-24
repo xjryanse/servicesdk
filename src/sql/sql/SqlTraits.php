@@ -26,10 +26,6 @@ trait SqlTraits{
             $res = $this->queryLog($baseUrl, $data, 'worker');
             return $res['data'];            
         });
-        if(!$sqlId){
-            SqlCache::rm($key);
-        }
-
         return $sqlId;
     }
     /**
@@ -41,7 +37,6 @@ trait SqlTraits{
     public function keyBaseSql(string $sqlKey, array $param = []){
         $pMd5 = Arrays::md5($param);
         $key = __CLASS__.__METHOD__.$sqlKey.$pMd5;
-        SqlCache::rm($key);
         $sql = SqlCache::funcGet($key, function () use ($sqlKey, $param) {
             $baseUrl = 'sql/sql/keyBaseSql';
             $data = $this->postBaseData();
@@ -50,9 +45,6 @@ trait SqlTraits{
             $res = $this->queryLog($baseUrl, $data, 'worker');
             return $res['data'];
         });
-        if(!$sql){
-            SqlCache::rm($key);
-        }
         return $sql;
     }
 
@@ -71,9 +63,6 @@ trait SqlTraits{
             $res = $this->queryLog($baseUrl, $data, 'worker');
             return $res['data'];                
         });
-        if(!$res){
-            SqlCache::rm($key);
-        }
         return $res;
     }
 
