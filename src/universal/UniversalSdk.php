@@ -36,6 +36,20 @@ class UniversalSdk extends SdkBase{
     }
 
     /**
+     * 整页 dynenum 配置（PreData / rawBack 等单条数据场景）。
+     */
+    public function pageDynArrs($pageId){
+        $key = __CLASS__.__METHOD__.$pageId;
+        return PCache::funcGet($key,function () use ($pageId) {
+            $data = $this->postBaseData();
+            $data['page_id'] = $pageId;
+            $data['pageId'] = $pageId;
+            $res = $this->queryLog('universal/page/dynArrs', $data, 'curl');
+            return $res['data'];
+        });
+    }
+
+    /**
      * 2026年6月：表单字段单条配置（uniDynSearch 等）
      */
     public function formGet($fieldId){
