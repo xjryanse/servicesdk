@@ -3,9 +3,8 @@ namespace xjryanse\servicesdk\universal;
 
 use xjryanse\servicesdk\comm\SdkBase;
 use xjryanse\phplite\cache\PCache;
-use xjryanse\servicesdk\msgq\QLogSdk;
 /**
- * 
+ * service_universal 调用 SDK（缓存与传输通道统一在本层）
  */
 class UniversalSdk extends SdkBase{
     // 需定义：配套BindSdkTrait使用
@@ -22,15 +21,12 @@ class UniversalSdk extends SdkBase{
      * @param type $param   参数
      */
     public function tableDynArrs($pageItemId){
-        $key = __CLASS__.__METHOD__.$pageItemId;
-        return PCache::funcGet($key,function () use ($pageItemId) {
-            $url = static::sdkUrl('universal/table/dynArrs');
-            // 2026年2月1日
+        $key = __CLASS__ . __METHOD__ . $this->uuid . $pageItemId;
+        return PCache::funcGet($key, function () use ($pageItemId) {
             $data = $this->postBaseData();
-            // 默认发本地消息中间件
-            // TODO:配置解耦
             $data['page_item_id'] = $pageItemId;
-            $res                    = QLogSdk::postAndLog($url, $data);
+            $res = $this->queryLog('universal/table/dynArrs', $data, 'worker');
+
             return $res['data'];
         });
     }
@@ -39,12 +35,13 @@ class UniversalSdk extends SdkBase{
      * 整页 dynenum 配置（PreData / rawBack 等单条数据场景）。
      */
     public function pageDynArrs($pageId){
-        $key = __CLASS__.__METHOD__.$pageId;
-        return PCache::funcGet($key,function () use ($pageId) {
+        $key = __CLASS__ . __METHOD__ . $this->uuid . $pageId;
+        return PCache::funcGet($key, function () use ($pageId) {
             $data = $this->postBaseData();
             $data['page_id'] = $pageId;
             $data['pageId'] = $pageId;
-            $res = $this->queryLog('universal/page/dynArrs', $data, 'curl');
+            $res = $this->queryLog('universal/page/dynArrs', $data, 'worker');
+
             return $res['data'];
         });
     }
@@ -53,11 +50,12 @@ class UniversalSdk extends SdkBase{
      * 2026年6月：表单字段单条配置（uniDynSearch 等）
      */
     public function formGet($fieldId){
-        $key = __CLASS__.__METHOD__.$fieldId;
-        return PCache::funcGet($key,function () use ($fieldId) {
+        $key = __CLASS__ . __METHOD__ . $this->uuid . $fieldId;
+        return PCache::funcGet($key, function () use ($fieldId) {
             $data = $this->postBaseData();
             $data['id'] = $fieldId;
-            $res = $this->queryLog('universal/form/get', $data, 'curl');
+            $res = $this->queryLog('universal/form/get', $data, 'worker');
+
             return $res['data'];
         });
     }
@@ -67,7 +65,8 @@ class UniversalSdk extends SdkBase{
      */
     public function dynSearch(array $param){
         $data = array_merge($this->postBaseData(), $param);
-        $res = $this->queryLog('universal/dynSearch/search', $data, 'curl');
+        $res = $this->queryLog('universal/dynSearch/search', $data, 'worker');
+
         return $res['data'];
     }
 
@@ -76,12 +75,12 @@ class UniversalSdk extends SdkBase{
      */
     public function pageItemGet($pageItemId)
     {
-        $key = __CLASS__ . __METHOD__ . $pageItemId;
+        $key = __CLASS__ . __METHOD__ . $this->uuid . $pageItemId;
         return PCache::funcGet($key, function () use ($pageItemId) {
             $data = $this->postBaseData();
             $data['id'] = $pageItemId;
             $data['pageItemId'] = $pageItemId;
-            $res = $this->queryLog('universal/pageItem/get', $data, 'curl');
+            $res = $this->queryLog('universal/pageItem/get', $data, 'worker');
 
             return $res['data'];
         });
@@ -97,7 +96,7 @@ class UniversalSdk extends SdkBase{
             $data = $this->postBaseData();
             $data['id'] = $pageItemId;
             $data['pageItemId'] = $pageItemId;
-            $res = $this->queryLog('universal/pageItem/info', $data, 'curl');
+            $res = $this->queryLog('universal/pageItem/info', $data, 'worker');
 
             return $res['data'];
         });
@@ -113,7 +112,7 @@ class UniversalSdk extends SdkBase{
             $data = $this->postBaseData();
             $data['page_item_id'] = $pageItemId;
             $data['pageItemId'] = $pageItemId;
-            $res = $this->queryLog('universal/pageItem/tableDynArrs', $data, 'curl');
+            $res = $this->queryLog('universal/pageItem/tableDynArrs', $data, 'worker');
 
             return $res['data'];
         });
@@ -124,11 +123,11 @@ class UniversalSdk extends SdkBase{
      */
     public function pageGet($pageId)
     {
-        $key = __CLASS__ . __METHOD__ . $pageId;
+        $key = __CLASS__ . __METHOD__ . $this->uuid . $pageId;
         return PCache::funcGet($key, function () use ($pageId) {
             $data = $this->postBaseData();
             $data['id'] = $pageId;
-            $res = $this->queryLog('universal/page/get', $data, 'curl');
+            $res = $this->queryLog('universal/page/get', $data, 'worker');
 
             return $res['data'];
         });
