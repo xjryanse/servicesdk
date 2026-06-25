@@ -1,17 +1,24 @@
 <?php
+
 namespace xjryanse\servicesdk;
 
 use xjryanse\servicesdk\entry\EntrySdk;
+use Exception;
+
 /**
- * 域名绑定sdk
+ * 域名绑定 sdk（委托 EntrySdk）
  */
-class HostBindSdk {
+class HostBindSdk
+{
     /**
-     * 2026年2月1日：公司id：租户id
+     * @throws Exception
      */
-    public static function companyId(){
+    public static function companyId()
+    {
         global $svBindId;
-        $info = EntrySdk::bindIdInfo($svBindId);
-        return $info['bind_company_id'];
+        if (!$svBindId) {
+            throw new Exception('$svBindId必须');
+        }
+        return EntrySdk::globalSvBindCompanyId();
     }
 }
