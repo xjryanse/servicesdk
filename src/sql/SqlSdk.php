@@ -3,10 +3,8 @@ namespace xjryanse\servicesdk\sql;
 
 use xjryanse\servicesdk\comm\SdkBase;
 use xjryanse\servicesdk\msgq\QLogSdk;
-use xjryanse\servicesdk\msgq\WQLogSdk;
 use xjryanse\phplite\cache\SqlCache;
-use xjryanse\phplite\logic\Arrays;
-use Exception;
+
 /**
  * 调用sql中台的极简sdk
  * 2025年12月28日21点15分

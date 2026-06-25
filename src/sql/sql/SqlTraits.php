@@ -77,6 +77,20 @@ trait SqlTraits{
             return $res['data'];
         });
     }
+    /**
+     * sqlKey
+     * @param type $sqlKey
+     * @return type
+     */
+    public function sqlGetByKey($sqlKey){
+        $key = __CLASS__ . __METHOD__ . $sqlKey;
+        return SqlCache::funcGet($key, function () use ($sqlKey) {
+            $data = $this->postBaseData();
+            $data['sqlKey'] = $sqlKey;
+            $res = $this->queryLog('sql/sql/getByKey', $data, 'worker');
+            return $res['data'];
+        });
+    }
 
     public function sumFields($sqlId, array $param = [])
     {
