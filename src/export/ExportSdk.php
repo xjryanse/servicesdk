@@ -10,21 +10,26 @@ use Exception;
  */
 class ExportSdk extends SdkBase{
     protected static $serverKey = 'service_export';
-
+    
     /**
-     * 全链路导出编排
+     * 同步导出 excel
      *
-     * @param array<string,mixed> $param
-     * @return array<string,mixed>
+     * @param array<int, array<string, mixed>> $exportData
+     * @param array<int, array<string, mixed>> $columns
      */
-    public function pipelineRun(array $param)
-    {
+    public function excelSync(array $exportData, array $columns) {
+        $param['exportData'] = $exportData;
+        $param['columns']    = $columns;
+        
         $data = array_merge($this->postBaseData(), $param);
-        $baseUrl    = 'export/pipeline/run';
+        $baseUrl    = 'export/excel/sync';
         $res        = $this->queryLog($baseUrl, $data, 'curl');
         return $res['data'];
-
     }
+    
+    /* 下方接口待验证 **********************/
+
+
 
     /**
      * 已转换数据 → 文件（自动选 Excel/CSV）
@@ -35,32 +40,22 @@ class ExportSdk extends SdkBase{
     public function tableSync(array $param)
     {
         $data = array_merge($this->postBaseData(), $param);
-        $url  = $this->sdkUrl('export/table/sync');
-        $res  = Query::posturl($url, $data);
-        $this->assertOk($res, $url);
+        $baseUrl    = 'export/table/sync';
+        $res        = $this->queryLog($baseUrl, $data, 'curl');
         return $res['data'];
     }
 
     /**
-     * 同步导出 excel
-     */
-    public function excelSync($exportData, $dataTitle)
-    {
-        return $this->tableSync([
-            'exportData'   => $exportData,
-            'dataTitle'    => $dataTitle,
-            'excelMaxRows' => PHP_INT_MAX,
-        ]);
-    }
-
-    /**
      * 同步导出 csv
+     *
+     * @param array<int, array<string, mixed>> $exportData
+     * @param array<int, array<string, mixed>> $columns
      */
-    public function csvSync($exportData, $dataTitle)
+    public function csvSync(array $exportData, array $columns)
     {
         $data = array_merge($this->postBaseData(), [
             'exportData' => $exportData,
-            'dataTitle'  => $dataTitle,
+            'columns'    => $columns,
         ]);
         $url = $this->sdkUrl('export/csv/sync');
         $res = Query::posturl($url, $data);
