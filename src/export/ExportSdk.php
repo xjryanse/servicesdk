@@ -20,10 +20,10 @@ class ExportSdk extends SdkBase{
     public function pipelineRun(array $param)
     {
         $data = array_merge($this->postBaseData(), $param);
-        $url  = $this->sdkUrl('export/pipeline/run');
-        $res  = Query::posturl($url, $data);
-        $this->assertOk($res, $url);
+        $baseUrl    = 'export/pipeline/run';
+        $res        = $this->queryLog($baseUrl, $data, 'curl');
         return $res['data'];
+
     }
 
     /**
