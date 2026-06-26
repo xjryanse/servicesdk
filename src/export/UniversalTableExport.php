@@ -4,7 +4,6 @@ namespace xjryanse\servicesdk\export;
 use xjryanse\phplite\logic\Arrays;
 use xjryanse\servicesdk\DbSdk;
 use xjryanse\servicesdk\data\DataSdk;
-use xjryanse\servicesdk\universal\UniversalSdk;
 use xjryanse\servicesdk\export\ExportSdk;
 use xjryanse\servicesdk\universal\UniversalSdk;
 
@@ -31,7 +30,7 @@ final class UniversalTableExport
             }
         }
         // 步骤3：表头提取
-        $fields     = UniversalSdk::inst($svBindId)->exportFields($p);        
+        $fields     = UniversalSdk::inst($svBindId)->exportFields(['uniBtnId'=>$uniBtnId]);        
         $columns = $fields['columns'];
         // 步骤4：导出
         $r = ExportSdk::inst($svBindId)->excelSync($rows, $columns);
