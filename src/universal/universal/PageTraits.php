@@ -7,6 +7,36 @@ use xjryanse\servicesdk\msgq\QLogSdk;
  * 
  */
 trait PageTraits{
+    
+    /**
+     * 整页 dynenum 配置（PreData / rawBack 等单条数据场景）。
+     */
+    public function pageDynArrs($pageId){
+        $key = __CLASS__.__METHOD__.$pageId;
+        return PCache::funcGet($key,function () use ($pageId) {
+            $data = $this->postBaseData();
+            $data['page_id'] = $pageId;
+            $data['pageId'] = $pageId;
+            $res = $this->queryLog('universal/page/dynArrs', $data, 'curl');
+            return $res['data'];
+        });
+    }
+    
+    /**
+     * page 单条 catalog 原始行（base_table / page_key 等）
+     */
+    public function pageGet($pageId)
+    {
+        $key = __CLASS__ . __METHOD__ . $pageId;
+        return PCache::funcGet($key, function () use ($pageId) {
+            $data = $this->postBaseData();
+            $data['id'] = $pageId;
+            $res = $this->queryLog('universal/page/get', $data, 'curl');
+
+            return $res['data'];
+        });
+    }
+    
     /**
      * 2026年1月23日
      * @param type $pageKey

@@ -14,13 +14,17 @@ trait ExportTraits
      * @param array<string,mixed> $param
      * @return array<string,mixed>
      */
-    public function exportFields(array $param)
-    {
+    public function exportFields(array $param) {
         $data = array_merge($this->postBaseData(), $param);
-        $url  = $this->sdkUrl('universal/export/fields');
-        $res  = Query::posturl($url, $data);
-        return $this->exportAssertOk($res, $url);
+        $baseUrl = 'universal/export/fields';
+        $res = $this->queryLog($baseUrl, $data, 'worker');
+        return $res['data'];
     }
+    
+    
+    
+    
+    
 
     /**
      * POST universal/export/pack
