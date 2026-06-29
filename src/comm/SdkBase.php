@@ -4,6 +4,7 @@ namespace xjryanse\servicesdk\comm;
 use xjryanse\servicesdk\msgq\QLogSdk;
 use xjryanse\servicesdk\msgq\WQLogSdk;
 use xjryanse\servicesdk\entry\EntrySdk;
+use xjryanse\phplite\logic\Arrays;
 use Exception;
 /**
  * 17点20分
@@ -21,6 +22,7 @@ abstract class SdkBase {
             throw new Exception('需要透传bindId信息，不可为空或者0');
         }
         $this->uuid = $uuid;
+        $this->querySvInst();
     }
     /**
      * 用svBindId作为实例
@@ -29,6 +31,16 @@ abstract class SdkBase {
         global $svBindId;
         return static::inst($svBindId);
     }
+
+    /**
+     * 请求后向接口时使用
+     */
+    public function querySvInst(){
+        $service = $this->serverInfoRand();
+        $serverSvBindId = Arrays::value($service, 'server_sv_bind_id');
+        return $serverSvBindId ?: $this->uuid;
+    }
+
     /**
      * 2026年5月10日
      * 带当前域名：传统phpfpm使用
@@ -40,9 +52,14 @@ abstract class SdkBase {
     
     /**
      * 2026年1月27日：post请求的基础数据
+     * 2026年6月29日根据server_sv_bind_id获取实例
+     * 如果server_sv_bind_id不为空，则使用server_sv_bind_id作为实例
+     * 否则使用uuid作为实例
+     * 
+     * @return array<string,mixed>
      */
     protected function postBaseData(){
-        $data['svBindId']   = $this->uuid;
+        $data['svBindId']   = $this->querySvInst();
         return $data;
     }
     
