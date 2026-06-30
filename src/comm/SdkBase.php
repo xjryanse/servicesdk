@@ -5,6 +5,7 @@ use xjryanse\servicesdk\msgq\QLogSdk;
 use xjryanse\servicesdk\msgq\WQLogSdk;
 use xjryanse\servicesdk\entry\EntrySdk;
 use xjryanse\phplite\logic\Arrays;
+use xjryanse\phplite\service\AppRequest;
 use Exception;
 /**
  * 17点20分
@@ -40,6 +41,12 @@ abstract class SdkBase {
         $serverSvBindId = Arrays::value($service, 'server_sv_bind_id');
         return $serverSvBindId ?: $this->uuid;
     }
+    /**
+     * 透传的会话用户id
+     */
+    public function sessionUserId(){
+        return AppRequest::current()->sessionUserId();
+    }
 
     /**
      * 2026年5月10日
@@ -59,7 +66,8 @@ abstract class SdkBase {
      * @return array<string,mixed>
      */
     protected function postBaseData(){
-        $data['svBindId']   = $this->querySvInst();
+        $data['svBindId']       = $this->querySvInst();
+        $data['sessionUserId']  = $this->sessionUserId();
         return $data;
     }
     

@@ -3,7 +3,6 @@
 namespace xjryanse\servicesdk\universal\universal;
 
 use xjryanse\phplite\cache\PCache;
-use xjryanse\servicesdk\msgq\QLogSdk;
 
 /**
  * 

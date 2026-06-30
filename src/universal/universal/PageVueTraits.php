@@ -1,8 +1,6 @@
 <?php
 namespace xjryanse\servicesdk\universal\universal;
 
-use xjryanse\phplite\cache\PCache;
-use xjryanse\servicesdk\msgq\QLogSdk;
 /**
  * 
  */
@@ -19,14 +17,14 @@ trait PageVueTraits{
      * @return array 含 template/script/style 等，以及 _fromCache：true=缓存取，false=接口取
      */
     public function pageVue($pageKey){
-        // $key = __CLASS__.__METHOD__.$pageKey;
-        $url = static::sdkUrl('universal/page/vue');
-        
+        $baseUrl    = 'universal/page/vue';
+        // 默认发本地消息中间件
+        $data       = $this->postBaseData();  
         $data['pageKey']  = $pageKey;
         $data['svBindId'] = $this->uuid;
-        $res              = QLogSdk::postAndLog($url, $data);
-        $data             = $res['data'];
-        return static::pageVueWithFromCache($data, false);
+        $res        = $this->queryLog($baseUrl, $data, 'worker');
+
+        return static::pageVueWithFromCache($res['data'], false);
     }
 
     /**
@@ -45,13 +43,13 @@ trait PageVueTraits{
      * @return array 含 _fromCache：true=缓存取，false=接口取
      */
     public function pageItemVue($pageKey, $pageDbSource){
-        $url = static::sdkUrl('universal/page/itemVue');
-        $data = $this->postBaseData();
+        $baseUrl    = 'universal/page/itemVue';
+        // 默认发本地消息中间件
+        $data       = $this->postBaseData();  
         $data['pageKey']      = $pageKey;
-        $data['pageDbSource'] = $pageDbSource;
-        $res                  = QLogSdk::postAndLog($url, $data);
-        $data                 = $res['data'];
-        return static::pageVueWithFromCache($data, false);
+        $data['pageDbSource'] = $pageDbSource;        
+        $res        = $this->queryLog($baseUrl, $data, 'worker');
+        return static::pageVueWithFromCache($res['data'], false);
     }
 
 }

@@ -43,7 +43,8 @@ class PageSdk extends SdkBase{
             return $this->fetchPageVue($data);
         }
 
-        $key = __CLASS__ . __METHOD__ . $this->uuid . $pageDbSource . $source . $vueVersion . $pageKey;
+        $sessionUserId = $this->sessionUserId();
+        $key = __CLASS__ . __METHOD__ . $this->uuid . $pageDbSource . $source . $vueVersion . $pageKey. $sessionUserId;
 
         return PCache::funcGet($key, function () use ($data) {
             return $this->fetchPageVue($data);
@@ -80,7 +81,8 @@ class PageSdk extends SdkBase{
             return $this->fetchPageItemVue($data);
         }
 
-        $key = __CLASS__ . __METHOD__ . $this->uuid . $source . $vueVersion . $pageItemId;
+        $sessionUserId = $this->sessionUserId();
+        $key = __CLASS__ . __METHOD__ . $this->uuid . $source . $vueVersion . $pageItemId. $sessionUserId;
 
         return PCache::funcGet($key, function () use ($data) {
             return $this->fetchPageItemVue($data);

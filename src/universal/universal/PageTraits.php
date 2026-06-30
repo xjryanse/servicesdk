@@ -2,7 +2,6 @@
 namespace xjryanse\servicesdk\universal\universal;
 
 use xjryanse\phplite\cache\PCache;
-use xjryanse\servicesdk\msgq\QLogSdk;
 /**
  * 
  */
@@ -42,18 +41,18 @@ trait PageTraits{
      * @param type $pageKey
      * @return type
      */
-    public function pageConfig($pageKey, $pageDbSource, $sessionUserId = ''){
+    public function pageConfig($pageKey, $pageDbSource){
+        $sessionUserId = $this->sessionUserId();
         $key = __CLASS__.__METHOD__.$pageKey.$this->uuid.$sessionUserId;
         // PCache::rm($key);        
-        return PCache::funcGet($key,function () use ($pageKey, $pageDbSource, $sessionUserId) {
+        return PCache::funcGet($key,function () use ($pageKey, $pageDbSource) {
             // $url = static::sdkUrl('universal/page/config');
             // 默认发本地消息中间件
             // TODO:配置解耦
             $data = $this->postBaseData();            
             $data['pageKey']        = $pageKey;
             $data['pageDbSource']   = $pageDbSource;
-            $data['sessionUserId']  = (string) $sessionUserId;
-            
+
             $baseUrl    = 'universal/page/config';
             $res        = $this->queryLog($baseUrl, $data, 'worker');
             // $res                = QLogSdk::postAndLog($url, $data);
@@ -87,14 +86,12 @@ trait PageTraits{
      */
     public function pageKeyObj(){
         $key = __CLASS__.__METHOD__;
-        PCache::rm($key);
+        // PCache::rm($key);
         return PCache::funcGet($key,function () {
-            $url = static::sdkUrl('universal/page/keyObj');
+            $baseUrl    = 'universal/page/keyObj';
             // 默认发本地消息中间件
-            // TODO:配置解耦
-            // $data['pageKey']    = $pageKey;
-            $data['svBindId']   = $this->uuid;
-            $res                = QLogSdk::postAndLog($url, $data);
+            $data       = $this->postBaseData();            
+            $res        = $this->queryLog($baseUrl, $data, 'worker');
             return $res['data'];
         });
     }
