@@ -23,7 +23,6 @@ abstract class SdkBase {
             throw new Exception('需要透传bindId信息，不可为空或者0');
         }
         $this->uuid = $uuid;
-        $this->querySvInst();
     }
     /**
      * 用svBindId作为实例
@@ -36,7 +35,7 @@ abstract class SdkBase {
     /**
      * 请求后向接口时使用
      */
-    public function querySvInst(){
+    public function querySvBindId(){
         $service = $this->serverInfoRand();
         $serverSvBindId = Arrays::value($service, 'server_sv_bind_id');
         return $serverSvBindId ?: $this->uuid;
@@ -66,7 +65,7 @@ abstract class SdkBase {
      * @return array<string,mixed>
      */
     protected function postBaseData(){
-        $data['svBindId']       = $this->querySvInst();
+        $data['svBindId']       = $this->querySvBindId();
         $data['sessionUserId']  = $this->sessionUserId();
         return $data;
     }
