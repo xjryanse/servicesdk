@@ -34,14 +34,14 @@ trait LoginTraits{
      * @param type $param   参数
      */
     public function login($username, $password){
-        $url = static::sdkUrl('user/session/login');
+		$baseUrl    = 'user/session/login';
         // 默认发本地消息中间件
-        // TODO:配置解耦
+        $data = $this->postBaseData();
         $data['username']       = $username;
         // service_user/session/login 约定 password 字段为 Base64（与前端直调一致）
         $data['password']       = base64_encode((string) $password);
-        $data['svBindId']       = $this->uuid;
-        $res                    = QLogSdk::postAndLog($url, $data);
+        
+        $res = $this->queryLog($baseUrl, $data, 'worker');
         return $res['data'];
     }
     
