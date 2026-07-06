@@ -71,14 +71,33 @@ trait ExportTraits
     }
 
     /**
+     * POST dbout/export/createTableSql
+     * 从源库读取 SHOW CREATE TABLE（只读，供备份库自动建表使用）
+     *
+     * @return array{create_sql:string,table_name?:string,dbId?:string}
+     */
+    public function exportCreateTableSql(string $dbId, string $tableName): array
+    {
+        $data = array_merge($this->postBaseData(), [
+            'dbId'       => $dbId,
+            'table_name' => $tableName,
+        ]);
+        $url = $this->sdkUrl('dbout/export/createTableSql');
+        $res = $this->postBackupJson($url, $data);
+        $out = $res['data'] ?? null;
+        return is_array($out) ? $out : [];
+    }
+
+    /**
      * @param array<string,mixed> $data
      * @return array<string,mixed>
      */
     private function postBackupJson(string $url, array $data): array
     {
         $headers = [];
-        if ($this->backupToken !== '') {
-            $headers['X-Backup-Token'] = $this->backupToken;
+        $token = property_exists($this, 'backupToken') ? (string) $this->backupToken : '';
+        if ($token !== '') {
+            $headers['X-Backup-Token'] = $token;
         }
         $res = Query::posturl($url, $data, $headers);
         if (!$res || !is_array($res)) {
