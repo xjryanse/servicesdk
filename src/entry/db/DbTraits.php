@@ -2,34 +2,21 @@
 
 namespace xjryanse\servicesdk\entry\db;
 
+use Exception;
 use xjryanse\phplite\cache\SCache;
-/**
- * 缓存类
- */
-trait DbTraits {
-    /**
-     * 取单条数据（一般是phpfpm调用）
-     * @param type $msgId   消息id
-     * @param type $type    消息类型
-     * @param type $param   参数
-     */
-    public static function dbInfo($dbId){
-        $cacheKey = static::generateCacheKey(__FUNCTION__, $dbId);
-        $resp = SCache::funcGet($cacheKey, function () use ($dbId){        
-            $baseUrl      = 'entry/dbCnn/get';
-            $data['id']   = $dbId;
-            $res = static::wQuery($baseUrl, $data);
-            return $res['data'];
+
+trait DbTraits
+{
+    public static function dbInfo($dbId)
+    {
+        $cacheKey = static::generateCacheKey('dbInfo', $dbId);
+        return SCache::funcGet($cacheKey, function () use ($dbId) {
+            $res = static::wQuery('entry/dbCnn/get', ['id' => $dbId]);
+            return static::parseEntryData($res, 'dbCnn/get');
         });
-        if(!$resp){
-            SCache::rm($cacheKey);
-        }
-        return $resp;
     }
 
     /**
-     * 按 w_db_cnn.id 反查 svBindId
-     *
      * @throws Exception
      */
     public static function bindByDbId(string $dbId): string
@@ -39,19 +26,10 @@ trait DbTraits {
             throw new Exception('dbId 不能为空');
         }
 
-        $cacheKey = static::generateCacheKey(__FUNCTION__, $dbId);
+        $cacheKey = static::generateCacheKey('bindByDbId', $dbId);
         $resp = SCache::funcGet($cacheKey, function () use ($dbId) {
             $res = static::wQuery('entry/dbCnn/bindByDbId', ['dbId' => $dbId]);
-            if (!is_array($res) || (int) ($res['code'] ?? 1) !== 0) {
-                $msg = is_array($res) && isset($res['message'])
-                    ? (string) $res['message']
-                    : 'entry dbCnn/bindByDbId 失败';
-                throw new Exception($msg);
-            }
-            $payload = $res['data'] ?? null;
-            if (!is_array($payload)) {
-                throw new Exception('entry dbCnn/bindByDbId 返回 data 无效');
-            }
+            $payload = static::parseEntryData($res, 'dbCnn/bindByDbId');
             $bindId = trim((string) ($payload['bindId'] ?? ''));
             if ($bindId === '') {
                 throw new Exception('entry dbCnn/bindByDbId 未返回 bindId');
@@ -62,4 +40,3 @@ trait DbTraits {
         return is_string($resp) ? $resp : '';
     }
 }
-
